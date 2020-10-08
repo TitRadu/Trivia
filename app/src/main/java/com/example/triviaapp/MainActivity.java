@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setViews();
     }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void clicked(View view){
         switch(view.getId()){
