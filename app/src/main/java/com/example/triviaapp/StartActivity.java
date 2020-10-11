@@ -88,16 +88,41 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
                 Log.d("size",answers.size()+"");
-                    if (answers.size() % 4 == 0) {
-                        btnA.setText(answers.get(0).getAnswer());
-                        btnB.setText(answers.get(1).getAnswer());
-                        btnC.setText(answers.get(2).getAnswer());
-                        btnD.setText(answers.get(3).getAnswer());
-                    }
-                }
+                seteazaRaspunsuri(answers);
+            }
         });
         seteazaPeBune(questions);
+        Log.d("size",answers.size()+"");
+        seteazaRaspunsuri(answers);
+    }
 
+    private void seteazaRaspunsuri(List<Answer> answers) {
+        if (answers.size() % 4 == 0 &&  answers.size()!=0) {
+            btnA.setText(answers.get(answerCounter*4).getAnswer());
+            btnB.setText(answers.get(answerCounter*4+1).getAnswer());
+            btnC.setText(answers.get(answerCounter*4+2).getAnswer());
+            btnD.setText(answers.get(answerCounter*4+3).getAnswer());
+            setCorrectAnswer(
+                    answers.get(answerCounter*4).isCorrect(),
+                    answers.get(answerCounter*4+1).isCorrect(),
+                    answers.get(answerCounter*4+2).isCorrect(),
+                    answers.get(answerCounter*4+3).isCorrect());
+        }
+    }
+
+    private void setCorrectAnswer(boolean first,boolean second,boolean third,boolean fourth){
+        if(first){
+            correctAnswer = "A";
+        }
+        if(second){
+            correctAnswer = "B";
+        }
+        if(third){
+            correctAnswer = "C";
+        }
+        if(fourth){
+            correctAnswer = "D";
+        }
     }
 
     private void seteazaPeBune(List<Question> questions) {
@@ -137,7 +162,7 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(answers.isEmpty()) {
-                    for (int i = 1; i < 5; i++) {
+                    for (int i = 1; i < 9; i++) {
                         Answer a = new Answer
                                 (i,
                                         dataSnapshot.child(String.valueOf(i)).child("answer").getValue(String.class),
