@@ -16,9 +16,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setViews();
     }
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void clicked(View view){
         switch(view.getId()){
@@ -29,10 +27,6 @@ public class MainActivity extends AppCompatActivity {
                 openStartActivity();
                 break;
         }
-
-    }
-
-    public void setViews(){
 
     }
 
