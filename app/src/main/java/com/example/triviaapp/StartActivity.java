@@ -1,12 +1,7 @@
 package com.example.triviaapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Color;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -186,7 +185,9 @@ public class StartActivity extends AppCompatActivity {
         if(touchDisabled == true){
             return;
         }else{
-            setTouch(true);
+            //linie stearsa si inlocuita
+            touchDisabled = true;
+
 
         }
         switch(view.getId()){
@@ -225,7 +226,7 @@ public class StartActivity extends AppCompatActivity {
 
         }
 
-        voiceButton = btnA;
+        //linie stearsa
         voiceButtonDisabled = true;
 
         delay(3000);
@@ -251,8 +252,9 @@ public class StartActivity extends AppCompatActivity {
                 btnD.setBackgroundColor(standardButtonColor);
                 questionCounter.setText("Intrebarea " + answerCounter + " din 10");
                 setTextViewWithQuestionAndAnswers();
-                setTouch(false);
-                voiceButton = null;
+                //linie stearsa si inlocuita
+                touchDisabled = false;
+                //linie stearsa;
                 voiceButtonDisabled = false;
 
 
@@ -261,23 +263,14 @@ public class StartActivity extends AppCompatActivity {
         }, delay);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent m){
-        if(touchDisabled){
-            return true;
-        }
-        return false;
-
-    }
-
-    public void setTouch(boolean value){
-        touchDisabled = value;
-
-    }
-
     public void getSpeechInput(View view) {
-        if(voiceButton == null){
+        //if sters + if-ul nou.
+        if(voiceButtonDisabled == true){
+            return;
+
+        }else{
             voiceButtonDisabled = true;
+
         }
 
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -320,7 +313,7 @@ public class StartActivity extends AppCompatActivity {
 
                                 }else{
                                     Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
-                                    voiceButton = btnA;
+                                    //linie stearsa
                                     voiceButtonDisabled = false;
                                     return;
                                 }
