@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class StartActivity extends AppCompatActivity {
     String userAnswer, correctAnswer, voiceInput;
@@ -39,6 +40,7 @@ public class StartActivity extends AppCompatActivity {
     DatabaseReference reference;
     List<Question> questions = new ArrayList<>();
     List<Answer> answers = new ArrayList<>();
+    List<Integer> questionsForRandom = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,7 @@ public class StartActivity extends AppCompatActivity {
         voiceButtonDisabled = false;
         voiceButton = null;
         setTextViewWithQuestionAndAnswers();
+        seteazaPeBune(questions);
     }
 
     public void setTextViewWithQuestionAndAnswers(){
@@ -71,7 +74,9 @@ public class StartActivity extends AppCompatActivity {
         readQuestionData(new FirebaseCallback() {
             @Override
             public void onCallback(List<Question> questions) {
+               // questionsForRandom = populateList();
                 seteazaPeBune(questions);
+                Log.d("randomList",questionsForRandom.size()+"");
             }
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
@@ -108,7 +113,24 @@ public class StartActivity extends AppCompatActivity {
                     answers.get(answerCounter*4+3).isCorrect());
         }
     }
+    private List<Integer> populateList(){
+        List<Integer> numberQuestions= new ArrayList<>();
+        for(int i=1;i<5;i++){
+            numberQuestions.add(i);
+        }
+        return numberQuestions;
+    }
 
+
+    private int generateRandomQuestion(List<Integer> numberQuestions){
+        if(numberQuestions.size()!=0){
+            Random rand = new Random();
+            int randomIndex = rand.nextInt(numberQuestions.size());
+            numberQuestions.remove(randomIndex);
+            return randomIndex;
+        }
+       return -1;
+    }
     private void setCorrectAnswer(boolean first,boolean second,boolean third,boolean fourth){
         if(first){
             correctAnswer = "A";
@@ -125,11 +147,22 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void seteazaPeBune(List<Question> questions) {
-        if(questions.size()!= 0 && answerCounter <= questions.size()){
-            Log.d("counter",answerCounter+"");
-            question.setText(questions.get(answerCounter).getQuestion());
-        }
+        //int random = generateRandomQuestion(questionsForRandom);
+        Random rand = new Random();
+
+        //if(random!=-1) {
+            if (questions.size() != 0) {
+                int random = rand.nextInt(questions.size());
+                Log.d("random", random + "");
+                Log.d("dimensiune lista intregi",questionsForRandom.size()+"");
+                question.setText(questions.get(random).getQuestion());
+                questions.remove(random);
+                Log.d("dimensiune lista",questions.size()+"");
+
+            }
+        //}
     }
+    //lista de raspunsuri questionId Id generat
 
     private void readQuestionData(final FirebaseCallback firebaseCallback){
         rootNode = FirebaseDatabase.getInstance();
@@ -138,13 +171,14 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(questions.isEmpty()) {
-                    for (int i = 1; i < 4; i++) {
+                    for (int i = 1; i < 5   ; i++) {
                         Question q = new Question
                                 (i, dataSnapshot.child(String.valueOf(i)).child("question").getValue(String.class));
                         questions.add(q);
                         Log.d("lista intrebari",questions.size()+"");
-                        firebaseCallback.onCallback(questions);
+
                     }
+                    firebaseCallback.onCallback(questions);
                 }
             }
             @Override
@@ -161,7 +195,7 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(answers.isEmpty()) {
-                    for (int i = 1; i < 9; i++) {
+                    for (int i = 1; i < 17; i++) {
                         Answer a = new Answer
                                 (i,
                                         dataSnapshot.child(String.valueOf(i)).child("answer").getValue(String.class),
@@ -169,9 +203,9 @@ public class StartActivity extends AppCompatActivity {
                                         dataSnapshot.child(String.valueOf(i)).child("questionId").getValue(Integer.class)
                                 );
                         answers.add(a);
-                        Log.d("zuzu", a.getAnswer());
-                        firebaseCallback.onCallbackAnswers(answers);
+                        //Log.d("zuzu", a.getAnswer());
                     }
+                    firebaseCallback.onCallbackAnswers(answers);
                 }
             }
             @Override
@@ -251,16 +285,22 @@ public class StartActivity extends AppCompatActivity {
                 btnC.setBackgroundColor(standardButtonColor);
                 btnD.setBackgroundColor(standardButtonColor);
                 questionCounter.setText("Intrebarea " + answerCounter + " din 10");
-                setTextViewWithQuestionAndAnswers();
-                //linie stearsa si inlocuita
-                touchDisabled = false;
-                //linie stearsa;
+
+                //setTextViewWithQuestionAndAnswers();
+                seteazaPeBune(questions);
+                seteazaRaspunsuri(answers);
+                setTouch(false);
+                voiceButton = null;
                 voiceButtonDisabled = false;
 
 
             }
 
         }, delay);
+    }
+
+    private void setTouch(boolean value) {
+        touchDisabled = value;
     }
 
     public void getSpeechInput(View view) {
