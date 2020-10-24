@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -38,9 +37,9 @@ public class StartActivity extends AppCompatActivity {
     boolean touchDisabled, voiceButtonDisabled;
     FirebaseDatabase rootNode;
     DatabaseReference reference;
-    List<Question> questions = new ArrayList<>();
-    List<Answer> answers = new ArrayList<>();
-    List<Integer> questionsForRandom = new ArrayList<>();
+    List<Question> questions;
+    List<Answer> answers;
+    Question currentQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,117 +51,23 @@ public class StartActivity extends AppCompatActivity {
 
     public void setViews(){
         userAnswer = "";
-        correctAnswer = "C";
         btnA = findViewById(R.id.varA);
         btnB = findViewById(R.id.varB);
         btnC = findViewById(R.id.varC);
         btnD = findViewById(R.id.varD);
         question = findViewById(R.id.question);
         questionCounter = findViewById(R.id.questionCounter);
-        answerCounter = 0;
+        answerCounter = 1;
         standardButtonColor = Color.LTGRAY;
         intent = new Intent(this,MainActivity.class);
         touchDisabled = false;
         voiceButtonDisabled = false;
         voiceButton = null;
+        questions = new ArrayList<>();
+        answers = new ArrayList<>();
         setTextViewWithQuestionAndAnswers();
-        seteazaPeBune(questions);
+
     }
-
-    public void setTextViewWithQuestionAndAnswers(){
-     Log.d("apeluri","ma apelez"+answerCounter +"dimensiune lista" +questions.size());
-        readQuestionData(new FirebaseCallback() {
-            @Override
-            public void onCallback(List<Question> questions) {
-               // questionsForRandom = populateList();
-                seteazaPeBune(questions);
-                Log.d("randomList",questionsForRandom.size()+"");
-            }
-            @Override
-            public void onCallbackAnswers(List<Answer> answers) {
-
-            }
-        });
-        readAnswersData(new FirebaseCallback() {
-            @Override
-            public void onCallback(List<Question> questions) {
-
-            }
-
-            @Override
-            public void onCallbackAnswers(List<Answer> answers) {
-                Log.d("size",answers.size()+"");
-                seteazaRaspunsuri(answers);
-            }
-        });
-        seteazaPeBune(questions);
-        Log.d("size",answers.size()+"");
-        seteazaRaspunsuri(answers);
-    }
-
-    private void seteazaRaspunsuri(List<Answer> answers) {
-        if (answers.size() % 4 == 0 &&  answers.size()!=0) {
-            btnA.setText(answers.get(answerCounter*4).getAnswer());
-            btnB.setText(answers.get(answerCounter*4+1).getAnswer());
-            btnC.setText(answers.get(answerCounter*4+2).getAnswer());
-            btnD.setText(answers.get(answerCounter*4+3).getAnswer());
-            setCorrectAnswer(
-                    answers.get(answerCounter*4).isCorrect(),
-                    answers.get(answerCounter*4+1).isCorrect(),
-                    answers.get(answerCounter*4+2).isCorrect(),
-                    answers.get(answerCounter*4+3).isCorrect());
-        }
-    }
-    private List<Integer> populateList(){
-        List<Integer> numberQuestions= new ArrayList<>();
-        for(int i=1;i<5;i++){
-            numberQuestions.add(i);
-        }
-        return numberQuestions;
-    }
-
-
-    private int generateRandomQuestion(List<Integer> numberQuestions){
-        if(numberQuestions.size()!=0){
-            Random rand = new Random();
-            int randomIndex = rand.nextInt(numberQuestions.size());
-            numberQuestions.remove(randomIndex);
-            return randomIndex;
-        }
-       return -1;
-    }
-    private void setCorrectAnswer(boolean first,boolean second,boolean third,boolean fourth){
-        if(first){
-            correctAnswer = "A";
-        }
-        if(second){
-            correctAnswer = "B";
-        }
-        if(third){
-            correctAnswer = "C";
-        }
-        if(fourth){
-            correctAnswer = "D";
-        }
-    }
-
-    private void seteazaPeBune(List<Question> questions) {
-        //int random = generateRandomQuestion(questionsForRandom);
-        Random rand = new Random();
-
-        //if(random!=-1) {
-            if (questions.size() != 0) {
-                int random = rand.nextInt(questions.size());
-                Log.d("random", random + "");
-                Log.d("dimensiune lista intregi",questionsForRandom.size()+"");
-                question.setText(questions.get(random).getQuestion());
-                questions.remove(random);
-                Log.d("dimensiune lista",questions.size()+"");
-
-            }
-        //}
-    }
-    //lista de raspunsuri questionId Id generat
 
     private void readQuestionData(final FirebaseCallback firebaseCallback){
         rootNode = FirebaseDatabase.getInstance();
@@ -215,96 +120,102 @@ public class StartActivity extends AppCompatActivity {
         });
     }
 
-    public void clicked(View view) {
-        if(touchDisabled == true){
-            return;
-        }else{
-            //linie stearsa si inlocuita
-            touchDisabled = true;
-
-
-        }
-        switch(view.getId()){
-            case R.id.varA:
-                userAnswer = "A";
-                break;
-            case R.id.varB:
-                userAnswer = "B";
-                break;
-            case R.id.varC:
-                userAnswer = "C";
-                break;
-            case R.id.varD:
-                userAnswer = "D";
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + view.getId());
-        }
-
-        //Aici va veni comparat cu raspunsul corect din baza de date.
-        if(userAnswer.equals(correctAnswer)){
-            answerCheck = true;
-           // question.setText("Corect Answer!");
-            view.setBackgroundColor(Color.GREEN);
-            answerCounter++;
-            if(answerCounter == 10){
-                questionCounter.setText("Ai castigat!");
-
-            }
-
-        }
-        else{
-            answerCheck = false;
-            question.setText("Wrong Answer!");
-            view.setBackgroundColor(Color.RED);
-
-        }
-
-        //linie stearsa
-        voiceButtonDisabled = true;
-
-        delay(3000);
-
-    }
-
-    private void delay(int delay) {
-        new Handler().postDelayed(new Runnable(){
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void setTextViewWithQuestionAndAnswers(){
+     Log.d("apeluri","ma apelez"+answerCounter +"dimensiune lista" +questions.size());
+        readQuestionData(new FirebaseCallback() {
             @Override
-            public void run(){
-                if(answerCounter == 10){
-                    finishAndRemoveTask();
-                }
-                if(!answerCheck) {
-                    finishAndRemoveTask();
+            public void onCallback(List<Question> questions) {
+                seteazaIntrebare(questions);
+            }
+            @Override
+            public void onCallbackAnswers(List<Answer> answers) {
 
-                }
-
-                btnA.setBackgroundColor(standardButtonColor);
-                btnB.setBackgroundColor(standardButtonColor);
-                btnC.setBackgroundColor(standardButtonColor);
-                btnD.setBackgroundColor(standardButtonColor);
-                questionCounter.setText("Intrebarea " + answerCounter + " din 10");
-
-                //setTextViewWithQuestionAndAnswers();
-                seteazaPeBune(questions);
-                seteazaRaspunsuri(answers);
-                setTouch(false);
-                voiceButton = null;
-                voiceButtonDisabled = false;
-
+            }
+        });
+        readAnswersData(new FirebaseCallback() {
+            @Override
+            public void onCallback(List<Question> questions) {
 
             }
 
-        }, delay);
+            @Override
+            public void onCallbackAnswers(List<Answer> answers) {
+                Log.d("size",answers.size()+"");
+                seteazaRaspunsuri(answers);
+            }
+        });
+
     }
 
-    private void setTouch(boolean value) {
-        touchDisabled = value;
+    private void seteazaIntrebare(List<Question> questions) {
+        Random rand = new Random();
+
+        if (questions.size() != 0) {
+            int random = rand.nextInt(questions.size());
+            Log.d("random", random + "");
+            currentQuestion = questions.get(random);
+            question.setText(currentQuestion.getQuestion());
+            questions.remove(random);
+            Log.d("dimensiune lista",questions.size()+"");
+
+        }
+
+    }
+
+    private void seteazaRaspunsuri(List<Answer> answers) {
+        List<Answer> currentAnswers = new ArrayList<>();
+        Random rand = new Random();
+        List<Integer> randomCurrentAnswersList = new ArrayList<>();
+        int r;
+
+        while(randomCurrentAnswersList.size() < 4){
+            r = rand.nextInt(4);
+            if(!randomCurrentAnswersList.contains(r)){
+                randomCurrentAnswersList.add(r);
+
+            }
+
+        }
+
+        if(answers.size() % 4 == 0 &&  answers.size()!=0) {
+            for (Answer answer : answers) {
+                if (answer.getQuestionId() == currentQuestion.getQuestionID()) {
+                    currentAnswers.add(answer);
+
+                }
+
+            }
+
+            btnA.setText(currentAnswers.get(randomCurrentAnswersList.get(0)).getAnswer());
+            btnB.setText(currentAnswers.get(randomCurrentAnswersList.get(1)).getAnswer());
+            btnC.setText(currentAnswers.get(randomCurrentAnswersList.get(2)).getAnswer());
+            btnD.setText(currentAnswers.get(randomCurrentAnswersList.get(3)).getAnswer());
+
+            setCorrectAnswer(
+                    currentAnswers.get(randomCurrentAnswersList.get(0)).isCorrect(),
+                    currentAnswers.get(randomCurrentAnswersList.get(1)).isCorrect(),
+                    currentAnswers.get(randomCurrentAnswersList.get(2)).isCorrect(),
+                    currentAnswers.get(randomCurrentAnswersList.get(3)).isCorrect());
+        }
+
+    }
+
+    private void setCorrectAnswer(boolean first,boolean second,boolean third,boolean fourth){
+        if(first){
+            correctAnswer = "A";
+        }
+        if(second){
+            correctAnswer = "B";
+        }
+        if(third){
+            correctAnswer = "C";
+        }
+        if(fourth){
+            correctAnswer = "D";
+        }
     }
 
     public void getSpeechInput(View view) {
-        //if sters + if-ul nou.
         if(voiceButtonDisabled == true){
             return;
 
@@ -327,7 +238,10 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-    @Override
+
+
+
+    @Override//Aici verificam daca ceea ce am rostit este un raspuns valid.
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);
 
@@ -372,6 +286,85 @@ public class StartActivity extends AppCompatActivity {
                 break;
 
         }
+    }
+
+    public void clicked(View view) {
+        if(touchDisabled == true){
+            return;
+        }else{
+            touchDisabled = true;
+
+
+        }
+        switch(view.getId()){
+            case R.id.varA:
+                userAnswer = "A";
+                break;
+            case R.id.varB:
+                userAnswer = "B";
+                break;
+            case R.id.varC:
+                userAnswer = "C";
+                break;
+            case R.id.varD:
+                userAnswer = "D";
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + view.getId());
+        }
+
+        voiceButtonDisabled = true;
+
+        if(userAnswer.equals(correctAnswer)){
+            answerCheck = true;
+            question.setText("Corect Answer!");
+            view.setBackgroundColor(Color.GREEN);
+            answerCounter++;
+            if(answerCounter == 10){
+                questionCounter.setText("Ai castigat!");
+
+            }
+
+        }
+        else{
+            answerCheck = false;
+            question.setText("Wrong Answer!");
+            view.setBackgroundColor(Color.RED);
+
+        }
+
+        delay(3000);
+
+    }
+
+    private void delay(int delay) {
+        new Handler().postDelayed(new Runnable(){
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void run(){
+                if(answerCounter == 10){
+                    finishAndRemoveTask();
+                }
+                if(!answerCheck) {
+                    finishAndRemoveTask();
+
+                }
+
+                btnA.setBackgroundColor(standardButtonColor);
+                btnB.setBackgroundColor(standardButtonColor);
+                btnC.setBackgroundColor(standardButtonColor);
+                btnD.setBackgroundColor(standardButtonColor);
+                questionCounter.setText("Intrebarea " + answerCounter + " din 10");
+                seteazaIntrebare(questions);
+                seteazaRaspunsuri(answers);
+                touchDisabled = false;
+                voiceButton = null;
+                voiceButtonDisabled = false;
+
+
+            }
+
+        }, delay);
     }
 
 }

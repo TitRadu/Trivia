@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:textSize = "20sp"
+        android:textSize = "10sp"
         android:text="Aici vom avea intrebarea curenta???"
 
         />
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="100dp"
-            android:textSize = "20sp"
+            android:textSize = "10sp"
             android:text="A"
             android:onClick="clicked"
 
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="100dp"
-            android:textSize = "20sp"
+            android:textSize = "10sp"
             android:text="B"
             android:onClick="clicked"
 
@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="100dp"
-            android:textSize = "20sp"
+            android:textSize = "10sp"
             android:text="C"
             android:onClick="clicked"
 
@@ -73,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="100dp"
-            android:textSize = "20sp"
+            android:textSize = "10sp"
             android:text="D"
             android:onClick="clicked"
 
