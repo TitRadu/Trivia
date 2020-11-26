@@ -6,13 +6,30 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".RegisterActivity">
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
-        android:onClick="registerActivity"/>
+        android:onClick="createAccount"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User name:"
+            />
+
+        <EditText
+            android:id="@+id/userNameRegInput"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -24,7 +41,7 @@
             android:text="Mail:" />
 
         <EditText
-            android:id="@+id/emailLogInput"
+            android:id="@+id/emailRegInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -41,7 +58,7 @@
             />
 
         <EditText
-            android:id="@+id/passwordLogInput"
+            android:id="@+id/passwordRegInput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textPassword"/>
@@ -49,16 +66,10 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/cancelBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Log In"
-        android:onClick="logInActivity"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Exit"
-        android:onClick="exitApp"/>
+        android:text="Cancel"
+        android:onClick="cancelRegisterActivity"/>
 
 </LinearLayout>

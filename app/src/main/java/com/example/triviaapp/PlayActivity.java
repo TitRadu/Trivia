@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class StartActivity extends AppCompatActivity {
+public class PlayActivity extends AppCompatActivity {
     String userAnswer, correctAnswer, voiceInput;
     Button btnA, btnB, btnC, btnD, voiceButton;
     TextView question, questionCounter;
@@ -44,7 +44,7 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start);
+        setContentView(R.layout.activity_play);
         setViews();
 
     }
@@ -59,7 +59,7 @@ public class StartActivity extends AppCompatActivity {
         questionCounter = findViewById(R.id.questionCounter);
         answerCounter = 1;
         standardButtonColor = Color.LTGRAY;
-        intent = new Intent(this,MainActivity.class);
+        intent = new Intent(this,PlayActivity.class);
         touchDisabled = false;
         voiceButtonDisabled = false;
         voiceButton = null;
@@ -286,6 +286,7 @@ public class StartActivity extends AppCompatActivity {
                 break;
 
         }
+
     }
 
     public void clicked(View view) {
