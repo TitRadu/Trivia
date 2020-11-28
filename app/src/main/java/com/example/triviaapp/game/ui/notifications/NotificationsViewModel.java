@@ -1,4 +1,4 @@
-package com.example.triviaapp.ui.notifications;
+package com.example.triviaapp.game.ui.notifications;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

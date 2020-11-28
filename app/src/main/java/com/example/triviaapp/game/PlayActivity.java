@@ -1,4 +1,4 @@
-package com.example.triviaapp;
+package com.example.triviaapp.game;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.triviaapp.Answer;
+import com.example.triviaapp.FirebaseCallback;
+import com.example.triviaapp.Question;
+import com.example.triviaapp.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

@@ -6,6 +6,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FirebaseHelper {
     private static FirebaseHelper firebaseHelper;
     public static DatabaseReference userDatabaseReference;
+    public static DatabaseReference rankingDatabaseReference;
 
     private FirebaseHelper(){
 
@@ -16,6 +17,7 @@ public class FirebaseHelper {
             firebaseHelper = new FirebaseHelper();
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
+            rankingDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Ranking");
 
         }
 
