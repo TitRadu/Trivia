@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.triviaapp.rank.Rank;
@@ -21,6 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseHelper firebaseHelper;
 
     private EditText userNameInput, emailInput, passwordInput;
+    private ImageView hasAnAccount;
 
 
     @Override
@@ -28,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         initializeViews();
+        listener();
 
     }
 
@@ -35,9 +38,14 @@ public class RegisterActivity extends AppCompatActivity {
         userNameInput = findViewById(R.id.userNameRegInput);
         emailInput = findViewById(R.id.emailRegInput);
         passwordInput = findViewById(R.id.passwordRegInput);
+        hasAnAccount = findViewById(R.id.im_already_have_an_account);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseHelper = FirebaseHelper.getInstance();
 
+    }
+
+    private void listener(){
+        hasAnAccount.setOnClickListener(v -> finishAndRemoveTask());
     }
 
     private boolean inputCheck(String userName, String email, String password){
