@@ -92,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             User registeredUser = new User(userName, email, password);
-                            Rank rank = new Rank(LoggedUserConstants.usersCount,userName,0);
+                            Rank rank = new Rank(userName,0);
                             firebaseHelper.userDatabaseReference.child(UUID.randomUUID().toString()).setValue(registeredUser);
                             Toast.makeText(getBaseContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
                             firebaseHelper.rankingDatabaseReference.child(UUID.randomUUID().toString()).setValue(rank);

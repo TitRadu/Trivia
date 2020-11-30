@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.R;
 
 import java.util.List;
@@ -35,8 +36,7 @@ public class RankAdapter extends RecyclerView.Adapter<RankViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull RankViewHolder holder, int position) {
         final Rank glassModel = rankList.get(position);
-        holder.setValues(glassModel.getPlace(),glassModel.getUserName(),glassModel.getPoints());
-
+        holder.setValues(position + 1,glassModel.getUserName(),glassModel.getPoints());
         holder.itemView.setOnClickListener(v -> {});
 
     }
@@ -46,4 +46,5 @@ public class RankAdapter extends RecyclerView.Adapter<RankViewHolder>{
         return rankList.size();
 
     }
+
 }

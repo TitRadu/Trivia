@@ -17,11 +17,14 @@ import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.R;
 import com.example.triviaapp.rank.Rank;
 import com.example.triviaapp.rank.RankAdapter;
+import com.example.triviaapp.rank.RankSorter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class DashboardFragment extends Fragment {
@@ -61,7 +64,7 @@ public class DashboardFragment extends Fragment {
                     LoggedUserConstants.ranksList.add(rank);
 
                 }
-
+                Collections.sort(LoggedUserConstants.ranksList,new RankSorter());
                 setRecyclerView();
 
             }

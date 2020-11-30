@@ -17,20 +17,26 @@ import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.R;
 import com.example.triviaapp.rank.Rank;
 import com.example.triviaapp.User;
+import com.example.triviaapp.rank.RankSorter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     Button signOutButton, changeUserNameButton;
 
-    TextView emailView, userNameView;
+    TextView emailView, userNameView, pointsView, placeView;
 
     EditText changeUserNameView;
+
+    List<Rank> ranksLocalList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +57,8 @@ public class HomeFragment extends Fragment {
         emailView = root.findViewById(R.id.emailView);
         userNameView = root.findViewById(R.id.userNameView);
         changeUserNameView = root.findViewById(R.id.changeUserNameView);
+        pointsView = root.findViewById(R.id.pointsView);
+        placeView = root.findViewById(R.id.placeView);
 
     }
 
@@ -78,7 +86,7 @@ public class HomeFragment extends Fragment {
                         LoggedUserConstants.loggedUserPassword = user.getPassword();
                         LoggedUserConstants.loggedUserKey = dataSnapshot1.getKey();
                         emailView.setText("Signed as " + LoggedUserConstants.loggedUserEmail);
-                        userNameView.setText(LoggedUserConstants.loggedUserName);
+                        userNameView.setText("User name:"+LoggedUserConstants.loggedUserName);
 
                     }
 
@@ -92,6 +100,7 @@ public class HomeFragment extends Fragment {
                 Toast.makeText(getContext(), "User name not found!", Toast.LENGTH_SHORT).show();
 
             }
+
         });
 
         FirebaseHelper.rankingDatabaseReference.addValueEventListener(new ValueEventListener() {
@@ -99,16 +108,29 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
+                ranksLocalList = new ArrayList<>();
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                     Rank rank = dataSnapshot1.getValue(Rank.class);
+                    ranksLocalList.add(rank);
                     if(rank.getUserName().equals(LoggedUserConstants.loggedUserName)){
-                        LoggedUserConstants.loggedUserPlace = rank.getPlace();
                         LoggedUserConstants.loggedUserPoints = rank.getPoints();
                         LoggedUserConstants.loggedUserRankKey = dataSnapshot1.getKey();
+                        pointsView.setText("Points:"+LoggedUserConstants.loggedUserPoints);
 
                     }
 
                 }
+
+                Collections.sort(ranksLocalList,new RankSorter());
+                for(Rank rank1 : ranksLocalList){
+                    if(rank1.getUserName().equals(LoggedUserConstants.loggedUserName)){
+                        LoggedUserConstants.loggedUserPlace = ranksLocalList.indexOf(rank1) + 1;
+                        placeView.setText("Place:"+LoggedUserConstants.loggedUserPlace);
+
+                    }
+
+                }
+
 
             }
 
@@ -137,7 +159,6 @@ public class HomeFragment extends Fragment {
         FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
 
         map = new HashMap<>();
-        map.put("place",LoggedUserConstants.loggedUserPlace);
         map.put("userName",newUserName);
         map.put("points", LoggedUserConstants.loggedUserPoints );
         FirebaseHelper.rankingDatabaseReference.child(LoggedUserConstants.loggedUserRankKey).setValue(map);

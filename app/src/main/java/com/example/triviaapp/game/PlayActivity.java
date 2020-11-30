@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.triviaapp.Answer;
 import com.example.triviaapp.FirebaseCallback;
+import com.example.triviaapp.FirebaseHelper;
+import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.Question;
 import com.example.triviaapp.R;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -44,6 +47,7 @@ public class PlayActivity extends AppCompatActivity {
     List<Question> questions;
     List<Answer> answers;
     Question currentQuestion;
+    HashMap<String, Object> map = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -325,13 +329,22 @@ public class PlayActivity extends AppCompatActivity {
             question.setText("Corect Answer!");
             view.setBackgroundColor(Color.GREEN);
             answerCounter++;
-            if(answerCounter == 10){
+            if(answerCounter == 11){
+                map = new HashMap<>();
+                map.put("points", LoggedUserConstants.loggedUserPoints + 10);
+                map.put("userName",LoggedUserConstants.loggedUserName);
+                FirebaseHelper.rankingDatabaseReference.child(LoggedUserConstants.loggedUserRankKey).setValue(map);
+
                 questionCounter.setText("Ai castigat!");
 
             }
 
         }
         else{
+            map = new HashMap<>();
+            map.put("points", LoggedUserConstants.loggedUserPoints + answerCounter -1);
+            map.put("userName",LoggedUserConstants.loggedUserName);
+            FirebaseHelper.rankingDatabaseReference.child(LoggedUserConstants.loggedUserRankKey).setValue(map);
             answerCheck = false;
             question.setText("Wrong Answer!");
             view.setBackgroundColor(Color.RED);
@@ -347,7 +360,7 @@ public class PlayActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void run(){
-                if(answerCounter == 10){
+                if(answerCounter == 11){
                     finishAndRemoveTask();
                 }
                 if(!answerCheck) {

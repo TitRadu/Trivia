@@ -1,24 +1,14 @@
 package com.example.triviaapp.rank;
 
 public class Rank {
-    private int place;
     private String userName;
     private int points;
 
     public Rank(){}
 
-    public Rank(Integer place, String userName, int points) {
-        this.place = place;
+    public Rank(String userName, int points) {
         this.userName = userName;
         this.points = points;
-    }
-
-    public int getPlace() {
-        return place;
-    }
-
-    public void setPlace(int place) {
-        this.place = place;
     }
 
     public String getUserName() {
