@@ -114,11 +114,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-    public void  exitApp(View view){
-        finishAndRemoveTask();
-
-    }
-
     private void initializeUserNameList(){
         FirebaseHelper.userDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
