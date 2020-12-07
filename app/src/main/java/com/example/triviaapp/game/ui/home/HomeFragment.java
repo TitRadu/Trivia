@@ -95,6 +95,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void signOut() {
+        LoggedUserConstants.loggedUserPasswordUpdateVerify = false;
         firebaseAuth.signOut();
         getActivity().finishAndRemoveTask();
 
@@ -110,8 +111,20 @@ public class HomeFragment extends Fragment {
                     User user = dataSnapshot1.getValue(User.class);
                     if (user.getEmail().equals(email)) {
                         LoggedUserConstants.loggedUserName = user.getUserName();
-                        LoggedUserConstants.loggedUserPassword = user.getPassword();
                         LoggedUserConstants.loggedUserKey = dataSnapshot1.getKey();
+
+                        if(!LoggedUserConstants.loggedUserPasswordUpdateVerify)//daca nu pun asta si fac change la parola se face update in FB la infinit.
+                        if(!LoggedUserConstants.loggedUserPassword.equals("empty")) {
+                            LoggedUserConstants.loggedUserPasswordUpdateVerify = true;
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("email", LoggedUserConstants.loggedUserEmail);
+                            map.put("password", LoggedUserConstants.loggedUserPassword);
+                            map.put("userName", LoggedUserConstants.loggedUserName);
+                            FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
+
+                        }
+
+                        LoggedUserConstants.loggedUserPassword = user.getPassword();
                         emailView.setText("Signed as " + LoggedUserConstants.loggedUserEmail);
                         userNameView.setText("User name:" + LoggedUserConstants.loggedUserName);
 

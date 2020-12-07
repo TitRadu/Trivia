@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.triviaapp.game.GameActivity;
@@ -25,7 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser loggedUser;
 
-    private EditText emailInput, passwordInput;
+    private EditText emailInput, passwordInput, forgotPasswordEmailInput;
+
+    private LinearLayout forgotPasswordLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseHelper.getInstance();
         emailInput = findViewById(R.id.emailLogInput);
         passwordInput = findViewById(R.id.passwordLogInput);
+        forgotPasswordEmailInput = findViewById(R.id.forgotPasswordEmailInput);
+        forgotPasswordLayout = findViewById(R.id.forgotPasswordLayout);
         firebaseAuth = FirebaseAuth.getInstance();
 
     }
@@ -58,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean inputCheck(String email, String password){
         if(email.isEmpty()){
-            Toast.makeText(this,"Introduce a email!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Introduce an email!",Toast.LENGTH_SHORT).show();
             return false;
 
         }
@@ -94,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
+                                LoggedUserConstants.loggedUserPassword = password;
                                 Toast.makeText(getBaseContext(), "Succes!", Toast.LENGTH_SHORT).show();
                                 updateUI();
                             } else {
@@ -121,12 +128,11 @@ public class MainActivity extends AppCompatActivity {
                 // This method is called once with the initial value and NO again
                 // whenever data at this location is updated.
                 LoggedUserConstants.userNameList = new ArrayList<>();
-                LoggedUserConstants.usersCount = 0;
 
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                     User user = dataSnapshot1.getValue(User.class);
                     LoggedUserConstants.userNameList.add(user.getUserName());
-                    LoggedUserConstants.usersCount++;
+
 
                 }
 
@@ -136,6 +142,43 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 // Failed to read value
                 Toast.makeText(getApplicationContext(), "User name not found!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+    }
+
+    public void changeForgotLayoutVisibility(View view){
+        if(forgotPasswordLayout.getVisibility() == View.GONE){
+            forgotPasswordLayout.setVisibility(View.VISIBLE);
+        }else{
+            forgotPasswordLayout.setVisibility(View.GONE);
+            forgotPasswordEmailInput.getText().clear();
+
+        }
+
+    }
+
+    public void sendEmail(View view){
+        String email = forgotPasswordEmailInput.getText().toString();
+
+        if(email.isEmpty()){
+            Toast.makeText(this,"Introduce an email!",Toast.LENGTH_SHORT).show();
+            return;
+
+        }
+
+        firebaseAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "A reset-password mail was send!", Toast.LENGTH_SHORT).show();
+
+                }else{
+                    Toast.makeText(getApplicationContext(), "Incorrect mail!", Toast.LENGTH_SHORT).show();
+
+                }
 
             }
 

@@ -75,4 +75,56 @@
         android:textAlignment="center"
         android:onClick="registerActivity"/>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/im_already_have_an_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="34dp"
+            android:src="@drawable/ic_already_have_an_account"
+            android:onClick="changeForgotLayoutVisibility"/>
+
+        <LinearLayout
+            android:id="@+id/forgotPasswordLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="20dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_username"/>
+
+                <EditText
+                    android:id="@+id/forgotPasswordEmailInput"
+                    android:layout_width="match_parent"
+                    android:hint="email"
+                    android:textSize="12sp"
+                    android:textColor="#7A7A7A"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create account"
+                android:background="@drawable/ic_button_login_background"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textAlignment="center"
+                android:onClick="sendEmail" />
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>
