@@ -14,7 +14,7 @@ import com.example.triviaapp.R;
 import java.util.List;
 
 public class RankAdapter extends RecyclerView.Adapter<RankViewHolder>{
-    private List<Rank> rankList;
+    private List<User> rankList;
     private Context context;
 
     @NonNull
@@ -28,14 +28,14 @@ public class RankAdapter extends RecyclerView.Adapter<RankViewHolder>{
 
     }
 
-    public RankAdapter(List<Rank> rankList){
+    public RankAdapter(List<User> rankList){
         this.rankList = rankList;
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull RankViewHolder holder, int position) {
-        final Rank glassModel = rankList.get(position);
+        final User glassModel = rankList.get(position);
         holder.setValues(position + 1,glassModel.getUserName(),glassModel.getPoints());
         holder.itemView.setOnClickListener(v -> {});
 

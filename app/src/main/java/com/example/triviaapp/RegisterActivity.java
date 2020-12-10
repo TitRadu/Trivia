@@ -6,10 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.triviaapp.rank.Rank;
+import com.example.triviaapp.rank.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -92,11 +91,9 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            User registeredUser = new User(userName, email, password);
-                            Rank rank = new Rank(userName,0);
+                            User registeredUser = new User(email, userName, password, 0);
                             firebaseHelper.userDatabaseReference.child(UUID.randomUUID().toString()).setValue(registeredUser);
                             Toast.makeText(getBaseContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
-                            firebaseHelper.rankingDatabaseReference.child(UUID.randomUUID().toString()).setValue(rank);
 
                         } else {
                             // If sign in fails, display a message to the user.

@@ -15,17 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.R;
-import com.example.triviaapp.rank.Rank;
 import com.example.triviaapp.rank.RankAdapter;
 import com.example.triviaapp.rank.RankSorter;
+import com.example.triviaapp.rank.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 public class DashboardFragment extends Fragment {
     private RecyclerView rankListRV;
@@ -52,7 +50,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void initializeRanksList(){
-        FirebaseHelper.rankingDatabaseReference.addValueEventListener(new ValueEventListener() {
+        FirebaseHelper.userDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and NO again
@@ -60,7 +58,7 @@ public class DashboardFragment extends Fragment {
                 LoggedUserConstants.ranksList = new ArrayList<>();
 
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                    Rank rank = dataSnapshot1.getValue(Rank.class);
+                    User rank = dataSnapshot1.getValue(User.class);
                     LoggedUserConstants.ranksList.add(rank);
 
                 }

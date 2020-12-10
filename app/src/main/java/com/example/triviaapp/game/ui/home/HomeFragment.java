@@ -1,7 +1,6 @@
 package com.example.triviaapp.game.ui.home;
 
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.R;
-import com.example.triviaapp.rank.Rank;
-import com.example.triviaapp.User;
+import com.example.triviaapp.rank.User;
 import com.example.triviaapp.rank.RankSorter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,7 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 public class HomeFragment extends Fragment {
     FirebaseAuth firebaseAuth;
@@ -46,8 +43,6 @@ public class HomeFragment extends Fragment {
     EditText changeUserNameView, oldPasswordView, newPasswordView;
 
     LinearLayout userNameLayout, passwordLayout;
-
-    List<Rank> ranksLocalList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -102,15 +97,21 @@ public class HomeFragment extends Fragment {
     }
 
     private void searchLoggedUser(String email) {
-        FirebaseHelper.userDatabaseReference.addValueEventListener(new ValueEventListener() {
+        FirebaseHelper.userDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
+
+                LoggedUserConstants.ranksList = new ArrayList<>();
+
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     User user = dataSnapshot1.getValue(User.class);
+                    LoggedUserConstants.ranksList.add(user);
+
                     if (user.getEmail().equals(email)) {
                         LoggedUserConstants.loggedUserName = user.getUserName();
+                        LoggedUserConstants.loggedUserPoints = user.getPoints();
                         LoggedUserConstants.loggedUserKey = dataSnapshot1.getKey();
 
                         if(!LoggedUserConstants.loggedUserPasswordUpdateVerify)//daca nu pun asta si fac change la parola se face update in FB la infinit.
@@ -118,59 +119,35 @@ public class HomeFragment extends Fragment {
                             LoggedUserConstants.loggedUserPasswordUpdateVerify = true;
                             HashMap<String, Object> map = new HashMap<>();
                             map.put("email", LoggedUserConstants.loggedUserEmail);
-                            map.put("password", LoggedUserConstants.loggedUserPassword);
                             map.put("userName", LoggedUserConstants.loggedUserName);
+                            map.put("password", LoggedUserConstants.loggedUserPassword);
+                            map.put("points", LoggedUserConstants.loggedUserPoints);
+                            user.setPassword(LoggedUserConstants.loggedUserPassword);
+
                             FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
 
                         }
 
                         LoggedUserConstants.loggedUserPassword = user.getPassword();
+
                         emailView.setText("Signed as " + LoggedUserConstants.loggedUserEmail);
                         userNameView.setText("User name:" + LoggedUserConstants.loggedUserName);
-
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Failed to read value
-                Toast.makeText(getContext(), "User name not found!", Toast.LENGTH_SHORT).show();
-
-            }
-
-        });
-
-        FirebaseHelper.rankingDatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                ranksLocalList = new ArrayList<>();
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    Rank rank = dataSnapshot1.getValue(Rank.class);
-                    ranksLocalList.add(rank);
-                    if (rank.getUserName().equals(LoggedUserConstants.loggedUserName)) {
-                        LoggedUserConstants.loggedUserPoints = rank.getPoints();
-                        LoggedUserConstants.loggedUserRankKey = dataSnapshot1.getKey();
                         pointsView.setText("Points:" + LoggedUserConstants.loggedUserPoints);
 
+
                     }
 
                 }
 
-                Collections.sort(ranksLocalList, new RankSorter());
-                for (Rank rank1 : ranksLocalList) {
+                Collections.sort(LoggedUserConstants.ranksList, new RankSorter());
+                for (User rank1 : LoggedUserConstants.ranksList) {
                     if (rank1.getUserName().equals(LoggedUserConstants.loggedUserName)) {
-                        LoggedUserConstants.loggedUserPlace = ranksLocalList.indexOf(rank1) + 1;
+                        LoggedUserConstants.loggedUserPlace = LoggedUserConstants.ranksList.indexOf(rank1) + 1;
                         placeView.setText("Place:" + LoggedUserConstants.loggedUserPlace);
 
                     }
 
                 }
-
 
             }
 
@@ -207,14 +184,12 @@ public class HomeFragment extends Fragment {
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("email", LoggedUserConstants.loggedUserEmail);
+        map.put("userName", newUserName);
         map.put("password", LoggedUserConstants.loggedUserPassword);
-        map.put("userName", newUserName);
-        FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
-
-        map = new HashMap<>();
-        map.put("userName", newUserName);
         map.put("points", LoggedUserConstants.loggedUserPoints);
-        FirebaseHelper.rankingDatabaseReference.child(LoggedUserConstants.loggedUserRankKey).setValue(map);
+        FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
+        LoggedUserConstants.loggedUserName = newUserName;
+        userNameView.setText("User name:" + LoggedUserConstants.loggedUserName);
 
         clearUserNameInput();
 
@@ -245,9 +220,11 @@ public class HomeFragment extends Fragment {
                             if(task.isSuccessful()){
                                 HashMap<String, Object> map = new HashMap<>();
                                 map.put("email", LoggedUserConstants.loggedUserEmail);
-                                map.put("password", newPassword);
                                 map.put("userName", LoggedUserConstants.loggedUserName);
+                                map.put("password", newPassword);
+                                map.put("points", LoggedUserConstants.loggedUserPoints);
                                 FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
+                                LoggedUserConstants.loggedUserPassword = newPassword;
                                 Toast.makeText(getContext(), "Password changed successfully!", Toast.LENGTH_SHORT).show();
                                 clearPasswordInputs();
 

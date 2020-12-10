@@ -2,28 +2,17 @@ package com.example.triviaapp.game;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.example.triviaapp.FirebaseHelper;
-import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.R;
-import com.example.triviaapp.User;
 import com.example.triviaapp.game.ui.dashboard.DashboardFragment;
 import com.example.triviaapp.game.ui.home.HomeFragment;
 import com.example.triviaapp.game.ui.notifications.NotificationsFragment;
-import com.example.triviaapp.rank.Rank;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import java.util.ArrayList;
-import java.util.Comparator;
 
 public class GameActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
     private BottomNavigationView navView;

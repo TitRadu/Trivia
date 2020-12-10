@@ -331,10 +331,11 @@ public class PlayActivity extends AppCompatActivity {
             answerCounter++;
             if(answerCounter == 11){
                 map = new HashMap<>();
-                map.put("points", LoggedUserConstants.loggedUserPoints + 10);
+                map.put("email", LoggedUserConstants.loggedUserEmail);
                 map.put("userName",LoggedUserConstants.loggedUserName);
-                FirebaseHelper.rankingDatabaseReference.child(LoggedUserConstants.loggedUserRankKey).setValue(map);
-
+                map.put("password", LoggedUserConstants.loggedUserPassword);
+                map.put("points", LoggedUserConstants.loggedUserPoints + 10);
+                FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
                 questionCounter.setText("Ai castigat!");
 
             }
@@ -342,9 +343,11 @@ public class PlayActivity extends AppCompatActivity {
         }
         else{
             map = new HashMap<>();
-            map.put("points", LoggedUserConstants.loggedUserPoints + answerCounter -1);
+            map.put("email", LoggedUserConstants.loggedUserEmail);
             map.put("userName",LoggedUserConstants.loggedUserName);
-            FirebaseHelper.rankingDatabaseReference.child(LoggedUserConstants.loggedUserRankKey).setValue(map);
+            map.put("password", LoggedUserConstants.loggedUserPassword);
+            map.put("points", LoggedUserConstants.loggedUserPoints + answerCounter -1);
+            FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
             answerCheck = false;
             question.setText("Wrong Answer!");
             view.setBackgroundColor(Color.RED);

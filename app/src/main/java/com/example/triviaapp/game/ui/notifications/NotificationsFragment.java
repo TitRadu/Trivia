@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.PlayActivity;
 
@@ -42,6 +44,7 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void exit(){
+        LoggedUserConstants.loggedUserPasswordUpdateVerify = false;
         getActivity().finishAndRemoveTask();
 
     }
