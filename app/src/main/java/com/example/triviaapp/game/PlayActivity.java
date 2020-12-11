@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.Question;
 import com.example.triviaapp.R;
+import com.example.triviaapp.rank.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +39,7 @@ import java.util.Random;
 public class PlayActivity extends AppCompatActivity {
     String userAnswer, correctAnswer, voiceInput;
     Button btnA, btnB, btnC, btnD, voiceButton;
-    TextView question, questionCounter;
+    TextView question, questionCounter, timerView;
     int answerCounter, standardButtonColor;
     boolean answerCheck;
     Intent intent;
@@ -48,12 +50,16 @@ public class PlayActivity extends AppCompatActivity {
     List<Answer> answers;
     Question currentQuestion;
     HashMap<String, Object> map = new HashMap<>();
+    int totalPoints = 0;
+    int maxPoints = 100;
+    int time = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
         setViews();
+        timer();
 
     }
 
@@ -65,6 +71,7 @@ public class PlayActivity extends AppCompatActivity {
         btnD = findViewById(R.id.varD);
         question = findViewById(R.id.question);
         questionCounter = findViewById(R.id.questionCounter);
+        timerView = findViewById(R.id.timerView);
         answerCounter = 1;
         standardButtonColor = Color.LTGRAY;
         intent = new Intent(this,PlayActivity.class);
@@ -77,80 +84,86 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void readQuestionData(final FirebaseCallback firebaseCallback){
-        rootNode = FirebaseDatabase.getInstance();
-        reference = rootNode.getReference("Questions");
-        reference.addValueEventListener(new ValueEventListener() {
+    private void readQuestionData(final  FirebaseCallback firebaseCallback){
+        FirebaseHelper.questionDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(questions.isEmpty()) {
-                    for (int i = 1; i < 5   ; i++) {
-                        Question q = new Question
-                                (i, dataSnapshot.child(String.valueOf(i)).child("question").getValue(String.class));
-                        questions.add(q);
-                        Log.d("lista intrebari",questions.size()+"");
+                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                        Question question = new Question(Integer.parseInt(dataSnapshot1.getKey()),dataSnapshot1.child("question").getValue(String.class));
+                        questions.add(question);
+
 
                     }
-                    firebaseCallback.onCallback(questions);
+                    firebaseCallback.onCallbackQuestions(questions);
+
                 }
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+
         });
+
     }
 
     private void readAnswersData(final  FirebaseCallback firebaseCallback){
-        rootNode = FirebaseDatabase.getInstance();
-        reference = rootNode.getReference("Answers");
-        reference.addValueEventListener(new ValueEventListener() {
+        FirebaseHelper.answerDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(answers.isEmpty()) {
-                    for (int i = 1; i < 17; i++) {
+                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                         Answer a = new Answer
-                                (i,
-                                        dataSnapshot.child(String.valueOf(i)).child("answer").getValue(String.class),
-                                        dataSnapshot.child(String.valueOf(i)).child("correct").getValue(Boolean.class),
-                                        dataSnapshot.child(String.valueOf(i)).child("questionId").getValue(Integer.class)
+                                (Integer.parseInt(dataSnapshot1.getKey()),
+                                        dataSnapshot.child(String.valueOf(dataSnapshot1.getKey())).child("answer").getValue(String.class),
+                                        dataSnapshot.child(String.valueOf(dataSnapshot1.getKey())).child("correct").getValue(Boolean.class),
+                                        dataSnapshot.child(String.valueOf(dataSnapshot1.getKey())).child("questionId").getValue(Integer.class)
                                 );
                         answers.add(a);
-                        //Log.d("zuzu", a.getAnswer());
+
                     }
                     firebaseCallback.onCallbackAnswers(answers);
+
                 }
+
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
+
         });
+
     }
 
     public void setTextViewWithQuestionAndAnswers(){
-     Log.d("apeluri","ma apelez"+answerCounter +"dimensiune lista" +questions.size());
         readQuestionData(new FirebaseCallback() {
             @Override
-            public void onCallback(List<Question> questions) {
+            public void onCallbackQuestions(List<Question> questions) {
                 seteazaIntrebare(questions);
+
             }
+
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
 
             }
+
         });
         readAnswersData(new FirebaseCallback() {
             @Override
-            public void onCallback(List<Question> questions) {
+            public void onCallbackQuestions(List<Question> questions) {
 
             }
 
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
-                Log.d("size",answers.size()+"");
                 seteazaRaspunsuri(answers);
+
             }
+
         });
 
     }
@@ -325,6 +338,12 @@ public class PlayActivity extends AppCompatActivity {
         voiceButtonDisabled = true;
 
         if(userAnswer.equals(correctAnswer)){
+            double d = Double.parseDouble(timerView.getText().toString());
+            time = (int) d;
+            totalPoints = totalPoints + time;
+            Log.d("Punctaj Intrebare" + answerCounter,String.valueOf(time));
+            Log.d("Punctaj Total",String.valueOf(totalPoints));
+
             answerCheck = true;
             question.setText("Corect Answer!");
             view.setBackgroundColor(Color.GREEN);
@@ -334,8 +353,9 @@ public class PlayActivity extends AppCompatActivity {
                 map.put("email", LoggedUserConstants.loggedUserEmail);
                 map.put("userName",LoggedUserConstants.loggedUserName);
                 map.put("password", LoggedUserConstants.loggedUserPassword);
-                map.put("points", LoggedUserConstants.loggedUserPoints + 10);
+                map.put("points", LoggedUserConstants.loggedUserPoints + totalPoints);
                 FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
+                LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
                 questionCounter.setText("Ai castigat!");
 
             }
@@ -346,8 +366,9 @@ public class PlayActivity extends AppCompatActivity {
             map.put("email", LoggedUserConstants.loggedUserEmail);
             map.put("userName",LoggedUserConstants.loggedUserName);
             map.put("password", LoggedUserConstants.loggedUserPassword);
-            map.put("points", LoggedUserConstants.loggedUserPoints + answerCounter -1);
+            map.put("points", LoggedUserConstants.loggedUserPoints + totalPoints);
             FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
+            LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
             answerCheck = false;
             question.setText("Wrong Answer!");
             view.setBackgroundColor(Color.RED);
@@ -365,9 +386,11 @@ public class PlayActivity extends AppCompatActivity {
             public void run(){
                 if(answerCounter == 11){
                     finishAndRemoveTask();
+                    return;//Daca nu pun return atunci se va executa ce urmeaza dupa if.
                 }
                 if(!answerCheck) {
                     finishAndRemoveTask();
+                    return;
 
                 }
 
@@ -381,11 +404,46 @@ public class PlayActivity extends AppCompatActivity {
                 touchDisabled = false;
                 voiceButton = null;
                 voiceButtonDisabled = false;
-
+                timer();
 
             }
 
         }, delay);
+
+    }
+
+    private void timer(){
+        new CountDownTimer(30000, 1) {
+
+           @Override
+           public void onTick(long millisUntilFinished) {
+               if(touchDisabled){
+                   timerView.setText("You answered!");
+                   cancel();
+                   return;
+
+               }
+               timerView.setText(millisUntilFinished / 1000 + "." + millisUntilFinished % 1000);
+
+           }
+
+           @Override
+           public void onFinish() {
+               timerView.setText("Time expired!");
+               map = new HashMap<>();
+               map.put("email", LoggedUserConstants.loggedUserEmail);
+               map.put("userName",LoggedUserConstants.loggedUserName);
+               map.put("password", LoggedUserConstants.loggedUserPassword);
+               map.put("points", LoggedUserConstants.loggedUserPoints + totalPoints);
+               FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
+               LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
+               finishAndRemoveTask();
+               return;
+
+           }
+
+       }.start();
+
     }
 
 }

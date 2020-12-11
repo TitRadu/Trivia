@@ -6,6 +6,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FirebaseHelper {
     private static FirebaseHelper firebaseHelper;
     public static DatabaseReference userDatabaseReference;
+    public static DatabaseReference questionDatabaseReference;
+    public static DatabaseReference answerDatabaseReference;
 
     private FirebaseHelper(){
 
@@ -16,6 +18,8 @@ public class FirebaseHelper {
             firebaseHelper = new FirebaseHelper();
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
+            questionDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Questions");
+            answerDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Answers");
 
         }
 

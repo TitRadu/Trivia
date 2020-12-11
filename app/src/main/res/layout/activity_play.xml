@@ -9,6 +9,15 @@
     tools:context=".game.PlayActivity">
 
     <TextView
+        android:id="@+id/timerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize = "10sp"
+        android:text="Aici vom avea intrebarea curenta???"
+
+        />
+
+    <TextView
         android:id="@+id/question"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
