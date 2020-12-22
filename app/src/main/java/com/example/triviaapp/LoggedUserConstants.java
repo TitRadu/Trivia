@@ -14,6 +14,7 @@ public class LoggedUserConstants{
     public static boolean loggedUserPasswordUpdateVerify = false;
     public static List<String> userNameList = null;
     public static List<User> ranksList = null;
+    public static boolean userMicrophone = true;
 
 
 }

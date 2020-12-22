@@ -2,8 +2,12 @@ package com.example.triviaapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -24,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    public static final Integer RECORD_AUDIO = 1;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser loggedUser;
 
@@ -38,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
         initializeViews();
         initializeUserNameList();
         initializeLoggedUser();
+        verifyAudioPermission();
+
 
     }
 
@@ -183,6 +190,36 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    private void checkPermission() {
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},RECORD_AUDIO);
+
+    }
+
+    private void verifyAudioPermission(){
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
+            checkPermission();
+
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == RECORD_AUDIO && grantResults.length > 0){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "Audio record granted!", Toast.LENGTH_SHORT).show();
+
+            }else{
+                Toast.makeText(this, "Audio record denied!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
 
     }
 

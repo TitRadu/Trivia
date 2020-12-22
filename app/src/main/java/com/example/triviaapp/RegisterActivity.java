@@ -3,11 +3,13 @@ package com.example.triviaapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.triviaapp.game.GameActivity;
 import com.example.triviaapp.rank.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -94,6 +96,10 @@ public class RegisterActivity extends AppCompatActivity {
                             User registeredUser = new User(email, userName, password, 0);
                             firebaseHelper.userDatabaseReference.child(UUID.randomUUID().toString()).setValue(registeredUser);
                             Toast.makeText(getBaseContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
+                            LoggedUserConstants.loggedUserPassword = password;
+                            LoggedUserConstants.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                            Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+                            startActivity(intent);
 
                         } else {
                             // If sign in fails, display a message to the user.

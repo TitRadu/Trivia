@@ -1,12 +1,16 @@
 package com.example.triviaapp.game;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.triviaapp.Answer;
@@ -23,11 +26,9 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.Question;
 import com.example.triviaapp.R;
-import com.example.triviaapp.rank.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -37,22 +38,21 @@ import java.util.Locale;
 import java.util.Random;
 
 public class PlayActivity extends AppCompatActivity {
+
     String userAnswer, correctAnswer, voiceInput;
-    Button btnA, btnB, btnC, btnD, voiceButton;
+    Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, speakButton;
     TextView question, questionCounter, timerView;
     int answerCounter, standardButtonColor;
     boolean answerCheck;
-    Intent intent;
-    boolean touchDisabled, voiceButtonDisabled;
-    FirebaseDatabase rootNode;
-    DatabaseReference reference;
+    boolean touchDisabled;
     List<Question> questions;
     List<Answer> answers;
     Question currentQuestion;
     HashMap<String, Object> map = new HashMap<>();
     int totalPoints = 0;
-    int maxPoints = 100;
     int time = 0;
+    Intent speechIntent;
+    SpeechRecognizer speechRecognizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,9 @@ public class PlayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play);
         setViews();
         timer();
+        if(LoggedUserConstants.userMicrophone) {
+            getSpeechInput();
+        }
 
     }
 
@@ -74,13 +77,22 @@ public class PlayActivity extends AppCompatActivity {
         timerView = findViewById(R.id.timerView);
         answerCounter = 1;
         standardButtonColor = Color.LTGRAY;
-        intent = new Intent(this,PlayActivity.class);
         touchDisabled = false;
-        voiceButtonDisabled = false;
-        voiceButton = null;
+        selectedThroughVoiceOption = null;
         questions = new ArrayList<>();
         answers = new ArrayList<>();
         setTextViewWithQuestionAndAnswers();
+        if(LoggedUserConstants.userMicrophone) {
+            speakButton = findViewById(R.id.speakBtn);
+            speechInitialize();
+        }
+    }
+
+    private void speechInitialize(){
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
     }
 
@@ -236,77 +248,103 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
-    public void getSpeechInput(View view) {
-        if(voiceButtonDisabled == true){
-            return;
 
-        }else{
-            voiceButtonDisabled = true;
 
-        }
 
-        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+    private void getSpeechInput() {
+        speechInitialize();
 
-        if(intent.resolveActivity(getPackageManager()) != null){
-            startActivityForResult(intent,10);
+        speechRecognizer.startListening(speechIntent);
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle params) {
 
-        }else{
-            Toast.makeText(this,"Your device Don't Support Speech Input", Toast.LENGTH_SHORT).show();
+            }
 
-        }
+            @Override
+            public void onBeginningOfSpeech() {
+                questionCounter.setText("Salut");
+            }
+
+            @Override
+            public void onRmsChanged(float rmsdB) {
+
+            }
+
+            @Override
+            public void onBufferReceived(byte[] buffer) {
+
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+            }
+
+            @Override
+            public void onError(int error) {
+                Log.d("Speech",String.valueOf(error));
+                if(error == SpeechRecognizer.ERROR_NO_MATCH) {
+                    speechRecognizer.destroy();
+                    getSpeechInput();
+
+                }
+
+            }
+
+            @Override
+            public void onResults(Bundle results) {
+                ArrayList<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                voiceInput = result.get(0);
+                afterSpeechInput(voiceInput);
+            }
+
+            @Override
+            public void onPartialResults(Bundle partialResults) {
+
+            }
+
+            @Override
+            public void onEvent(int eventType, Bundle params) {
+
+            }
+
+        });
 
     }
 
+    private void afterSpeechInput(String voiceInput){
+            if(voiceInput.equals("a") || voiceInput.equals("A")) {
+                selectedThroughVoiceOption = btnA;
 
+            }else {
+                if(voiceInput.equals("b") || voiceInput.equals("B")){
+                    selectedThroughVoiceOption = btnB;
 
+                }else{
+                    if(voiceInput.equals("c") || voiceInput.equals("C")){
+                        selectedThroughVoiceOption = btnC;
 
-    @Override//Aici verificam daca ceea ce am rostit este un raspuns valid.
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
-
-        switch(requestCode){
-            case 10:
-                if(resultCode == RESULT_OK && data != null){
-                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    voiceInput = result.get(0);
-                    if(voiceInput.equals("a") || voiceInput.equals("A")) {
-                        voiceButton = btnA;
-
-                    }else {
-                        if(voiceInput.equals("b") || voiceInput.equals("B")){
-                            voiceButton = btnB;
+                    }else{
+                        if(voiceInput.equals("d") || voiceInput.equals("D")){
+                            selectedThroughVoiceOption = btnD;
 
                         }else{
-                            if(voiceInput.equals("c") || voiceInput.equals("C")){
-                                voiceButton = btnC;
-
-                            }else{
-                                if(voiceInput.equals("d") || voiceInput.equals("D")){
-                                    voiceButton = btnD;
-
-                                }else{
-                                    Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
-                                    //linie stearsa
-                                    voiceButtonDisabled = false;
-                                    return;
-                                }
+                            Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
+                            if(LoggedUserConstants.userMicrophone) {
+                                speechRecognizer.destroy();
+                                getSpeechInput();
                             }
-
+                            return;
                         }
 
                     }
 
-                    clicked(voiceButton);
-
-                }else {
-                    voiceButtonDisabled = false;
-
                 }
-                break;
 
-        }
+            }
+
+            clicked(selectedThroughVoiceOption);
 
     }
 
@@ -315,9 +353,11 @@ public class PlayActivity extends AppCompatActivity {
             return;
         }else{
             touchDisabled = true;
-
-
+            if(LoggedUserConstants.userMicrophone) {
+                speechRecognizer.destroy();
+            }
         }
+
         switch(view.getId()){
             case R.id.varA:
                 userAnswer = "A";
@@ -334,8 +374,6 @@ public class PlayActivity extends AppCompatActivity {
             default:
                 throw new IllegalStateException("Unexpected value: " + view.getId());
         }
-
-        voiceButtonDisabled = true;
 
         if(userAnswer.equals(correctAnswer)){
             double d = Double.parseDouble(timerView.getText().toString());
@@ -380,33 +418,30 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void delay(int delay) {
-        new Handler().postDelayed(new Runnable(){
-            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-            @Override
-            public void run(){
-                if(answerCounter == 11){
-                    finishAndRemoveTask();
-                    return;//Daca nu pun return atunci se va executa ce urmeaza dupa if.
-                }
-                if(!answerCheck) {
-                    finishAndRemoveTask();
-                    return;
-
-                }
-
-                btnA.setBackgroundColor(standardButtonColor);
-                btnB.setBackgroundColor(standardButtonColor);
-                btnC.setBackgroundColor(standardButtonColor);
-                btnD.setBackgroundColor(standardButtonColor);
-                questionCounter.setText("Intrebarea " + answerCounter + " din 10");
-                seteazaIntrebare(questions);
-                seteazaRaspunsuri(answers);
-                touchDisabled = false;
-                voiceButton = null;
-                voiceButtonDisabled = false;
-                timer();
+        new Handler().postDelayed(() -> {
+            if(answerCounter == 11){
+                finishAndRemoveTask();
+                return;//Daca nu pun return atunci se va executa ce urmeaza dupa if.
+            }
+            if(!answerCheck) {
+                finishAndRemoveTask();
+                return;
 
             }
+
+            btnA.setBackgroundColor(standardButtonColor);
+            btnB.setBackgroundColor(standardButtonColor);
+            btnC.setBackgroundColor(standardButtonColor);
+            btnD.setBackgroundColor(standardButtonColor);
+            questionCounter.setText("Intrebarea " + answerCounter + " din 10");
+            seteazaIntrebare(questions);
+            seteazaRaspunsuri(answers);
+            touchDisabled = false;
+            selectedThroughVoiceOption = null;
+            if(LoggedUserConstants.userMicrophone) {
+                getSpeechInput();
+            }
+            timer();
 
         }, delay);
 

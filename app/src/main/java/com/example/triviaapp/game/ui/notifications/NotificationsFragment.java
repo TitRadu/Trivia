@@ -15,7 +15,7 @@ import com.example.triviaapp.R;
 import com.example.triviaapp.game.PlayActivity;
 
 public class NotificationsFragment extends Fragment {
-    Button startButton, exitButton;
+    Button startButton, exitButton, microphoneButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -28,12 +28,36 @@ public class NotificationsFragment extends Fragment {
     private void initializeViews(View root){
         startButton = root.findViewById(R.id.startBtn);
         exitButton = root.findViewById(R.id.exitBtn);
+        microphoneButton = root.findViewById(R.id.microphoneBtn);
+        if(LoggedUserConstants.userMicrophone){
+            microphoneButton.setText("Turn off microphone");
+
+        }else{
+            microphoneButton.setText("Turn on microphone");
+
+
+        }
 
     }
 
     private void setOnClickListeners(){
         startButton.setOnClickListener((v) -> {openPlayActivity();});
         exitButton.setOnClickListener((v) -> {exit();});
+        microphoneButton.setOnClickListener((v) -> {microphoneStatus();});
+
+    }
+
+    private void microphoneStatus(){
+        if(LoggedUserConstants.userMicrophone){
+            LoggedUserConstants.userMicrophone = false;
+            microphoneButton.setText("Turn on microphone");
+
+        }else{
+            LoggedUserConstants.userMicrophone = true;
+            microphoneButton.setText("Turn off microphone");
+
+
+        }
 
     }
 
