@@ -317,37 +317,31 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void afterSpeechInput(String voiceInput){
-            if(voiceInput.equals("a") || voiceInput.equals("A")) {
-                selectedThroughVoiceOption = btnA;
-
-            }else {
-                if(voiceInput.equals("b") || voiceInput.equals("B")){
-                    selectedThroughVoiceOption = btnB;
-
-                }else{
-                    if(voiceInput.equals("c") || voiceInput.equals("C")){
-                        selectedThroughVoiceOption = btnC;
-
-                    }else{
-                        if(voiceInput.equals("d") || voiceInput.equals("D")){
-                            selectedThroughVoiceOption = btnD;
-
-                        }else{
-                            Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
-                            if(LoggedUserConstants.userMicrophone) {
-                                speechRecognizer.destroy();
-                                getSpeechInput();
-                            }
-                            return;
-                        }
-
-                    }
-
+        switch (voiceInput) {
+            case "A":
+            case "a":
+                selectedThroughVoiceOption=btnA;
+                break;
+            case "B":
+            case "b":
+                selectedThroughVoiceOption=btnB;
+                break;
+            case "C":
+            case "c":
+                selectedThroughVoiceOption=btnC;
+                break;
+            case "D":
+            case "d":
+                selectedThroughVoiceOption=btnD;
+                break;
+            default:
+                Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
+                if(LoggedUserConstants.userMicrophone) {
+                    speechRecognizer.destroy();
+                    getSpeechInput();
                 }
-
-            }
-
-            clicked(selectedThroughVoiceOption);
+        }
+        clicked(selectedThroughVoiceOption);
 
     }
 
