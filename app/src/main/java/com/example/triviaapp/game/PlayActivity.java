@@ -1,10 +1,7 @@
 package com.example.triviaapp.game;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -14,6 +11,7 @@ import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +38,7 @@ import java.util.Random;
 public class PlayActivity extends AppCompatActivity {
 
     String userAnswer, correctAnswer, voiceInput;
-    Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, speakButton;
+    Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, speakButton, nextQuestionButton;
     TextView question, questionCounter, timerView;
     int answerCounter, standardButtonColor;
     boolean answerCheck;
@@ -53,6 +51,7 @@ public class PlayActivity extends AppCompatActivity {
     int time = 0;
     Intent speechIntent;
     SpeechRecognizer speechRecognizer;
+    LinearLayout firstLineButtonsLayout, secondLineButtonsLayout, microphoneLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +80,10 @@ public class PlayActivity extends AppCompatActivity {
         selectedThroughVoiceOption = null;
         questions = new ArrayList<>();
         answers = new ArrayList<>();
+        firstLineButtonsLayout = findViewById(R.id.firstLineButtonsLayout);
+        secondLineButtonsLayout = findViewById(R.id.secondLineButtonsLayout);
+        microphoneLayout = findViewById(R.id.microphoneLayout);
+        nextQuestionButton = findViewById(R.id.nextQuestionButton);
         setTextViewWithQuestionAndAnswers();
         if(LoggedUserConstants.userMicrophone) {
             speakButton = findViewById(R.id.speakBtn);
@@ -349,7 +352,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void clicked(View view) {
-        if(touchDisabled == true){
+        if(touchDisabled){
             return;
         }else{
             touchDisabled = true;
@@ -428,20 +431,7 @@ public class PlayActivity extends AppCompatActivity {
                 return;
 
             }
-
-            btnA.setBackgroundColor(standardButtonColor);
-            btnB.setBackgroundColor(standardButtonColor);
-            btnC.setBackgroundColor(standardButtonColor);
-            btnD.setBackgroundColor(standardButtonColor);
-            questionCounter.setText("Intrebarea " + answerCounter + " din 10");
-            seteazaIntrebare(questions);
-            seteazaRaspunsuri(answers);
-            touchDisabled = false;
-            selectedThroughVoiceOption = null;
-            if(LoggedUserConstants.userMicrophone) {
-                getSpeechInput();
-            }
-            timer();
+            hideQuestionSetup();
 
         }, delay);
 
@@ -478,6 +468,46 @@ public class PlayActivity extends AppCompatActivity {
            }
 
        }.start();
+
+    }
+
+    private void hideQuestionSetup(){
+        timerView.setVisibility(View.GONE);
+        question.setVisibility(View.GONE);
+        firstLineButtonsLayout.setVisibility(View.GONE);
+        secondLineButtonsLayout.setVisibility(View.GONE);
+        microphoneLayout.setVisibility(View.GONE);
+        nextQuestionButton.setVisibility(View.VISIBLE);
+
+    }
+
+    private void showQuestionSetup(){
+        nextQuestionButton.setVisibility(View.GONE);
+        timerView.setVisibility(View.VISIBLE);
+        question.setVisibility(View.VISIBLE);
+        firstLineButtonsLayout.setVisibility(View.VISIBLE);
+        secondLineButtonsLayout.setVisibility(View.VISIBLE);
+        microphoneLayout.setVisibility(View.VISIBLE);
+
+
+    }
+
+    public void nextQuestionSetup(View view){
+        showQuestionSetup();
+        btnA.setBackgroundColor(standardButtonColor);
+        btnB.setBackgroundColor(standardButtonColor);
+        btnC.setBackgroundColor(standardButtonColor);
+        btnD.setBackgroundColor(standardButtonColor);
+        questionCounter.setText("Intrebarea " + answerCounter + " din 10");
+        seteazaIntrebare(questions);
+        seteazaRaspunsuri(answers);
+        touchDisabled = false;
+        selectedThroughVoiceOption = null;
+        if(LoggedUserConstants.userMicrophone) {
+            getSpeechInput();
+        }
+        timer();
+
 
     }
 
