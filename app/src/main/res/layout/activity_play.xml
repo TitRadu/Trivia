@@ -100,12 +100,12 @@
         android:layout_marginTop="25dp"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/speakBtn"
+        <TextView
+            android:id="@+id/totalScoreView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize = "20sp"
-            android:text="Speak"
+            android:text="Total score:0"
 
             />
 
@@ -122,10 +122,21 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/microphoneInGameBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Next"
+        android:visibility="gone"
+        android:onClick="microphoneStatus"
+
+        />
+
+    <Button
         android:id="@+id/nextQuestionButton"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="Next"
+        android:visibility="gone"
         android:onClick="nextQuestionSetup"
 
         />

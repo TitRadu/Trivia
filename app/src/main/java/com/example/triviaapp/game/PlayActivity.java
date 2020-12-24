@@ -38,8 +38,8 @@ import java.util.Random;
 public class PlayActivity extends AppCompatActivity {
 
     String userAnswer, correctAnswer, voiceInput;
-    Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, speakButton, nextQuestionButton;
-    TextView question, questionCounter, timerView;
+    Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, microphoneInGameButton, nextQuestionButton;
+    TextView question, questionCounter, timerView, totalScoreView;
     int answerCounter, standardButtonColor;
     boolean answerCheck;
     boolean touchDisabled;
@@ -74,6 +74,7 @@ public class PlayActivity extends AppCompatActivity {
         question = findViewById(R.id.question);
         questionCounter = findViewById(R.id.questionCounter);
         timerView = findViewById(R.id.timerView);
+        totalScoreView = findViewById(R.id.totalScoreView);
         answerCounter = 1;
         standardButtonColor = Color.LTGRAY;
         touchDisabled = false;
@@ -83,16 +84,25 @@ public class PlayActivity extends AppCompatActivity {
         firstLineButtonsLayout = findViewById(R.id.firstLineButtonsLayout);
         secondLineButtonsLayout = findViewById(R.id.secondLineButtonsLayout);
         microphoneLayout = findViewById(R.id.microphoneLayout);
+        microphoneInGameButton = findViewById(R.id.microphoneInGameBtn);
+        if(LoggedUserConstants.userMicrophone){
+            microphoneInGameButton.setText("Turn off microphone");
+
+        }else{
+            microphoneInGameButton.setText("Turn on microphone");
+
+
+        }
         nextQuestionButton = findViewById(R.id.nextQuestionButton);
         setTextViewWithQuestionAndAnswers();
         if(LoggedUserConstants.userMicrophone) {
-            speakButton = findViewById(R.id.speakBtn);
             speechInitialize();
+
         }
+
     }
 
     private void speechInitialize(){
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
@@ -251,11 +261,8 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
-
-
-
     private void getSpeechInput() {
-        speechInitialize();
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
         speechRecognizer.startListening(speechIntent);
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
@@ -299,7 +306,14 @@ public class PlayActivity extends AppCompatActivity {
             public void onResults(Bundle results) {
                 ArrayList<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 voiceInput = result.get(0);
-                afterSpeechInput(voiceInput);
+                if(nextQuestionButton.getVisibility() == View.GONE) {
+                    afterQuestionSpeechInput(voiceInput);
+
+                }else{
+                    afterNextSpeechInput(voiceInput);
+
+                }
+
             }
 
             @Override
@@ -316,7 +330,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void afterSpeechInput(String voiceInput){
+    private void afterQuestionSpeechInput(String voiceInput){
         switch (voiceInput) {
             case "A":
             case "a":
@@ -336,12 +350,27 @@ public class PlayActivity extends AppCompatActivity {
                 break;
             default:
                 Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
-                if(LoggedUserConstants.userMicrophone) {
-                    speechRecognizer.destroy();
-                    getSpeechInput();
-                }
+                speechRecognizer.destroy();
+                getSpeechInput();
+                return;
+
         }
         clicked(selectedThroughVoiceOption);
+
+    }
+
+    private void afterNextSpeechInput(String voiceInput){
+        switch (voiceInput) {
+            case "Next":
+            case "next":
+                nextQuestionButton.callOnClick();
+                break;
+            default:
+                Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
+                speechRecognizer.destroy();
+                getSpeechInput();
+
+        }
 
     }
 
@@ -376,6 +405,7 @@ public class PlayActivity extends AppCompatActivity {
             double d = Double.parseDouble(timerView.getText().toString());
             time = (int) d;
             totalPoints = totalPoints + time;
+            totalScoreView.setText("Total score:" + totalPoints);
             Log.d("Punctaj Intrebare" + answerCounter,String.valueOf(time));
             Log.d("Punctaj Total",String.valueOf(totalPoints));
 
@@ -416,16 +446,11 @@ public class PlayActivity extends AppCompatActivity {
 
     private void delay(int delay) {
         new Handler().postDelayed(() -> {
-            if(answerCounter == 11){
-                finishAndRemoveTask();
-                return;//Daca nu pun return atunci se va executa ce urmeaza dupa if.
-            }
-            if(!answerCheck) {
-                finishAndRemoveTask();
-                return;
+            hideQuestionSetup();
+            if(LoggedUserConstants.userMicrophone) {
+                getSpeechInput();
 
             }
-            hideQuestionSetup();
 
         }, delay);
 
@@ -457,11 +482,24 @@ public class PlayActivity extends AppCompatActivity {
                FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
                LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
                finishAndRemoveTask();
-               return;
 
            }
 
        }.start();
+
+    }
+
+    private boolean verifyGameState(){
+        if(answerCounter == 11){
+            finishAndRemoveTask();
+            return false;//Daca nu pun return atunci se va executa ce urmeaza dupa if.
+        }
+        if(!answerCheck) {
+            finishAndRemoveTask();
+            return false;
+
+        }
+        return true;
 
     }
 
@@ -471,11 +509,28 @@ public class PlayActivity extends AppCompatActivity {
         firstLineButtonsLayout.setVisibility(View.GONE);
         secondLineButtonsLayout.setVisibility(View.GONE);
         microphoneLayout.setVisibility(View.GONE);
+        microphoneInGameButton.setVisibility(View.VISIBLE);
         nextQuestionButton.setVisibility(View.VISIBLE);
 
     }
 
+    public void microphoneStatus(View view){
+        if(LoggedUserConstants.userMicrophone){
+            speechRecognizer.destroy();
+            LoggedUserConstants.userMicrophone = false;
+            microphoneInGameButton.setText("Turn on microphone");
+
+        }else{
+            getSpeechInput();
+            LoggedUserConstants.userMicrophone = true;
+            microphoneInGameButton.setText("Turn off microphone");
+
+        }
+
+    }
+
     private void showQuestionSetup(){
+        microphoneInGameButton.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.GONE);
         timerView.setVisibility(View.VISIBLE);
         question.setVisibility(View.VISIBLE);
@@ -487,6 +542,14 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void nextQuestionSetup(View view){
+        if(LoggedUserConstants.userMicrophone) {
+            speechRecognizer.destroy();
+
+        }
+        if(!verifyGameState()){
+            return;
+
+        }
         showQuestionSetup();
         btnA.setBackgroundColor(standardButtonColor);
         btnB.setBackgroundColor(standardButtonColor);
@@ -499,9 +562,9 @@ public class PlayActivity extends AppCompatActivity {
         selectedThroughVoiceOption = null;
         if(LoggedUserConstants.userMicrophone) {
             getSpeechInput();
+
         }
         timer();
-
 
     }
 
