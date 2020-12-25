@@ -24,6 +24,7 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.Question;
 import com.example.triviaapp.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -49,7 +50,7 @@ public class PlayActivity extends AppCompatActivity {
     HashMap<String, Object> map = new HashMap<>();
     int totalPoints = 0;
     int time = 0;
-    Intent speechIntent;
+    Intent speechIntent = null;
     SpeechRecognizer speechRecognizer;
     LinearLayout firstLineButtonsLayout, secondLineButtonsLayout, microphoneLayout;
 
@@ -249,16 +250,21 @@ public class PlayActivity extends AppCompatActivity {
     private void setCorrectAnswer(boolean first,boolean second,boolean third,boolean fourth){
         if(first){
             correctAnswer = "A";
+
         }
         if(second){
             correctAnswer = "B";
+
         }
         if(third){
             correctAnswer = "C";
+
         }
         if(fourth){
             correctAnswer = "D";
+
         }
+
     }
 
     private void getSpeechInput() {
@@ -491,10 +497,14 @@ public class PlayActivity extends AppCompatActivity {
 
     private boolean verifyGameState(){
         if(answerCounter == 11){
+            Intent intent = new Intent(this, GameActivity.class);
+            startActivity(intent);
             finishAndRemoveTask();
             return false;//Daca nu pun return atunci se va executa ce urmeaza dupa if.
         }
         if(!answerCheck) {
+            Intent intent = new Intent(this, GameActivity.class);
+            startActivity(intent);
             finishAndRemoveTask();
             return false;
 
@@ -521,6 +531,10 @@ public class PlayActivity extends AppCompatActivity {
             microphoneInGameButton.setText("Turn on microphone");
 
         }else{
+            if(speechIntent == null){
+                speechInitialize();
+
+            }
             getSpeechInput();
             LoggedUserConstants.userMicrophone = true;
             microphoneInGameButton.setText("Turn off microphone");
@@ -537,7 +551,6 @@ public class PlayActivity extends AppCompatActivity {
         firstLineButtonsLayout.setVisibility(View.VISIBLE);
         secondLineButtonsLayout.setVisibility(View.VISIBLE);
         microphoneLayout.setVisibility(View.VISIBLE);
-
 
     }
 

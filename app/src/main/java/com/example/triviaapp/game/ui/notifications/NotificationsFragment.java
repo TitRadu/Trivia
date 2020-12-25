@@ -23,6 +23,7 @@ public class NotificationsFragment extends Fragment {
         initializeViews(root);
         setOnClickListeners();
         return root;
+
     }
 
     private void initializeViews(View root){
@@ -56,7 +57,6 @@ public class NotificationsFragment extends Fragment {
             LoggedUserConstants.userMicrophone = true;
             microphoneButton.setText("Turn off microphone");
 
-
         }
 
     }
@@ -64,6 +64,7 @@ public class NotificationsFragment extends Fragment {
     public void openPlayActivity(){
         Intent intent = new Intent(getContext(), PlayActivity.class);
         startActivity(intent);
+        getActivity().finishAndRemoveTask();
 
     }
 
