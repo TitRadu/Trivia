@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TriviaApp</string>
     <string name="title_activity_game">MainActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Profile</string>
+    <string name="title_dashboard">Score</string>
+    <string name="title_notifications">Game</string>
 </resources>
