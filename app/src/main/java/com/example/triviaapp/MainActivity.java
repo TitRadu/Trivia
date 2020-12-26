@@ -7,8 +7,10 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initializeViews();
         initializeUserNameList();
+        initializeMicrophoneStatus();
         initializeLoggedUser();
         verifyAudioPermission();
 
@@ -218,6 +221,24 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Audio record denied!", Toast.LENGTH_SHORT).show();
 
             }
+
+        }
+
+    }
+
+    private void initializeMicrophoneStatus(){
+        String key = "mic";
+        SharedPreferences prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
+        String data = prefs.getString(key,"Key not found!");
+        if(data.equals("Key not found!")){
+            data = "true";
+            SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+            editor.putString(key,data);
+            editor.apply();
+            LoggedUserConstants.userMicrophone = true;
+
+        }else {
+            LoggedUserConstants.userMicrophone = data.equals("true");
 
         }
 

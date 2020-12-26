@@ -1,6 +1,7 @@
 package com.example.triviaapp.game;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -452,6 +453,13 @@ public class PlayActivity extends AppCompatActivity {
 
     private void delay(int delay) {
         new Handler().postDelayed(() -> {
+            if(!answerCheck) {
+                Intent intent = new Intent(this, GameActivity.class);
+                startActivity(intent);
+                finishAndRemoveTask();
+                return;
+
+            }
             hideQuestionSetup();
             if(LoggedUserConstants.userMicrophone) {
                 getSpeechInput();
@@ -500,15 +508,9 @@ public class PlayActivity extends AppCompatActivity {
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
             finishAndRemoveTask();
-            return false;//Daca nu pun return atunci se va executa ce urmeaza dupa if.
-        }
-        if(!answerCheck) {
-            Intent intent = new Intent(this, GameActivity.class);
-            startActivity(intent);
-            finishAndRemoveTask();
             return false;
-
         }
+
         return true;
 
     }
@@ -525,10 +527,12 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void microphoneStatus(View view){
+        SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
         if(LoggedUserConstants.userMicrophone){
             speechRecognizer.destroy();
             LoggedUserConstants.userMicrophone = false;
             microphoneInGameButton.setText("Turn on microphone");
+            editor.putString("mic", "false");
 
         }else{
             if(speechIntent == null){
@@ -538,8 +542,11 @@ public class PlayActivity extends AppCompatActivity {
             getSpeechInput();
             LoggedUserConstants.userMicrophone = true;
             microphoneInGameButton.setText("Turn off microphone");
+            editor.putString("mic", "true");
 
         }
+
+        editor.apply();
 
     }
 

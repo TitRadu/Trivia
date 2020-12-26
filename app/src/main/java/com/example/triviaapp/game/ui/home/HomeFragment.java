@@ -114,7 +114,7 @@ public class HomeFragment extends Fragment {
                         LoggedUserConstants.loggedUserPoints = user.getPoints();
                         LoggedUserConstants.loggedUserKey = dataSnapshot1.getKey();
 
-                        if(!LoggedUserConstants.loggedUserPasswordUpdateVerify)//daca nu pun asta si fac change la parola se face update in FB la infinit.
+                        if(!LoggedUserConstants.loggedUserPasswordUpdateVerify)
                         if(!LoggedUserConstants.loggedUserPassword.equals("empty")) {
                             LoggedUserConstants.loggedUserPasswordUpdateVerify = true;
                             HashMap<String, Object> map = new HashMap<>();

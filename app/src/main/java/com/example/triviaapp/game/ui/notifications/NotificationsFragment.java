@@ -1,6 +1,8 @@
 package com.example.triviaapp.game.ui.notifications;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.PlayActivity;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class NotificationsFragment extends Fragment {
     Button startButton, exitButton, microphoneButton;
@@ -49,15 +53,19 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void microphoneStatus(){
-        if(LoggedUserConstants.userMicrophone){
+        SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+        if(LoggedUserConstants.userMicrophone) {
             LoggedUserConstants.userMicrophone = false;
             microphoneButton.setText("Turn on microphone");
+            editor.putString("mic", "false");
 
         }else{
             LoggedUserConstants.userMicrophone = true;
             microphoneButton.setText("Turn off microphone");
+            editor.putString("mic", "true");
 
         }
+        editor.apply();
 
     }
 
