@@ -4,139 +4,130 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context=".game.ui.home.HomeFragment">
-
-    <TextView
-        android:id="@+id/emailView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:layout_height="250dp"
+        android:background="@drawable/custom_botton_design">
 
-    <TextView
-        android:id="@+id/userNameView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        <ImageView
+            android:id="@+id/signOutBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:alpha="0.7"
+            android:src="@drawable/ic_log_out" />
 
-    <TextView
-        android:id="@+id/pointsView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="20sp" />
-    <TextView
-        android:id="@+id/placeView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textSize="20sp" />
-    <Button
-        android:id="@+id/signOutBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign Out" />
+        <EditText
+            android:id="@+id/userNameView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:includeFontPadding="false"
+            android:text="Username"
+            android:textColor="#000000"
+            android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/changeUserNameShowBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Change User Name" />
-
+        <TextView
+            android:id="@+id/emailView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/userNameView"
+            android:layout_marginLeft="12dp"
+            android:includeFontPadding="false"
+            android:text="Email"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+    </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/userNameLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_marginTop="-100dp"
+        android:orientation="horizontal"
+        android:padding="20dp">
 
-        <EditText
-            android:id="@+id/changeUserNameView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:hint="username"/>
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="0dp"
+            android:layout_height="125dp"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
 
-        <LinearLayout android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:orientation="horizontal">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="5dp">
 
-            <Button
-                android:id="@+id/changeUserNameBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change" />
+                <TextView
+                    android:id="@+id/placeView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:includeFontPadding="false"
+                    android:text="Place"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
+                <TextView
+                    android:id="@+id/pointsView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/placeView"
+                    android:layout_centerHorizontal="true"
+                    android:includeFontPadding="false"
+                    android:text="Points"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/cancelChangeUserNameBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cancel" />
+            </RelativeLayout>
 
-
-
-        </LinearLayout>
-
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/changePasswordShowBtn"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/tv_change_password"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Change Password" />
+        android:gravity="center"
+        android:textColor="#009EFD"
+        android:text="Change password" />
 
-
-    <LinearLayout
-        android:id="@+id/passwordLayout"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/oldPasswordView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:hint="old password"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:visibility="gone" />
 
-        <EditText
-            android:id="@+id/oldPasswordView"
+    <EditText
+        android:id="@+id/newPasswordView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="new password"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <Button
+            android:id="@+id/btn_save_user_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:hint="old password"/>
-
-
-        <EditText
-            android:id="@+id/newPasswordView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:hint="new password"/>
-
-        <LinearLayout android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/changePasswordBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change" />
-
-
-            <Button
-                android:id="@+id/cancelChangePasswordBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cancel" />
-
-
-
-        </LinearLayout>
-
-
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="end"
+            android:background="@drawable/custom_botton_design"
+            android:visibility="gone"
+            android:text="SAVE" />
+    </RelativeLayout>
 </LinearLayout>

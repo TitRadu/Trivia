@@ -2,11 +2,13 @@ package com.example.triviaapp.game.ui.home;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,13 +38,15 @@ import java.util.HashMap;
 public class HomeFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
-    Button signOutButton, changeUserNameShowButton,  changeUserNameButton, cancelChangeUserNameButton, changePasswordShowButton, changePasswordButton, cancelChangePasswordButton;
+    ImageView signOutButton;
 
-    TextView emailView, userNameView, pointsView, placeView;
+    TextView emailView, pointsView, placeView,changePassword;
 
-    EditText changeUserNameView, oldPasswordView, newPasswordView;
+    EditText userNameView, oldPasswordView, newPasswordView;
 
-    LinearLayout userNameLayout, passwordLayout;
+    Button btn_save_user_profile;
+    private boolean isUsernameModifyed, isPasswodModified;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +59,17 @@ public class HomeFragment extends Fragment {
         return root;
 
     }
-
+    public void setVisibilitySaveBtn(boolean isVisible){
+        if(isVisible){
+            btn_save_user_profile.setVisibility(View.VISIBLE);
+        }else{
+            btn_save_user_profile.setVisibility(View.GONE);
+        }
+    }
+    public void setVisibilityTvPasswod(){
+        oldPasswordView.setVisibility(View.VISIBLE);
+        newPasswordView.setVisibility(View.VISIBLE);
+    }
     private void initializeViews(View root) {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
@@ -64,36 +78,43 @@ public class HomeFragment extends Fragment {
         placeView = root.findViewById(R.id.placeView);
         signOutButton = root.findViewById(R.id.signOutBtn);
         userNameView = root.findViewById(R.id.userNameView);
-        userNameLayout = root.findViewById(R.id.userNameLayout);
-        changeUserNameView = root.findViewById(R.id.changeUserNameView);
-        changeUserNameButton = root.findViewById(R.id.changeUserNameBtn);
-        changeUserNameShowButton = root.findViewById(R.id.changeUserNameShowBtn);
-        cancelChangeUserNameButton = root.findViewById(R.id.cancelChangeUserNameBtn);
-        passwordLayout = root.findViewById(R.id.passwordLayout);
         oldPasswordView = root.findViewById(R.id.oldPasswordView);
         newPasswordView = root.findViewById(R.id.newPasswordView);
-        changePasswordButton = root.findViewById(R.id.changePasswordBtn);
-        changePasswordShowButton = root.findViewById(R.id.changePasswordShowBtn);
-        cancelChangePasswordButton = root.findViewById(R.id.cancelChangePasswordBtn);
+        btn_save_user_profile=root.findViewById(R.id.btn_save_user_profile);
+        changePassword=root.findViewById(R.id.tv_change_password);
 
     }
 
     private void setOnClickListeners() {
         signOutButton.setOnClickListener((v) -> signOut());
-        changeUserNameButton.setOnClickListener((v) -> updateUserName(changeUserNameView.getText().toString()));
-        changeUserNameShowButton.setOnClickListener((v) -> userNameLayout.setVisibility(View.VISIBLE));
-        cancelChangeUserNameButton.setOnClickListener((v) -> clearUserNameInput());
-        changePasswordButton.setOnClickListener((v) -> updatePassword(oldPasswordView.getText().toString(), newPasswordView.getText().toString()));
-        changePasswordShowButton.setOnClickListener((v) -> passwordLayout.setVisibility(View.VISIBLE));
-        cancelChangePasswordButton.setOnClickListener((v) -> clearPasswordInputs());
+        userNameView.setOnKeyListener((v, keyCode, event) -> {
+            setVisibilitySaveBtn(true);
+            isUsernameModifyed = true;
+            return false;
+        });
+        changePassword.setOnClickListener(v -> {
+            setVisibilityTvPasswod();
+            setVisibilitySaveBtn(true);
+            isPasswodModified = true;
+        });
+        btn_save_user_profile.setOnClickListener(v -> {
+            saveData();
+        });
+    }
 
+    private void saveData() {
+        if(isPasswodModified){
+            updatePassword(oldPasswordView.getText().toString(), newPasswordView.getText().toString());
+        }
+        if(isUsernameModifyed){
+            updateUserName(userNameView.getText().toString());
+        }
     }
 
     private void signOut() {
         LoggedUserConstants.loggedUserPasswordUpdateVerify = false;
         firebaseAuth.signOut();
         getActivity().finishAndRemoveTask();
-
     }
 
     private void searchLoggedUser(String email) {
@@ -117,11 +138,7 @@ public class HomeFragment extends Fragment {
                         if(!LoggedUserConstants.loggedUserPasswordUpdateVerify)
                         if(!LoggedUserConstants.loggedUserPassword.equals("empty")) {
                             LoggedUserConstants.loggedUserPasswordUpdateVerify = true;
-                            HashMap<String, Object> map = new HashMap<>();
-                            map.put("email", LoggedUserConstants.loggedUserEmail);
-                            map.put("userName", LoggedUserConstants.loggedUserName);
-                            map.put("password", LoggedUserConstants.loggedUserPassword);
-                            map.put("points", LoggedUserConstants.loggedUserPoints);
+                            HashMap<String, Object> map = populateMap();
                             user.setPassword(LoggedUserConstants.loggedUserPassword);
 
                             FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
@@ -131,7 +148,7 @@ public class HomeFragment extends Fragment {
                         LoggedUserConstants.loggedUserPassword = user.getPassword();
 
                         emailView.setText("Signed as " + LoggedUserConstants.loggedUserEmail);
-                        userNameView.setText("User name:" + LoggedUserConstants.loggedUserName);
+                        userNameView.setText(LoggedUserConstants.loggedUserName);
                         pointsView.setText("Points:" + LoggedUserConstants.loggedUserPoints);
 
 
@@ -162,14 +179,17 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void clearUserNameInput(){
-        userNameLayout.setVisibility(View.GONE);
-        changeUserNameView.getText().clear();
-
+    private HashMap<String, Object> populateMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("email", LoggedUserConstants.loggedUserEmail);
+        map.put("userName", LoggedUserConstants.loggedUserName);
+        map.put("password", LoggedUserConstants.loggedUserPassword);
+        map.put("points", LoggedUserConstants.loggedUserPoints);
+        return map;
     }
 
+
     private void clearPasswordInputs(){
-        passwordLayout.setVisibility(View.GONE);
         oldPasswordView.getText().clear();
         newPasswordView.getText().clear();
 
@@ -181,17 +201,11 @@ public class HomeFragment extends Fragment {
             return;
 
         }
-
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("email", LoggedUserConstants.loggedUserEmail);
-        map.put("userName", newUserName);
-        map.put("password", LoggedUserConstants.loggedUserPassword);
-        map.put("points", LoggedUserConstants.loggedUserPoints);
-        FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
         LoggedUserConstants.loggedUserName = newUserName;
-        userNameView.setText("User name:" + LoggedUserConstants.loggedUserName);
+        HashMap<String, Object> map = populateMap();
+        FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
 
-        clearUserNameInput();
+        userNameView.setText("User name:" + LoggedUserConstants.loggedUserName);
 
     }
 
@@ -218,34 +232,21 @@ public class HomeFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                HashMap<String, Object> map = new HashMap<>();
-                                map.put("email", LoggedUserConstants.loggedUserEmail);
-                                map.put("userName", LoggedUserConstants.loggedUserName);
-                                map.put("password", newPassword);
-                                map.put("points", LoggedUserConstants.loggedUserPoints);
-                                FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
                                 LoggedUserConstants.loggedUserPassword = newPassword;
+                                HashMap<String, Object> map = populateMap();
+                                FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
                                 Toast.makeText(getContext(), "Password changed successfully!", Toast.LENGTH_SHORT).show();
                                 clearPasswordInputs();
-
                             }else{
                                 Toast.makeText(getContext(), "Change failed!", Toast.LENGTH_SHORT).show();
-                                return;
-
                             }
-
                         }
                     });
-
                 }else{
                     Log.d("TAG","Re-authenticate error!");
 
                 }
-
-
             }
         });
-
     }
-
 }
