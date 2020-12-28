@@ -205,7 +205,7 @@ public class HomeFragment extends Fragment {
         HashMap<String, Object> map = populateMap();
         FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
 
-        userNameView.setText("User name:" + LoggedUserConstants.loggedUserName);
+        userNameView.setText(LoggedUserConstants.loggedUserName);
 
     }
 
