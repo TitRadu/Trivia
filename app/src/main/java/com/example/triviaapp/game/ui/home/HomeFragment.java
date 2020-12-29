@@ -1,9 +1,11 @@
 package com.example.triviaapp.game.ui.home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -85,9 +87,10 @@ public class HomeFragment extends Fragment {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setOnClickListeners() {
         signOutButton.setOnClickListener((v) -> signOut());
-        userNameView.setOnKeyListener((v, keyCode, event) -> {
+        userNameView.setOnTouchListener((v, event) -> {
             setVisibilitySaveBtn(true);
             isUsernameModifyed = true;
             return false;
