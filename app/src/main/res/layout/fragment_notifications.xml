@@ -4,37 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context=".game.ui.notifications.NotificationsFragment">
 
-    <Button
-        android:id="@+id/microphoneBtn"
+    <Switch
+        android:id="@+id/sw_microphone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="Turn on Microphone" />
+        android:text="Microphone"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:checked="true"
+        android:layout_gravity="end"
+        android:switchMinWidth="56dp"
+        android:layout_marginBottom="50dp"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
 
     <Button
         android:id="@+id/startBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/custom_botton_design_corners"
+        android:layout_margin="50dp"
         android:text="Start" />
 
     <Button
         android:id="@+id/helpBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="50dp"
+        android:background="@drawable/custom_botton_design_corners"
         android:text="Help"/>
 
     <Button
         android:id="@+id/exitBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_margin="50dp"
+        android:background="@drawable/custom_botton_design_corners"
+        android:layout_gravity="center_horizontal"
         android:text="Exit"/>
+
 
 
 </LinearLayout>

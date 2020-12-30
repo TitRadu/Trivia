@@ -1,5 +1,6 @@
 package com.example.triviaapp.game.ui.notifications;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,7 +22,10 @@ import com.example.triviaapp.game.PlayActivity;
 import static android.content.Context.MODE_PRIVATE;
 
 public class NotificationsFragment extends Fragment {
-    Button startButton, exitButton, microphoneButton;
+    Button startButton, exitButton;
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    Switch switchMicropohone;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,40 +39,18 @@ public class NotificationsFragment extends Fragment {
     private void initializeViews(View root){
         startButton = root.findViewById(R.id.startBtn);
         exitButton = root.findViewById(R.id.exitBtn);
-        microphoneButton = root.findViewById(R.id.microphoneBtn);
-        if(LoggedUserConstants.userMicrophone){
-            microphoneButton.setText("Turn off microphone");
-
-        }else{
-            microphoneButton.setText("Turn on microphone");
-
-
-        }
+        switchMicropohone = root.findViewById(R.id.sw_microphone);
 
     }
 
     private void setOnClickListeners(){
         startButton.setOnClickListener((v) -> {openPlayActivity();});
         exitButton.setOnClickListener((v) -> {exit();});
-        microphoneButton.setOnClickListener((v) -> {microphoneStatus();});
-
-    }
-
-    private void microphoneStatus(){
-        SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
-        if(LoggedUserConstants.userMicrophone) {
-            LoggedUserConstants.userMicrophone = false;
-            microphoneButton.setText("Turn on microphone");
-            editor.putString("mic", "false");
-
-        }else{
-            LoggedUserConstants.userMicrophone = true;
-            microphoneButton.setText("Turn off microphone");
-            editor.putString("mic", "true");
-
-        }
-        editor.apply();
-
+        switchMicropohone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+            LoggedUserConstants.userMicrophone = isChecked;
+            editor.apply();
+        });
     }
 
     public void openPlayActivity(){
