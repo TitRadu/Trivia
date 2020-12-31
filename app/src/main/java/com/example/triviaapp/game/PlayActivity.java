@@ -25,7 +25,6 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.Question;
 import com.example.triviaapp.R;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -39,9 +38,9 @@ import java.util.Random;
 
 public class PlayActivity extends AppCompatActivity {
 
-    String userAnswer, correctAnswer, voiceInput;
+    String userAnswer, correctAnswer, voiceInput = null;
     Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, microphoneInGameButton, nextQuestionButton;
-    TextView question, questionCounter, timerView, totalScoreView;
+    TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView;
     int answerCounter, standardButtonColor;
     boolean answerCheck;
     boolean touchDisabled;
@@ -96,6 +95,9 @@ public class PlayActivity extends AppCompatActivity {
 
         }
         nextQuestionButton = findViewById(R.id.nextQuestionButton);
+        questionScoreView = findViewById(R.id.questionScoreView);
+        totalScoreNextView = findViewById(R.id.totalScoreNextView);
+
         setTextViewWithQuestionAndAnswers();
         if(LoggedUserConstants.userMicrophone) {
             speechInitialize();
@@ -391,6 +393,14 @@ public class PlayActivity extends AppCompatActivity {
             }
         }
 
+        if(voiceInput == null){
+            time = 0;
+
+        }else{
+            time = 2;
+
+        }
+
         switch(view.getId()){
             case R.id.varA:
                 userAnswer = "A";
@@ -410,7 +420,7 @@ public class PlayActivity extends AppCompatActivity {
 
         if(userAnswer.equals(correctAnswer)){
             double d = Double.parseDouble(timerView.getText().toString());
-            time = (int) d;
+            time = time + (int) d;
             totalPoints = totalPoints + time;
             totalScoreView.setText("Total score:" + totalPoints);
             Log.d("Punctaj Intrebare" + answerCounter,String.valueOf(time));
@@ -523,6 +533,10 @@ public class PlayActivity extends AppCompatActivity {
         microphoneLayout.setVisibility(View.GONE);
         microphoneInGameButton.setVisibility(View.VISIBLE);
         nextQuestionButton.setVisibility(View.VISIBLE);
+        questionScoreView.setVisibility(View.VISIBLE);
+        questionScoreView.setText("Question score:" + time);
+        totalScoreNextView.setVisibility(View.VISIBLE);
+        totalScoreNextView.setText("Total score:" + totalPoints);
 
     }
 
@@ -553,6 +567,8 @@ public class PlayActivity extends AppCompatActivity {
     private void showQuestionSetup(){
         microphoneInGameButton.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.GONE);
+        questionScoreView.setVisibility(View.GONE);
+        totalScoreNextView.setVisibility(View.GONE);
         timerView.setVisibility(View.VISIBLE);
         question.setVisibility(View.VISIBLE);
         firstLineButtonsLayout.setVisibility(View.VISIBLE);
@@ -579,6 +595,7 @@ public class PlayActivity extends AppCompatActivity {
         seteazaIntrebare(questions);
         seteazaRaspunsuri(answers);
         touchDisabled = false;
+        voiceInput = null;
         selectedThroughVoiceOption = null;
         if(LoggedUserConstants.userMicrophone) {
             getSpeechInput();

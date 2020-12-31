@@ -141,4 +141,24 @@
 
         />
 
+    <TextView
+        android:id="@+id/questionScoreView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Question points:"
+        android:textSize = "20sp"
+        android:visibility="gone"
+
+        />
+
+    <TextView
+        android:id="@+id/totalScoreNextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total points:"
+        android:textSize = "20sp"
+        android:visibility="gone"
+
+        />
+
 </LinearLayout>
