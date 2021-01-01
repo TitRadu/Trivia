@@ -86,14 +86,7 @@ public class PlayActivity extends AppCompatActivity {
         secondLineButtonsLayout = findViewById(R.id.secondLineButtonsLayout);
         microphoneLayout = findViewById(R.id.microphoneLayout);
         microphoneInGameButton = findViewById(R.id.microphoneInGameBtn);
-        if(LoggedUserConstants.userMicrophone){
-            microphoneInGameButton.setText("Turn off microphone");
-
-        }else{
-            microphoneInGameButton.setText("Turn on microphone");
-
-
-        }
+        setTextForBtnMicrophone();
         nextQuestionButton = findViewById(R.id.nextQuestionButton);
         questionScoreView = findViewById(R.id.questionScoreView);
         totalScoreNextView = findViewById(R.id.totalScoreNextView);
@@ -104,6 +97,17 @@ public class PlayActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void setTextForBtnMicrophone() {
+        if(LoggedUserConstants.userMicrophone){
+            microphoneInGameButton.setText("Turn off microphone");
+
+        }else{
+            microphoneInGameButton.setText("Turn on microphone");
+
+
+        }
     }
 
     private void speechInitialize(){
@@ -392,7 +396,36 @@ public class PlayActivity extends AppCompatActivity {
                 speechRecognizer.destroy();
             }
         }
+        setExtraTimeForMicrophone();
+        getUserAnswer(view);
+        if(userAnswer.equals(correctAnswer)){
+            calculatePoints();
+            answerCheck = true;
+            question.setText("Corect Answer!");
+            view.setBackgroundColor(Color.GREEN);
+            answerCounter++;
+            if(answerCounter == 11){
+                sendPointsToDatabase(questionCounter, "Ai castigat!");
+            }
+        }
+        else{
+            sendPointsToDatabase(question, "Wrong Answer!");
+            answerCheck = false;
+            view.setBackgroundColor(Color.RED);
+        }
+        delay(3000);
+    }
 
+    private void calculatePoints() {
+        double d = Double.parseDouble(timerView.getText().toString());
+        time = time + (int) d;
+        totalPoints = totalPoints + time;
+        totalScoreView.setText("Total score:" + totalPoints);
+        Log.d("Punctaj Intrebare" + answerCounter,String.valueOf(time));
+        Log.d("Punctaj Total",String.valueOf(totalPoints));
+    }
+
+    private void setExtraTimeForMicrophone() {
         if(voiceInput == null){
             time = 0;
 
@@ -400,7 +433,9 @@ public class PlayActivity extends AppCompatActivity {
             time = 2;
 
         }
+    }
 
+    private void getUserAnswer(View view) {
         switch(view.getId()){
             case R.id.varA:
                 userAnswer = "A";
@@ -417,48 +452,21 @@ public class PlayActivity extends AppCompatActivity {
             default:
                 throw new IllegalStateException("Unexpected value: " + view.getId());
         }
+    }
 
-        if(userAnswer.equals(correctAnswer)){
-            double d = Double.parseDouble(timerView.getText().toString());
-            time = time + (int) d;
-            totalPoints = totalPoints + time;
-            totalScoreView.setText("Total score:" + totalPoints);
-            Log.d("Punctaj Intrebare" + answerCounter,String.valueOf(time));
-            Log.d("Punctaj Total",String.valueOf(totalPoints));
+    private void sendPointsToDatabase(TextView question, String s) {
+        LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
+        populateMapWithUserData();
+        FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
+        question.setText(s);
+    }
 
-            answerCheck = true;
-            question.setText("Corect Answer!");
-            view.setBackgroundColor(Color.GREEN);
-            answerCounter++;
-            if(answerCounter == 11){
-                map = new HashMap<>();
-                map.put("email", LoggedUserConstants.loggedUserEmail);
-                map.put("userName",LoggedUserConstants.loggedUserName);
-                map.put("password", LoggedUserConstants.loggedUserPassword);
-                map.put("points", LoggedUserConstants.loggedUserPoints + totalPoints);
-                FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
-                LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
-                questionCounter.setText("Ai castigat!");
-
-            }
-
-        }
-        else{
-            map = new HashMap<>();
-            map.put("email", LoggedUserConstants.loggedUserEmail);
-            map.put("userName",LoggedUserConstants.loggedUserName);
-            map.put("password", LoggedUserConstants.loggedUserPassword);
-            map.put("points", LoggedUserConstants.loggedUserPoints + totalPoints);
-            FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
-            LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
-            answerCheck = false;
-            question.setText("Wrong Answer!");
-            view.setBackgroundColor(Color.RED);
-
-        }
-
-        delay(3000);
-
+    private void populateMapWithUserData() {
+        map = new HashMap<>();
+        map.put("email", LoggedUserConstants.loggedUserEmail);
+        map.put("userName", LoggedUserConstants.loggedUserName);
+        map.put("password", LoggedUserConstants.loggedUserPassword);
+        map.put("points", LoggedUserConstants.loggedUserPoints + totalPoints);
     }
 
     private void delay(int delay) {
@@ -498,11 +506,7 @@ public class PlayActivity extends AppCompatActivity {
            @Override
            public void onFinish() {
                timerView.setText("Time expired!");
-               map = new HashMap<>();
-               map.put("email", LoggedUserConstants.loggedUserEmail);
-               map.put("userName",LoggedUserConstants.loggedUserName);
-               map.put("password", LoggedUserConstants.loggedUserPassword);
-               map.put("points", LoggedUserConstants.loggedUserPoints + totalPoints);
+               populateMapWithUserData();
                FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
                LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
                finishAndRemoveTask();
@@ -513,15 +517,14 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private boolean verifyGameState(){
+    private boolean isGameFinished(){
         if(answerCounter == 11){
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
             finishAndRemoveTask();
-            return false;
+            return true;
         }
-
-        return true;
+        return false;
 
     }
 
@@ -580,11 +583,9 @@ public class PlayActivity extends AppCompatActivity {
     public void nextQuestionSetup(View view){
         if(LoggedUserConstants.userMicrophone) {
             speechRecognizer.destroy();
-
         }
-        if(!verifyGameState()){
+        if(isGameFinished()){
             return;
-
         }
         showQuestionSetup();
         btnA.setBackgroundColor(standardButtonColor);
