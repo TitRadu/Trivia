@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,10 +39,12 @@ import java.util.Random;
 
 public class PlayActivity extends AppCompatActivity {
 
+    public static final int TOTAL_QUESTION_TO_WIN_GAME = 11;
     String userAnswer, correctAnswer, voiceInput = null;
     Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, microphoneInGameButton, nextQuestionButton;
     TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView;
-    int answerCounter, standardButtonColor;
+    ProgressBar progressBar;
+    int answerCounter;
     boolean answerCheck;
     boolean touchDisabled;
     List<Question> questions;
@@ -50,9 +53,10 @@ public class PlayActivity extends AppCompatActivity {
     HashMap<String, Object> map = new HashMap<>();
     int totalPoints = 0;
     int time = 0;
+    int progressBarPercent=0;
     Intent speechIntent = null;
     SpeechRecognizer speechRecognizer;
-    LinearLayout firstLineButtonsLayout, secondLineButtonsLayout, microphoneLayout;
+    LinearLayout firstLineButtonsLayout, microphoneLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,19 +81,19 @@ public class PlayActivity extends AppCompatActivity {
         timerView = findViewById(R.id.timerView);
         totalScoreView = findViewById(R.id.totalScoreView);
         answerCounter = 1;
-        standardButtonColor = Color.LTGRAY;
         touchDisabled = false;
         selectedThroughVoiceOption = null;
         questions = new ArrayList<>();
         answers = new ArrayList<>();
         firstLineButtonsLayout = findViewById(R.id.firstLineButtonsLayout);
-        secondLineButtonsLayout = findViewById(R.id.secondLineButtonsLayout);
         microphoneLayout = findViewById(R.id.microphoneLayout);
         microphoneInGameButton = findViewById(R.id.microphoneInGameBtn);
         setTextForBtnMicrophone();
         nextQuestionButton = findViewById(R.id.nextQuestionButton);
         questionScoreView = findViewById(R.id.questionScoreView);
         totalScoreNextView = findViewById(R.id.totalScoreNextView);
+        progressBar = findViewById(R.id.progress_bar);
+
 
         setTextViewWithQuestionAndAnswers();
         if(LoggedUserConstants.userMicrophone) {
@@ -108,6 +112,10 @@ public class PlayActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    private void updateProgressBar(){
+         progressBar.setProgress(progressBarPercent);
     }
 
     private void speechInitialize(){
@@ -240,10 +248,10 @@ public class PlayActivity extends AppCompatActivity {
 
             }
 
-            btnA.setText(currentAnswers.get(randomCurrentAnswersList.get(0)).getAnswer());
-            btnB.setText(currentAnswers.get(randomCurrentAnswersList.get(1)).getAnswer());
-            btnC.setText(currentAnswers.get(randomCurrentAnswersList.get(2)).getAnswer());
-            btnD.setText(currentAnswers.get(randomCurrentAnswersList.get(3)).getAnswer());
+            btnA.setText("A: "+currentAnswers.get(randomCurrentAnswersList.get(0)).getAnswer());
+            btnB.setText("B: "+currentAnswers.get(randomCurrentAnswersList.get(1)).getAnswer());
+            btnC.setText("C: "+currentAnswers.get(randomCurrentAnswersList.get(2)).getAnswer());
+            btnD.setText("D: "+currentAnswers.get(randomCurrentAnswersList.get(3)).getAnswer());
 
             setCorrectAnswer(
                     currentAnswers.get(randomCurrentAnswersList.get(0)).isCorrect(),
@@ -404,11 +412,13 @@ public class PlayActivity extends AppCompatActivity {
             question.setText("Corect Answer!");
             view.setBackgroundColor(Color.GREEN);
             answerCounter++;
-            if(answerCounter == 11){
+            if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
+                LoggedUserConstants.loggedUserPoints = 2*(LoggedUserConstants.loggedUserPoints + totalPoints);
                 sendPointsToDatabase(questionCounter, "Ai castigat!");
             }
         }
         else{
+            LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
             sendPointsToDatabase(question, "Wrong Answer!");
             answerCheck = false;
             view.setBackgroundColor(Color.RED);
@@ -455,7 +465,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void sendPointsToDatabase(TextView question, String s) {
-        LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
+
         populateMapWithUserData();
         FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
         question.setText(s);
@@ -478,7 +488,10 @@ public class PlayActivity extends AppCompatActivity {
                 return;
 
             }
+            progressBarPercent = 0;
+            progressBar.setProgress(progressBarPercent);
             hideQuestionSetup();
+            setTextAfterAnswerQuestion();
             if(LoggedUserConstants.userMicrophone) {
                 getSpeechInput();
 
@@ -487,7 +500,7 @@ public class PlayActivity extends AppCompatActivity {
         }, delay);
 
     }
-
+    long previusTimerValue = 0;
     private void timer(){
         new CountDownTimer(30000, 1) {
 
@@ -498,6 +511,11 @@ public class PlayActivity extends AppCompatActivity {
                    cancel();
                    return;
 
+               }
+               if(millisUntilFinished / 1000 % 3 ==0 && millisUntilFinished / 1000 != previusTimerValue){
+                   previusTimerValue = millisUntilFinished / 1000;
+                   progressBarPercent+=10;
+                   updateProgressBar();
                }
                timerView.setText(millisUntilFinished / 1000 + "." + millisUntilFinished % 1000);
 
@@ -532,14 +550,22 @@ public class PlayActivity extends AppCompatActivity {
         timerView.setVisibility(View.GONE);
         question.setVisibility(View.GONE);
         firstLineButtonsLayout.setVisibility(View.GONE);
-        secondLineButtonsLayout.setVisibility(View.GONE);
         microphoneLayout.setVisibility(View.GONE);
         microphoneInGameButton.setVisibility(View.VISIBLE);
         nextQuestionButton.setVisibility(View.VISIBLE);
         questionScoreView.setVisibility(View.VISIBLE);
-        questionScoreView.setText("Question score:" + time);
         totalScoreNextView.setVisibility(View.VISIBLE);
-        totalScoreNextView.setText("Total score:" + totalPoints);
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    private void setTextAfterAnswerQuestion(){
+        questionScoreView.setText("Question score:" + time);
+        if(answerCounter == 11){
+            totalScoreNextView.setText("Total score X 2:" + totalPoints);
+        }
+        else{
+            totalScoreNextView.setText("Total score:" + totalPoints);
+        }
 
     }
 
@@ -575,12 +601,12 @@ public class PlayActivity extends AppCompatActivity {
         timerView.setVisibility(View.VISIBLE);
         question.setVisibility(View.VISIBLE);
         firstLineButtonsLayout.setVisibility(View.VISIBLE);
-        secondLineButtonsLayout.setVisibility(View.VISIBLE);
         microphoneLayout.setVisibility(View.VISIBLE);
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     public void nextQuestionSetup(View view){
+
         if(LoggedUserConstants.userMicrophone) {
             speechRecognizer.destroy();
         }
@@ -588,10 +614,10 @@ public class PlayActivity extends AppCompatActivity {
             return;
         }
         showQuestionSetup();
-        btnA.setBackgroundColor(standardButtonColor);
-        btnB.setBackgroundColor(standardButtonColor);
-        btnC.setBackgroundColor(standardButtonColor);
-        btnD.setBackgroundColor(standardButtonColor);
+        btnA.setBackgroundResource(R.drawable.custom_botton_design_corners);
+        btnB.setBackgroundResource(R.drawable.custom_botton_design_corners);
+        btnC.setBackgroundResource(R.drawable.custom_botton_design_corners);
+        btnD.setBackgroundResource(R.drawable.custom_botton_design_corners);
         questionCounter.setText("Intrebarea " + answerCounter + " din 10");
         seteazaIntrebare(questions);
         seteazaRaspunsuri(answers);
