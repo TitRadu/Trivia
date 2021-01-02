@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -413,7 +414,7 @@ public class PlayActivity extends AppCompatActivity {
             view.setBackgroundColor(Color.GREEN);
             answerCounter++;
             if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
-                LoggedUserConstants.loggedUserPoints = 2*(LoggedUserConstants.loggedUserPoints + totalPoints);
+                LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints*2;
                 sendPointsToDatabase(questionCounter, "Ai castigat!");
             }
         }
@@ -500,8 +501,9 @@ public class PlayActivity extends AppCompatActivity {
         }, delay);
 
     }
-    long previusTimerValue = 0;
     private void timer(){
+        final long prev[]= new long[1];
+        prev[0]=0;
         new CountDownTimer(30000, 1) {
 
            @Override
@@ -512,8 +514,8 @@ public class PlayActivity extends AppCompatActivity {
                    return;
 
                }
-               if(millisUntilFinished / 1000 % 3 ==0 && millisUntilFinished / 1000 != previusTimerValue){
-                   previusTimerValue = millisUntilFinished / 1000;
+               if(millisUntilFinished / 1000 % 3 ==0 && millisUntilFinished / 1000 != prev[0]){
+                   prev[0] = millisUntilFinished / 1000;
                    progressBarPercent+=10;
                    updateProgressBar();
                }
@@ -528,6 +530,8 @@ public class PlayActivity extends AppCompatActivity {
                FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
                LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
                finishAndRemoveTask();
+               Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+               startActivity(intent);
 
            }
 
@@ -626,10 +630,8 @@ public class PlayActivity extends AppCompatActivity {
         selectedThroughVoiceOption = null;
         if(LoggedUserConstants.userMicrophone) {
             getSpeechInput();
-
         }
         timer();
-
     }
 
 }
