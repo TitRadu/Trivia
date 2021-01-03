@@ -40,6 +40,7 @@ public class NotificationsFragment extends Fragment {
         startButton = root.findViewById(R.id.startBtn);
         exitButton = root.findViewById(R.id.exitBtn);
         switchMicropohone = root.findViewById(R.id.sw_microphone);
+        switchMicropohone.setChecked(LoggedUserConstants.userMicrophone);
 
     }
 
@@ -49,6 +50,7 @@ public class NotificationsFragment extends Fragment {
         switchMicropohone.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
             LoggedUserConstants.userMicrophone = isChecked;
+            editor.putString("mic",String.valueOf(isChecked));
             editor.apply();
         });
     }

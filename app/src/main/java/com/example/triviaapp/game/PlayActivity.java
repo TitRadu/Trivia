@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +32,6 @@ import com.google.firebase.database.DatabaseError;
 
 import com.google.firebase.database.ValueEventListener;
 
-import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,8 +42,9 @@ public class PlayActivity extends AppCompatActivity {
 
     public static final int TOTAL_QUESTION_TO_WIN_GAME = 11;
     String userAnswer, correctAnswer, voiceInput = null;
-    Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, microphoneInGameButton, nextQuestionButton;
+    Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, nextQuestionButton;
     TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView;
+    Switch aSwitch;
     ProgressBar progressBar;
     int answerCounter;
     boolean answerCheck;
@@ -68,7 +69,7 @@ public class PlayActivity extends AppCompatActivity {
         if(LoggedUserConstants.userMicrophone) {
             getSpeechInput();
         }
-
+        listernerStatusMicrophone();
     }
 
     public void setViews(){
@@ -88,14 +89,11 @@ public class PlayActivity extends AppCompatActivity {
         answers = new ArrayList<>();
         firstLineButtonsLayout = findViewById(R.id.firstLineButtonsLayout);
         microphoneLayout = findViewById(R.id.microphoneLayout);
-        microphoneInGameButton = findViewById(R.id.microphoneInGameBtn);
-        setTextForBtnMicrophone();
         nextQuestionButton = findViewById(R.id.nextQuestionButton);
         questionScoreView = findViewById(R.id.questionScoreView);
         totalScoreNextView = findViewById(R.id.totalScoreNextView);
         progressBar = findViewById(R.id.progress_bar);
-
-
+        aSwitch = findViewById(R.id.sw_microphonePlay);
         setTextViewWithQuestionAndAnswers();
         if(LoggedUserConstants.userMicrophone) {
             speechInitialize();
@@ -104,16 +102,6 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setTextForBtnMicrophone() {
-        if(LoggedUserConstants.userMicrophone){
-            microphoneInGameButton.setText("Turn off microphone");
-
-        }else{
-            microphoneInGameButton.setText("Turn on microphone");
-
-
-        }
-    }
 
     private void updateProgressBar(){
          progressBar.setProgress(progressBarPercent);
@@ -442,7 +430,6 @@ public class PlayActivity extends AppCompatActivity {
 
         }else{
             time = 2;
-
         }
     }
 
@@ -555,11 +542,11 @@ public class PlayActivity extends AppCompatActivity {
         question.setVisibility(View.GONE);
         firstLineButtonsLayout.setVisibility(View.GONE);
         microphoneLayout.setVisibility(View.GONE);
-        microphoneInGameButton.setVisibility(View.VISIBLE);
         nextQuestionButton.setVisibility(View.VISIBLE);
         questionScoreView.setVisibility(View.VISIBLE);
         totalScoreNextView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
+        aSwitch.setVisibility(View.VISIBLE);
     }
 
     private void setTextAfterAnswerQuestion(){
@@ -573,32 +560,27 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    public void microphoneStatus(View view){
-        SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
-        if(LoggedUserConstants.userMicrophone){
-            speechRecognizer.destroy();
-            LoggedUserConstants.userMicrophone = false;
-            microphoneInGameButton.setText("Turn on microphone");
-            editor.putString("mic", "false");
-
-        }else{
-            if(speechIntent == null){
-                speechInitialize();
-
+    private void listernerStatusMicrophone(){
+        aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            LoggedUserConstants.userMicrophone = isChecked;
+            SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+            if(isChecked){
+                Log.d("microphone","TRUE");
+                speechRecognizer.destroy();
+            }else{
+                Log.d("microphone","FALSE");
+                if(speechIntent == null){
+                    speechInitialize();
+                }
+                getSpeechInput();
             }
-            getSpeechInput();
-            LoggedUserConstants.userMicrophone = true;
-            microphoneInGameButton.setText("Turn off microphone");
-            editor.putString("mic", "true");
-
-        }
-
-        editor.apply();
-
+            editor.putString("mic",String.valueOf(isChecked));
+            editor.apply();
+        });
     }
 
     private void showQuestionSetup(){
-        microphoneInGameButton.setVisibility(View.GONE);
+        aSwitch.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.GONE);
         questionScoreView.setVisibility(View.GONE);
         totalScoreNextView.setVisibility(View.GONE);

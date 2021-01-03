@@ -21,7 +21,7 @@
             android:textSize = "20sp"
             android:textColor="#000000"
             android:layout_gravity="center_horizontal"
-            android:text="zuzu???"
+            android:text="timer"
             android:textAppearance="@style/ShapeAppearance.MaterialComponents.Tooltip"
             tools:ignore="MissingConstraints" />
 
@@ -127,24 +127,33 @@
             />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/microphoneInGameBtn"
-        android:layout_height="wrap_content"
+    <!--View after correct Answer-->
+    <Switch
+        android:layout_marginTop="50dp"
+        android:id="@+id/sw_microphonePlay"
         android:layout_width="wrap_content"
-        android:text="Next"
-        android:visibility="gone"
-        android:onClick="microphoneStatus"
+        android:layout_height="wrap_content"
+        android:text="Microphone"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:checked="true"
+        android:layout_gravity="center_horizontal"
+        android:switchMinWidth="56dp"
+        android:layout_marginBottom="50dp"
+        tools:ignore="UseSwitchCompatOrMaterialXml"
+        android:visibility="gone"/>
 
-        />
-<!--View after correct Answer-->
     <Button
+        android:layout_margin="20dp"
         android:id="@+id/nextQuestionButton"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:text="Next"
         android:visibility="gone"
         android:onClick="nextQuestionSetup"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#000000"
+        android:background="@drawable/custom_botton_design_corners"
 
         />
 
@@ -154,8 +163,9 @@
         android:layout_height="wrap_content"
         android:text="Question points:"
         android:textSize = "20sp"
+        android:textColor="#000000"
         android:visibility="gone"
-
+        android:layout_gravity="center_horizontal"
         />
 
     <TextView
@@ -164,8 +174,9 @@
         android:layout_height="wrap_content"
         android:text="Total points:"
         android:textSize = "20sp"
+        android:textColor="#000000"
         android:visibility="gone"
-
+        android:layout_gravity="center_horizontal"
         />
 
 </LinearLayout>
