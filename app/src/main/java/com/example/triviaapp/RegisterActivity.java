@@ -81,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         }
 
-        if(LoggedUserConstants.userNameList.contains(userName)){
+        if(LoggedUserData.userNameList.contains(userName)){
             Toast.makeText(getBaseContext(), "User name exists!", Toast.LENGTH_SHORT).show();
             return;
 
@@ -96,8 +96,8 @@ public class RegisterActivity extends AppCompatActivity {
                             User registeredUser = new User(email, userName, password, 0);
                             firebaseHelper.userDatabaseReference.child(UUID.randomUUID().toString()).setValue(registeredUser);
                             Toast.makeText(getBaseContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
-                            LoggedUserConstants.loggedUserPassword = password;
-                            LoggedUserConstants.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                            LoggedUserData.loggedUserPassword = password;
+                            LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                             startActivity(intent);
 

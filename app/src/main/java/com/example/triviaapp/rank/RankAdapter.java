@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.triviaapp.LoggedUserConstants;
 import com.example.triviaapp.R;
 
 import java.util.List;

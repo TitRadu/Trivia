@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeViews(){
         FirebaseHelper.getInstance();
-        LoggedUserConstants.userNameList = new ArrayList<>();
+        LoggedUserData.userNameList = new ArrayList<>();
         FirebaseHelper.getInstance();
         emailInput = findViewById(R.id.emailLogInput);
         passwordInput = findViewById(R.id.passwordLogInput);
@@ -110,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
-                                LoggedUserConstants.loggedUserPassword = password;
+                                LoggedUserData.loggedUserPassword = password;
                                 Toast.makeText(getBaseContext(), "Succes!", Toast.LENGTH_SHORT).show();
                                 updateUI();
                             } else {
@@ -125,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void updateUI(){
-            LoggedUserConstants.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+            LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
 
@@ -137,11 +136,11 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and NO again
                 // whenever data at this location is updated.
-                LoggedUserConstants.userNameList = new ArrayList<>();
+                LoggedUserData.userNameList = new ArrayList<>();
 
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                     User user = dataSnapshot1.getValue(User.class);
-                    LoggedUserConstants.userNameList.add(user.getUserName());
+                    LoggedUserData.userNameList.add(user.getUserName());
 
 
                 }
@@ -235,10 +234,10 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
             editor.putString(key,data);
             editor.apply();
-            LoggedUserConstants.userMicrophone = true;
+            LoggedUserData.userMicrophone = true;
 
         }else {
-            LoggedUserConstants.userMicrophone = data.equals("true");
+            LoggedUserData.userMicrophone = data.equals("true");
 
         }
 

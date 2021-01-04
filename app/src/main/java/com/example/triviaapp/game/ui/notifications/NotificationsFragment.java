@@ -1,7 +1,6 @@
 package com.example.triviaapp.game.ui.notifications;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,13 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.triviaapp.LoggedUserConstants;
+import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.PlayActivity;
 
@@ -40,7 +38,7 @@ public class NotificationsFragment extends Fragment {
         startButton = root.findViewById(R.id.startBtn);
         exitButton = root.findViewById(R.id.exitBtn);
         switchMicropohone = root.findViewById(R.id.sw_microphone);
-        switchMicropohone.setChecked(LoggedUserConstants.userMicrophone);
+        switchMicropohone.setChecked(LoggedUserData.userMicrophone);
 
     }
 
@@ -49,7 +47,7 @@ public class NotificationsFragment extends Fragment {
         exitButton.setOnClickListener((v) -> {exit();});
         switchMicropohone.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
-            LoggedUserConstants.userMicrophone = isChecked;
+            LoggedUserData.userMicrophone = isChecked;
             editor.putString("mic",String.valueOf(isChecked));
             editor.apply();
         });
@@ -63,7 +61,7 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void exit(){
-        LoggedUserConstants.loggedUserPasswordUpdateVerify = false;
+        LoggedUserData.loggedUserPasswordUpdateVerify = false;
         getActivity().finishAndRemoveTask();
 
     }

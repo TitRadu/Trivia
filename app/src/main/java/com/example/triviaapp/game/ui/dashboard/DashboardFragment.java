@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.triviaapp.FirebaseHelper;
-import com.example.triviaapp.LoggedUserConstants;
+import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.rank.RankAdapter;
 import com.example.triviaapp.rank.RankSorter;
@@ -43,7 +43,7 @@ public class DashboardFragment extends Fragment {
     }
 
     private void setRecyclerView(){
-        rankAdapter = new RankAdapter(LoggedUserConstants.ranksList);
+        rankAdapter = new RankAdapter(LoggedUserData.ranksList);
         rankListRV.setLayoutManager(new LinearLayoutManager(getContext()));
         rankListRV.setAdapter(rankAdapter);
 
@@ -55,14 +55,14 @@ public class DashboardFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and NO again
                 // whenever data at this location is updated.
-                LoggedUserConstants.ranksList = new ArrayList<>();
+                LoggedUserData.ranksList = new ArrayList<>();
 
                 for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                     User rank = dataSnapshot1.getValue(User.class);
-                    LoggedUserConstants.ranksList.add(rank);
+                    LoggedUserData.ranksList.add(rank);
 
                 }
-                Collections.sort(LoggedUserConstants.ranksList,new RankSorter());
+                Collections.sort(LoggedUserData.ranksList,new RankSorter());
                 setRecyclerView();
 
             }

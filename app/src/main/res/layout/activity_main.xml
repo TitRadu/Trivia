@@ -22,7 +22,7 @@
             android:id="@+id/emailLogInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="username"
+            android:hint="mail"
             android:textColor="#7A7A7A"
             android:textSize="12sp" />
 

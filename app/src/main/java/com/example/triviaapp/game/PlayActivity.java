@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.triviaapp.Answer;
 import com.example.triviaapp.FirebaseCallback;
 import com.example.triviaapp.FirebaseHelper;
-import com.example.triviaapp.LoggedUserConstants;
+import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.Question;
 import com.example.triviaapp.R;
 import com.google.firebase.database.DataSnapshot;
@@ -66,10 +66,10 @@ public class PlayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play);
         setViews();
         timer();
-        if(LoggedUserConstants.userMicrophone) {
+        if(LoggedUserData.userMicrophone) {
             getSpeechInput();
         }
-        listernerStatusMicrophone();
+        listenerStatusMicrophone();
     }
 
     public void setViews(){
@@ -94,8 +94,9 @@ public class PlayActivity extends AppCompatActivity {
         totalScoreNextView = findViewById(R.id.totalScoreNextView);
         progressBar = findViewById(R.id.progress_bar);
         aSwitch = findViewById(R.id.sw_microphonePlay);
+        aSwitch.setChecked(LoggedUserData.userMicrophone);
         setTextViewWithQuestionAndAnswers();
-        if(LoggedUserConstants.userMicrophone) {
+        if(LoggedUserData.userMicrophone) {
             speechInitialize();
 
         }
@@ -172,7 +173,7 @@ public class PlayActivity extends AppCompatActivity {
         readQuestionData(new FirebaseCallback() {
             @Override
             public void onCallbackQuestions(List<Question> questions) {
-                seteazaIntrebare(questions);
+                setQuestion(questions);
 
             }
 
@@ -190,7 +191,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
-                seteazaRaspunsuri(answers);
+                setAnswers(answers);
 
             }
 
@@ -198,7 +199,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void seteazaIntrebare(List<Question> questions) {
+    private void setQuestion(List<Question> questions) {
         Random rand = new Random();
 
         if (questions.size() != 0) {
@@ -213,7 +214,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void seteazaRaspunsuri(List<Answer> answers) {
+    private void setAnswers(List<Answer> answers) {
         List<Answer> currentAnswers = new ArrayList<>();
         Random rand = new Random();
         List<Integer> randomCurrentAnswersList = new ArrayList<>();
@@ -283,7 +284,6 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onBeginningOfSpeech() {
-                questionCounter.setText("Salut");
             }
 
             @Override
@@ -389,7 +389,7 @@ public class PlayActivity extends AppCompatActivity {
             return;
         }else{
             touchDisabled = true;
-            if(LoggedUserConstants.userMicrophone) {
+            if(LoggedUserData.userMicrophone) {
                 speechRecognizer.destroy();
             }
         }
@@ -402,12 +402,12 @@ public class PlayActivity extends AppCompatActivity {
             view.setBackgroundColor(Color.GREEN);
             answerCounter++;
             if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
-                LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints*2;
+                LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints*2;
                 sendPointsToDatabase(questionCounter, "Ai castigat!");
             }
         }
         else{
-            LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
+            LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
             sendPointsToDatabase(question, "Wrong Answer!");
             answerCheck = false;
             view.setBackgroundColor(Color.RED);
@@ -455,16 +455,16 @@ public class PlayActivity extends AppCompatActivity {
     private void sendPointsToDatabase(TextView question, String s) {
 
         populateMapWithUserData();
-        FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
+        FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
         question.setText(s);
     }
 
     private void populateMapWithUserData() {
         map = new HashMap<>();
-        map.put("email", LoggedUserConstants.loggedUserEmail);
-        map.put("userName", LoggedUserConstants.loggedUserName);
-        map.put("password", LoggedUserConstants.loggedUserPassword);
-        map.put("points", LoggedUserConstants.loggedUserPoints + totalPoints);
+        map.put("email", LoggedUserData.loggedUserEmail);
+        map.put("userName", LoggedUserData.loggedUserName);
+        map.put("password", LoggedUserData.loggedUserPassword);
+        map.put("points", LoggedUserData.loggedUserPoints + totalPoints);
     }
 
     private void delay(int delay) {
@@ -480,7 +480,7 @@ public class PlayActivity extends AppCompatActivity {
             progressBar.setProgress(progressBarPercent);
             hideQuestionSetup();
             setTextAfterAnswerQuestion();
-            if(LoggedUserConstants.userMicrophone) {
+            if(LoggedUserData.userMicrophone) {
                 getSpeechInput();
 
             }
@@ -514,8 +514,8 @@ public class PlayActivity extends AppCompatActivity {
            public void onFinish() {
                timerView.setText("Time expired!");
                populateMapWithUserData();
-               FirebaseHelper.userDatabaseReference.child(LoggedUserConstants.loggedUserKey).setValue(map);
-               LoggedUserConstants.loggedUserPoints = LoggedUserConstants.loggedUserPoints + totalPoints;
+               FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
+               LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
                finishAndRemoveTask();
                Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                startActivity(intent);
@@ -560,15 +560,13 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void listernerStatusMicrophone(){
+    private void listenerStatusMicrophone(){
         aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            LoggedUserConstants.userMicrophone = isChecked;
+            LoggedUserData.userMicrophone = isChecked;
             SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
-            if(isChecked){
-                Log.d("microphone","TRUE");
+            if(!isChecked){
                 speechRecognizer.destroy();
             }else{
-                Log.d("microphone","FALSE");
                 if(speechIntent == null){
                     speechInitialize();
                 }
@@ -593,7 +591,7 @@ public class PlayActivity extends AppCompatActivity {
 
     public void nextQuestionSetup(View view){
 
-        if(LoggedUserConstants.userMicrophone) {
+        if(LoggedUserData.userMicrophone) {
             speechRecognizer.destroy();
         }
         if(isGameFinished()){
@@ -604,13 +602,13 @@ public class PlayActivity extends AppCompatActivity {
         btnB.setBackgroundResource(R.drawable.custom_botton_design_corners);
         btnC.setBackgroundResource(R.drawable.custom_botton_design_corners);
         btnD.setBackgroundResource(R.drawable.custom_botton_design_corners);
-        questionCounter.setText("Intrebarea " + answerCounter + " din 10");
-        seteazaIntrebare(questions);
-        seteazaRaspunsuri(answers);
+        questionCounter.setText("Question " + answerCounter + " / 10");
+        setQuestion(questions);
+        setAnswers(answers);
         touchDisabled = false;
         voiceInput = null;
         selectedThroughVoiceOption = null;
-        if(LoggedUserConstants.userMicrophone) {
+        if(LoggedUserData.userMicrophone) {
             getSpeechInput();
         }
         timer();
