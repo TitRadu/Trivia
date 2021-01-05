@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".game.EditDataActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Edit username:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/newUserNameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="150dp"
+        android:hint="new username:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newUserNameView"
+        android:layout_marginTop="10dp"
+        android:text="Edit password:"
+        android:textColor="#000000"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/oldPasswordView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newUserNameView"
+        android:layout_marginLeft="150dp"
+        android:hint="old password"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:inputType="textPassword"/>
+
+    <EditText
+        android:id="@+id/newPasswordView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/oldPasswordView"
+        android:layout_marginLeft="150dp"
+        android:hint="old password"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:inputType="textPassword"/>
+
+    <Button
+        android:id="@+id/editButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/newPasswordView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="Edit"
+        android:background="@drawable/custom_botton_design_corners"
+        android:onClick="updateData"
+        />
+
+    <Button
+        android:id="@+id/exitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="Exit"
+        android:background="@drawable/custom_botton_design_corners"
+        android:onClick="exit"
+        />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exitButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="Delete Account"
+        android:background="@drawable/custom_botton_design_corners"
+        android:onClick="deleteAccount"
+        />
+
+    <EditText
+        android:id="@+id/passwordDeleteView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/deleteButton"
+        android:layout_centerHorizontal="true"
+        android:hint="password"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:inputType="textPassword"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/confirmDeleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/passwordDeleteView"
+        android:layout_centerHorizontal="true"
+        android:text="Confirm"
+        android:background="@drawable/custom_botton_design_corners"
+        android:onClick="confirmDelete"
+        android:visibility="gone" />
+
+
+</RelativeLayout>
