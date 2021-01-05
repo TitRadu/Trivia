@@ -464,7 +464,7 @@ public class PlayActivity extends AppCompatActivity {
         map.put("email", LoggedUserData.loggedUserEmail);
         map.put("userName", LoggedUserData.loggedUserName);
         map.put("password", LoggedUserData.loggedUserPassword);
-        map.put("points", LoggedUserData.loggedUserPoints + totalPoints);
+        map.put("points", LoggedUserData.loggedUserPoints);
     }
 
     private void delay(int delay) {

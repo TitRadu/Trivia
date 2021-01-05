@@ -13,6 +13,7 @@ import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.triviaapp.HelpActivity;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.PlayActivity;
@@ -20,7 +21,7 @@ import com.example.triviaapp.game.PlayActivity;
 import static android.content.Context.MODE_PRIVATE;
 
 public class NotificationsFragment extends Fragment {
-    Button startButton, exitButton;
+    Button startButton, exitButton,helpButton;
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switchMicropohone;
@@ -39,6 +40,7 @@ public class NotificationsFragment extends Fragment {
         exitButton = root.findViewById(R.id.exitBtn);
         switchMicropohone = root.findViewById(R.id.sw_microphone);
         switchMicropohone.setChecked(LoggedUserData.userMicrophone);
+        helpButton = root.findViewById(R.id.helpBtn);
 
     }
 
@@ -50,6 +52,10 @@ public class NotificationsFragment extends Fragment {
             LoggedUserData.userMicrophone = isChecked;
             editor.putString("mic",String.valueOf(isChecked));
             editor.apply();
+        });
+        helpButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), HelpActivity.class);
+            startActivity(intent);
         });
     }
 
