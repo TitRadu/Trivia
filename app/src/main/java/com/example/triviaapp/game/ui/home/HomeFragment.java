@@ -81,6 +81,9 @@ public class HomeFragment extends Fragment {
         newPasswordView = root.findViewById(R.id.newPasswordView);
         btn_save_user_profile=root.findViewById(R.id.btn_save_user_profile);
         changePassword=root.findViewById(R.id.tv_change_password);
+        isPasswodModified = false;
+        isUsernameModifyed = false;
+
 
     }
 
