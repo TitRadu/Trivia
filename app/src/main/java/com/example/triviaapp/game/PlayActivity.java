@@ -2,7 +2,6 @@ package com.example.triviaapp.game;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -58,7 +57,7 @@ public class PlayActivity extends AppCompatActivity {
     int progressBarPercent=0;
     Intent speechIntent = null;
     SpeechRecognizer speechRecognizer;
-    LinearLayout firstLineButtonsLayout, microphoneLayout;
+    LinearLayout firstLineButtonsLayout, infoLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +87,7 @@ public class PlayActivity extends AppCompatActivity {
         questions = new ArrayList<>();
         answers = new ArrayList<>();
         firstLineButtonsLayout = findViewById(R.id.firstLineButtonsLayout);
-        microphoneLayout = findViewById(R.id.microphoneLayout);
+        infoLayout = findViewById(R.id.infoLayout);
         nextQuestionButton = findViewById(R.id.nextQuestionButton);
         questionScoreView = findViewById(R.id.questionScoreView);
         totalScoreNextView = findViewById(R.id.totalScoreNextView);
@@ -399,18 +398,18 @@ public class PlayActivity extends AppCompatActivity {
             calculatePoints();
             answerCheck = true;
             question.setText("Corect Answer!");
-            view.setBackgroundColor(Color.GREEN);
+            view.setBackgroundResource(R.drawable.custom_botton_design_corners_green);
             answerCounter++;
             if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints*2;
-                sendPointsToDatabase(questionCounter, "Ai castigat!");
+                sendPointsToDatabase(questionCounter, "You won!");
             }
         }
         else{
             LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
             sendPointsToDatabase(question, "Wrong Answer!");
             answerCheck = false;
-            view.setBackgroundColor(Color.RED);
+            view.setBackgroundResource(R.drawable.custom_botton_design_corners_red);
         }
         delay(3000);
     }
@@ -419,7 +418,7 @@ public class PlayActivity extends AppCompatActivity {
         double d = Double.parseDouble(timerView.getText().toString());
         time = time + (int) d;
         totalPoints = totalPoints + time;
-        totalScoreView.setText("Total score:" + totalPoints);
+        totalScoreView.setText("Score:\n   " + totalPoints);
         Log.d("Punctaj Intrebare" + answerCounter,String.valueOf(time));
         Log.d("Punctaj Total",String.valueOf(totalPoints));
     }
@@ -464,7 +463,7 @@ public class PlayActivity extends AppCompatActivity {
         map.put("email", LoggedUserData.loggedUserEmail);
         map.put("userName", LoggedUserData.loggedUserName);
         map.put("password", LoggedUserData.loggedUserPassword);
-        map.put("points", LoggedUserData.loggedUserPoints + totalPoints);
+        map.put("points", LoggedUserData.loggedUserPoints);
     }
 
     private void delay(int delay) {
@@ -538,10 +537,10 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void hideQuestionSetup(){
+        infoLayout.setVisibility(View.GONE);
         timerView.setVisibility(View.GONE);
         question.setVisibility(View.GONE);
         firstLineButtonsLayout.setVisibility(View.GONE);
-        microphoneLayout.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.VISIBLE);
         questionScoreView.setVisibility(View.VISIBLE);
         totalScoreNextView.setVisibility(View.VISIBLE);
@@ -582,10 +581,10 @@ public class PlayActivity extends AppCompatActivity {
         nextQuestionButton.setVisibility(View.GONE);
         questionScoreView.setVisibility(View.GONE);
         totalScoreNextView.setVisibility(View.GONE);
+        infoLayout.setVisibility(View.VISIBLE);
         timerView.setVisibility(View.VISIBLE);
         question.setVisibility(View.VISIBLE);
         firstLineButtonsLayout.setVisibility(View.VISIBLE);
-        microphoneLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -602,7 +601,7 @@ public class PlayActivity extends AppCompatActivity {
         btnB.setBackgroundResource(R.drawable.custom_botton_design_corners);
         btnC.setBackgroundResource(R.drawable.custom_botton_design_corners);
         btnD.setBackgroundResource(R.drawable.custom_botton_design_corners);
-        questionCounter.setText("Question " + answerCounter + " / 10");
+        questionCounter.setText("Question:\n   " + answerCounter + " / 10");
         setQuestion(questions);
         setAnswers(answers);
         touchDisabled = false;

@@ -86,7 +86,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:text="Delete Account"
-        android:background="@drawable/custom_botton_design_corners"
+        android:background="@drawable/custom_botton_design_corners_red"
         android:onClick="deleteAccount"
         />
 
@@ -109,9 +109,8 @@
         android:layout_below="@id/passwordDeleteView"
         android:layout_centerHorizontal="true"
         android:text="Confirm"
-        android:background="@drawable/custom_botton_design_corners"
+        android:background="@drawable/custom_botton_design_corners_red"
         android:onClick="confirmDelete"
         android:visibility="gone" />
-
 
 </RelativeLayout>
