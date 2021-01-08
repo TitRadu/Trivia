@@ -26,6 +26,7 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.Question;
 import com.example.triviaapp.R;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -45,6 +46,7 @@ public class PlayActivity extends AppCompatActivity {
     TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView;
     Switch aSwitch;
     ProgressBar progressBar;
+    MaterialCardView materialCardView;
     int answerCounter;
     boolean answerCheck;
     boolean touchDisabled;
@@ -92,6 +94,7 @@ public class PlayActivity extends AppCompatActivity {
         questionScoreView = findViewById(R.id.questionScoreView);
         totalScoreNextView = findViewById(R.id.totalScoreNextView);
         progressBar = findViewById(R.id.progress_bar);
+        materialCardView = findViewById(R.id.materialCardView);
         aSwitch = findViewById(R.id.sw_microphonePlay);
         aSwitch.setChecked(LoggedUserData.userMicrophone);
         setTextViewWithQuestionAndAnswers();
@@ -415,8 +418,8 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void calculatePoints() {
-        double d = Double.parseDouble(timerView.getText().toString());
-        time = time + (int) d;
+        int d = Integer.parseInt(timerView.getText().toString());
+        time = time + d;
         totalPoints = totalPoints + time;
         totalScoreView.setText("Score:\n   " + totalPoints);
         Log.d("Punctaj Intrebare" + answerCounter,String.valueOf(time));
@@ -452,10 +455,10 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void sendPointsToDatabase(TextView question, String s) {
-
         populateMapWithUserData();
         FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
         question.setText(s);
+
     }
 
     private void populateMapWithUserData() {
@@ -505,7 +508,8 @@ public class PlayActivity extends AppCompatActivity {
                    progressBarPercent+=10;
                    updateProgressBar();
                }
-               timerView.setText(millisUntilFinished / 1000 + "." + millisUntilFinished % 1000);
+
+               timerView.setText(String.valueOf(millisUntilFinished / 1000));
 
            }
 
@@ -539,7 +543,7 @@ public class PlayActivity extends AppCompatActivity {
     private void hideQuestionSetup(){
         infoLayout.setVisibility(View.GONE);
         timerView.setVisibility(View.GONE);
-        question.setVisibility(View.GONE);
+        materialCardView.setVisibility(View.GONE);
         firstLineButtonsLayout.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.VISIBLE);
         questionScoreView.setVisibility(View.VISIBLE);
@@ -583,13 +587,12 @@ public class PlayActivity extends AppCompatActivity {
         totalScoreNextView.setVisibility(View.GONE);
         infoLayout.setVisibility(View.VISIBLE);
         timerView.setVisibility(View.VISIBLE);
-        question.setVisibility(View.VISIBLE);
+        materialCardView.setVisibility(View.VISIBLE);
         firstLineButtonsLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     public void nextQuestionSetup(View view){
-
         if(LoggedUserData.userMicrophone) {
             speechRecognizer.destroy();
         }

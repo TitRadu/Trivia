@@ -43,15 +43,14 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private boolean inputCheck(String userName, String email, String password){
-        if(userName.isEmpty()){
-            Toast.makeText(this,"Introduce a user name!",Toast.LENGTH_SHORT).show();
+        if(email.isEmpty()){
+            Toast.makeText(this,"Introduce a email!",Toast.LENGTH_SHORT).show();
             return false;
 
         }
 
-
-        if(email.isEmpty()){
-            Toast.makeText(this,"Introduce a email!",Toast.LENGTH_SHORT).show();
+        if(userName.isEmpty()){
+            Toast.makeText(this,"Introduce a user name!",Toast.LENGTH_SHORT).show();
             return false;
 
         }
