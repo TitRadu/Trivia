@@ -2,6 +2,7 @@ package com.example.triviaapp.game;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -27,6 +28,7 @@ import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.Option;
 import com.example.triviaapp.Question;
 import com.example.triviaapp.R;
+import com.example.triviaapp.game.ui.SubmitButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,7 +48,8 @@ public class PlayActivity extends AppCompatActivity {
 
     public static final int TOTAL_QUESTION_TO_WIN_GAME = 11;
     String userAnswer, correctAnswer, voiceInput = null;
-    Button btnA, btnB, btnC, btnD, selectedThroughVoiceOption, nextQuestionButton;
+    Button  nextQuestionButton;
+    SubmitButton btnA,btnB, btnC, btnD, selectedThroughVoiceOption;
     TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView;
     Switch aSwitch;
     ProgressBar progressBar;
@@ -355,7 +358,7 @@ public class PlayActivity extends AppCompatActivity {
         switch (voiceInput) {
             case "A":
             case "a":
-                selectedThroughVoiceOption=btnA;
+                //selectedThroughVoiceOption=btnA;
                 break;
             case "B":
             case "b":
@@ -410,7 +413,7 @@ public class PlayActivity extends AppCompatActivity {
             calculatePoints();
             answerCheck = true;
             question.setText("Corect Answer!");
-            view.setBackgroundResource(R.drawable.custom_botton_design_corners_green);
+            //view.setBackgroundResource(R.drawable.custom_botton_design_corners_green);
             answerCounter++;
             if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints*2;
@@ -418,10 +421,12 @@ public class PlayActivity extends AppCompatActivity {
             }
         }
         else{
+            ((SubmitButton) view).setBtn_LineColor(Color.RED);
+            ((SubmitButton) view).setAnimationColor(Color.RED);
             LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
             sendPointsToDatabase(question, "Wrong Answer!");
             answerCheck = false;
-            view.setBackgroundResource(R.drawable.custom_botton_design_corners_red);
+
         }
         delay(3000);
     }

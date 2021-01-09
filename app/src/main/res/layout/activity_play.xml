@@ -91,52 +91,73 @@
         android:layout_marginTop="50dp">
 
 
-        <Button
-            android:layout_margin="10dp"
+<!--        <Button-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:id="@+id/varA"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize = "15sp"-->
+<!--            android:textColor="#000000"-->
+<!--            android:text="A"-->
+<!--            android:background="@drawable/custom_botton_design_corners"-->
+<!--            android:onClick="clicked"-->
+<!--            />-->
+
+        <com.example.triviaapp.game.ui.SubmitButton
+
             android:id="@+id/varA"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize = "15sp"
-            android:textColor="#000000"
-            android:text="A"
-            android:background="@drawable/custom_botton_design_corners"
-            android:onClick="clicked"
-            />
+            android:layout_height="2dp"
+            android:text="Submit"
+            android:textColor="@color/gray"
+            android:textSize="12sp"
+            app:sub_btn_background="@color/white"
+            app:sub_btn_duration="2000"
+            app:sub_btn_line_color="#80ff00"
+            app:sub_btn_ripple_color="#80ff00"
+            app:sub_btn_tick_color="@color/white"
+            android:onClick="clicked"/>
 
-        <Button
-            android:layout_margin="10dp"
+        <com.example.triviaapp.game.ui.SubmitButton
+
             android:id="@+id/varB"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize = "15sp"
-            android:textColor="#000000"
-            android:background="@drawable/custom_botton_design_corners"
-            android:text="B"
-            android:onClick="clicked"
-            />
-        <Button
-            android:layout_margin="10dp"
+            android:layout_height="2dp"
+            android:text="Submit"
+            android:textColor="@color/gray"
+            android:textSize="12sp"
+            app:sub_btn_background="@color/white"
+            app:sub_btn_duration="2000"
+            app:sub_btn_line_color="#80ff00"
+            app:sub_btn_ripple_color="#80ff00"
+            app:sub_btn_tick_color="@color/white"
+            android:onClick="clicked"/>
+        <com.example.triviaapp.game.ui.SubmitButton
             android:id="@+id/varC"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize = "15sp"
-            android:textColor="#000000"
-            android:background="@drawable/custom_botton_design_corners"
-            android:text="C"
-            android:onClick="clicked"
-            />
-        <Button
-            android:layout_margin="10dp"
+            android:layout_height="2dp"
+            android:text="Submit"
+            android:textColor="@color/gray"
+            android:textSize="12sp"
+            app:sub_btn_background="@color/white"
+            app:sub_btn_duration="2000"
+            app:sub_btn_line_color="#80ff00"
+            app:sub_btn_ripple_color="#80ff00"
+            app:sub_btn_tick_color="@color/white"
+            android:onClick="clicked"/>
+        <com.example.triviaapp.game.ui.SubmitButton
             android:id="@+id/varD"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize = "15sp"
-            android:textColor="#000000"
-            android:background="@drawable/custom_botton_design_corners"
-            android:text="D"
-            android:onClick="clicked"
-
-            />
+            android:layout_height="2dp"
+            android:text="Submit"
+            android:textColor="@color/gray"
+            android:textSize="12sp"
+            app:sub_btn_background="@color/white"
+            app:sub_btn_duration="2000"
+            app:sub_btn_line_color="#80ff00"
+            app:sub_btn_ripple_color="#80ff00"
+            app:sub_btn_tick_color="@color/white"
+            android:onClick="clicked"/>
 
 
     </LinearLayout>
