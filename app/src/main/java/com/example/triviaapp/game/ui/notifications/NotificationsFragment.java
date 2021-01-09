@@ -15,9 +15,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
+import com.example.triviaapp.game.GameSettingsActivity;
 import com.example.triviaapp.game.PlayActivity;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.triviaapp.LoggedUserData.MIC;
+import static com.example.triviaapp.LoggedUserData.optionList;
 
 public class NotificationsFragment extends Fragment {
     Button startButton, exitButton;
@@ -38,23 +41,25 @@ public class NotificationsFragment extends Fragment {
         startButton = root.findViewById(R.id.startBtn);
         exitButton = root.findViewById(R.id.exitBtn);
         switchMicropohone = root.findViewById(R.id.sw_microphone);
-        switchMicropohone.setChecked(LoggedUserData.userMicrophone);
+        switchMicropohone.setChecked(optionList.get(MIC).isValue());
 
     }
 
     private void setOnClickListeners(){
-        startButton.setOnClickListener((v) -> {openPlayActivity();});
+        startButton.setOnClickListener((v) -> {openGameSettingsActivity();});
         exitButton.setOnClickListener((v) -> {exit();});
         switchMicropohone.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
-            LoggedUserData.userMicrophone = isChecked;
-            editor.putString("mic",String.valueOf(isChecked));
+            optionList.get(MIC).setValue(isChecked);
+            editor.putString(optionList.get(MIC).getName(),String.valueOf(isChecked));
             editor.apply();
+
         });
+
     }
 
-    public void openPlayActivity(){
-        Intent intent = new Intent(getContext(), PlayActivity.class);
+    private void openGameSettingsActivity(){
+        Intent intent = new Intent(getContext(), GameSettingsActivity.class);
         startActivity(intent);
         getActivity().finishAndRemoveTask();
 

@@ -28,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static com.example.triviaapp.LoggedUserData.optionList;
+
 public class MainActivity extends AppCompatActivity {
     public static final Integer RECORD_AUDIO = 1;
     private FirebaseAuth firebaseAuth;
@@ -43,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initializeViews();
         initializeUserNameList();
-        initializeMicrophoneStatus();
+        initializeOptionList();
+        initializeMicrophoneStatusAndCategoriesOptions();
         initializeLoggedUser();
         verifyAudioPermission();
 
@@ -225,19 +228,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void initializeMicrophoneStatus(){
-        String key = "mic";
-        SharedPreferences prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
-        String data = prefs.getString(key,"Key not found!");
-        if(data.equals("Key not found!")){
-            data = "true";
-            SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
-            editor.putString(key,data);
-            editor.apply();
-            LoggedUserData.userMicrophone = true;
+    private void initializeOptionList(){
+        optionList = new ArrayList<>();
+        optionList.add(new Option("mic",true));
+        optionList.add(new Option("sport",true));
+        optionList.add(new Option("geography",true));
+        optionList.add(new Option("maths",true));
+        optionList.add(new Option("others",true));
 
-        }else {
-            LoggedUserData.userMicrophone = data.equals("true");
+    }
+
+    private void initializeMicrophoneStatusAndCategoriesOptions(){
+        SharedPreferences prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
+        String data;
+
+        for(Option option : optionList){
+            data = prefs.getString(option.getName(),"Key not found!");
+
+            if(data.equals("Key not found!")){
+                SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+                editor.putString(option.getName(),"true");
+                editor.apply();
+                option.setValue(true);
+
+            }else {
+                option.setValue(data.equals("true"));
+
+            }
 
         }
 

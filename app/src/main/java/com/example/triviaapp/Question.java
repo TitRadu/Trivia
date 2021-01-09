@@ -3,10 +3,12 @@ package com.example.triviaapp;
 public class Question {
     private int questionID;
     private String question;
+    private String category;
 
-    public Question(int questionID, String question){
+    public Question(int questionID, String question, String category){
         this.questionID = questionID;
         this.question = question;
+        this.category = category;
     }
 
     public Question(){}
@@ -18,4 +20,7 @@ public class Question {
         return  questionID;
     }
 
+    public String getCategory() {
+        return category;
+    }
 }

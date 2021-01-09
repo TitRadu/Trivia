@@ -24,6 +24,7 @@ import com.example.triviaapp.Answer;
 import com.example.triviaapp.FirebaseCallback;
 import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
+import com.example.triviaapp.Option;
 import com.example.triviaapp.Question;
 import com.example.triviaapp.R;
 import com.google.android.material.card.MaterialCardView;
@@ -37,6 +38,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+
+import static com.example.triviaapp.LoggedUserData.MIC;
+import static com.example.triviaapp.LoggedUserData.optionList;
 
 public class PlayActivity extends AppCompatActivity {
 
@@ -67,7 +71,7 @@ public class PlayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play);
         setViews();
         timer();
-        if(LoggedUserData.userMicrophone) {
+        if(optionList.get(MIC).isValue()) {
             getSpeechInput();
         }
         listenerStatusMicrophone();
@@ -96,9 +100,9 @@ public class PlayActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         materialCardView = findViewById(R.id.materialCardView);
         aSwitch = findViewById(R.id.sw_microphonePlay);
-        aSwitch.setChecked(LoggedUserData.userMicrophone);
+        aSwitch.setChecked(optionList.get(MIC).isValue());
         setTextViewWithQuestionAndAnswers();
-        if(LoggedUserData.userMicrophone) {
+        if(optionList.get(MIC).isValue()) {
             speechInitialize();
 
         }
@@ -123,9 +127,14 @@ public class PlayActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(questions.isEmpty()) {
                     for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
-                        Question question = new Question(Integer.parseInt(dataSnapshot1.getKey()),dataSnapshot1.child("question").getValue(String.class));
-                        questions.add(question);
+                        Question question = new Question(Integer.parseInt(dataSnapshot1.getKey()),
+                                dataSnapshot1.child("question").getValue(String.class),
+                                dataSnapshot1.child("category").getValue(String.class));
 
+                        for(Option o : optionList)
+                            if(o.isValue() && o.getName().equals(question.getCategory())) {
+                                questions.add(question);
+                            }
 
                     }
                     firebaseCallback.onCallbackQuestions(questions);
@@ -391,7 +400,7 @@ public class PlayActivity extends AppCompatActivity {
             return;
         }else{
             touchDisabled = true;
-            if(LoggedUserData.userMicrophone) {
+            if(optionList.get(MIC).isValue()) {
                 speechRecognizer.destroy();
             }
         }
@@ -482,7 +491,7 @@ public class PlayActivity extends AppCompatActivity {
             progressBar.setProgress(progressBarPercent);
             hideQuestionSetup();
             setTextAfterAnswerQuestion();
-            if(LoggedUserData.userMicrophone) {
+            if(optionList.get(MIC).isValue()) {
                 getSpeechInput();
 
             }
@@ -565,7 +574,7 @@ public class PlayActivity extends AppCompatActivity {
 
     private void listenerStatusMicrophone(){
         aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            LoggedUserData.userMicrophone = isChecked;
+            optionList.get(MIC).setValue(isChecked);
             SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
             if(!isChecked){
                 speechRecognizer.destroy();
@@ -593,7 +602,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void nextQuestionSetup(View view){
-        if(LoggedUserData.userMicrophone) {
+        if(optionList.get(MIC).isValue()) {
             speechRecognizer.destroy();
         }
         if(isGameFinished()){
@@ -610,7 +619,7 @@ public class PlayActivity extends AppCompatActivity {
         touchDisabled = false;
         voiceInput = null;
         selectedThroughVoiceOption = null;
-        if(LoggedUserData.userMicrophone) {
+        if(optionList.get(MIC).isValue()) {
             getSpeechInput();
         }
         timer();
