@@ -9,6 +9,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.triviaapp.game.GameActivity;
+import com.example.triviaapp.game.ui.SubmitButton;
 import com.example.triviaapp.rank.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;

@@ -114,6 +114,7 @@ public class SubmitButton extends androidx.appcompat.widget.AppCompatTextView {
                 if (mStatus.equals(INIT)) {
                     startAnimation();
                 } else {
+                    Log.e("restart?","DA");
                     mStatus = INIT;
                     rippleAnimator.cancel();
                     rippleAlphaAnimator.cancel();
@@ -132,6 +133,10 @@ public class SubmitButton extends androidx.appcompat.widget.AppCompatTextView {
         }
         super.onTouchEvent(event);
         return true;
+    }
+
+    public void resetButton(){
+        mStatus = INIT;
     }
 
     @Override
@@ -306,7 +311,6 @@ public class SubmitButton extends androidx.appcompat.widget.AppCompatTextView {
     private void startLineAnim() {
         mStatus = LINE_MOVE;
         int duration = 1;
-        // (cxRight - cxLeft) != mRecWidth. 极小的数字也会画出一个点
         linePosXAnim = ValueAnimator.ofFloat(0, cxRight - cxLeft);
         linePosXAnim.setDuration(duration * mRippleDuration);
         linePosXAnim.setInterpolator(new LinearInterpolator());
