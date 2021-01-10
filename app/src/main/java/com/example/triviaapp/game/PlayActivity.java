@@ -358,7 +358,7 @@ public class PlayActivity extends AppCompatActivity {
         switch (voiceInput) {
             case "A":
             case "a":
-                //selectedThroughVoiceOption=btnA;
+                selectedThroughVoiceOption=btnA;
                 break;
             case "B":
             case "b":
@@ -399,6 +399,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void clicked(View view) {
+        ((SubmitButton) view).startAnimation();
         if(touchDisabled){
             return;
         }else{
@@ -614,10 +615,14 @@ public class PlayActivity extends AppCompatActivity {
             return;
         }
         showQuestionSetup();
-        btnA.setBackgroundResource(R.drawable.custom_botton_design_corners);
-        btnB.setBackgroundResource(R.drawable.custom_botton_design_corners);
-        btnC.setBackgroundResource(R.drawable.custom_botton_design_corners);
-        btnD.setBackgroundResource(R.drawable.custom_botton_design_corners);
+        btnA.resetButton();
+        btnB.resetButton();
+        btnC.resetButton();
+        btnD.resetButton();
+//        btnA.setBackgroundResource(R.drawable.custom_botton_design_corners);
+//        btnB.setBackgroundResource(R.drawable.custom_botton_design_corners);
+//        btnC.setBackgroundResource(R.drawable.custom_botton_design_corners);
+//        btnD.setBackgroundResource(R.drawable.custom_botton_design_corners);
         questionCounter.setText("Question:\n   " + answerCounter + " / 10");
         setQuestion(questions);
         setAnswers(answers);

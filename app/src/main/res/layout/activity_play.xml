@@ -60,7 +60,8 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"
-        android:layout_width="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="#FFFFFF"
         android:layout_marginTop="50dp"
@@ -87,8 +88,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-
-        android:layout_marginTop="50dp">
+        >
 
 
         <com.example.triviaapp.game.ui.SubmitButton
