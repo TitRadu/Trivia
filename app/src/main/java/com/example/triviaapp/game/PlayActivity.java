@@ -399,7 +399,6 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void clicked(View view) {
-        ((SubmitButton) view).startAnimation();
         if(touchDisabled){
             return;
         }else{
@@ -408,6 +407,7 @@ public class PlayActivity extends AppCompatActivity {
                 speechRecognizer.destroy();
             }
         }
+        ((SubmitButton) view).startAnimation();
         setExtraTimeForMicrophone();
         getUserAnswer(view);
         if(userAnswer.equals(correctAnswer)){
