@@ -86,23 +86,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/custom_botton_design_corners"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_margin="20dp"
         android:text="Edit" />
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp">
 
         <Button
             android:id="@+id/btn_sign_out_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_gravity="end"
             android:background="@drawable/custom_botton_design_corners"
+            android:layout_margin="20dp"
             android:text="Sign Out" />
-    </RelativeLayout>
 </LinearLayout>

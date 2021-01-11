@@ -4,22 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
     tools:context=".game.EditDataActivity">
 
     <TextView
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Edit username:"
+        android:layout_marginTop="70dp"
+        android:text="Username"
         android:textColor="#000000"
+        android:layout_marginLeft="10dp"
         android:textSize="20sp" />
 
     <EditText
+        android:layout_marginTop="50dp"
         android:id="@+id/newUserNameView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="150dp"
-        android:hint="new username:"
         android:textColor="#000000"
         android:textSize="20sp" />
 
@@ -27,55 +30,68 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/newUserNameView"
-        android:layout_marginTop="10dp"
-        android:text="Edit password:"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:text="New password "
         android:textColor="#000000"
         android:textSize="20sp" />
 
     <EditText
         android:id="@+id/oldPasswordView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/newUserNameView"
         android:layout_marginLeft="150dp"
-        android:hint="old password"
         android:textColor="#000000"
         android:textSize="20sp"
         android:inputType="textPassword"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/oldPasswordView"
+        android:layout_marginTop="20dp"
+        android:text="Old password "
+        android:textColor="#000000"
+        android:layout_marginLeft="10dp"
+        android:textSize="20sp" />
+
+
     <EditText
         android:id="@+id/newPasswordView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/oldPasswordView"
         android:layout_marginLeft="150dp"
-        android:hint="old password"
         android:textColor="#000000"
         android:textSize="20sp"
+        android:layout_marginBottom="70dp"
         android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/editButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/newPasswordView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
         android:text="Edit"
         android:background="@drawable/custom_botton_design_corners"
         android:onClick="updateData"
+        android:layout_margin="20dp"
         />
 
     <Button
         android:id="@+id/exitButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:text="Exit"
+        android:text="Cancel"
+        android:textColor="#000000"
         android:background="@drawable/custom_botton_design_corners"
         android:onClick="exit"
+        android:layout_margin="20dp"
         />
 
     <Button
@@ -88,6 +104,7 @@
         android:text="Delete Account"
         android:background="@drawable/custom_botton_design_corners_red"
         android:onClick="deleteAccount"
+        android:layout_margin="20dp"
         />
 
     <EditText

@@ -50,7 +50,7 @@ public class PlayActivity extends AppCompatActivity {
     String userAnswer, correctAnswer, voiceInput = null;
     Button  nextQuestionButton;
     SubmitButton btnA,btnB, btnC, btnD, selectedThroughVoiceOption;
-    TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView;
+    TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView,questionScoreViewScore,totalScoreViewPoints;
     Switch aSwitch;
     ProgressBar progressBar;
     MaterialCardView materialCardView;
@@ -81,6 +81,8 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void setViews(){
+        questionScoreViewScore = findViewById(R.id.totalScoreNextViewScore);
+        totalScoreViewPoints = findViewById(R.id.totalScoreNextViewPoints);
         userAnswer = "";
         btnA = findViewById(R.id.varA);
         btnB = findViewById(R.id.varB);
@@ -565,16 +567,21 @@ public class PlayActivity extends AppCompatActivity {
         totalScoreNextView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
         aSwitch.setVisibility(View.VISIBLE);
+        questionScoreViewScore.setVisibility(View.VISIBLE);
+        totalScoreViewPoints.setVisibility(View.VISIBLE);
     }
 
     private void setTextAfterAnswerQuestion(){
-        questionScoreView.setText("Question score:" + time);
+        //questionScoreView.setText("Question score:" + time);
+        questionScoreViewScore.setText(String.valueOf(time));
         if(answerCounter == 11){
-            totalScoreNextView.setText("Total score X 2:" + totalPoints);
+            totalScoreNextView.setText("Total score X 2:");
         }
         else{
-            totalScoreNextView.setText("Total score:" + totalPoints);
+            totalScoreNextView.setText("Total score:");
+            totalScoreViewPoints.setText(String.valueOf(totalPoints));
         }
+        totalScoreViewPoints.setText(String.valueOf(totalPoints));
 
     }
 
@@ -605,6 +612,8 @@ public class PlayActivity extends AppCompatActivity {
         materialCardView.setVisibility(View.VISIBLE);
         firstLineButtonsLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
+        questionScoreViewScore.setVisibility(View.GONE);
+        totalScoreViewPoints.setVisibility(View.GONE);
     }
 
     public void nextQuestionSetup(View view){
