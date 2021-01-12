@@ -78,13 +78,14 @@ public class EditDataActivity extends AppCompatActivity {
         }
 
         if (LoggedUserData.userNameList.contains(newUserName)) {
-            Toast.makeText(getBaseContext(), "User name exists!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "Username exists!", Toast.LENGTH_SHORT).show();
             return;
 
         }
         LoggedUserData.loggedUserName = newUserName;
         HashMap<String, Object> map = populateMap();
         FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
+        Toast.makeText(getBaseContext(), "Username changed successfully!", Toast.LENGTH_SHORT).show();
         newUserNameView.getText().clear();
 
     }

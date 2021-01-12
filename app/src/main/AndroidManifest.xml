@@ -11,15 +11,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/HiddenTitleTheme">
         <activity android:name=".game.GameSettingsActivity"
-            android:screenOrientation="nosensor"/>
+            android:screenOrientation="nosensor" />
         <activity
             android:name=".game.EditDataActivity"
             android:screenOrientation="nosensor" />
         <activity
             android:name=".game.GameActivity"
-            android:label="Game"
             android:screenOrientation="nosensor" />
         <activity
             android:name=".RegisterActivity"

@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
 
+
         <TextView
             android:id="@+id/totalScoreView"
             android:layout_width="wrap_content"
@@ -25,13 +26,32 @@
 
             />
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
         <ProgressBar
             android:id="@+id/progress_bar"
             style="@style/CircularDeterminateProgressBar"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
             tools:progress="0" />
+
+            <TextView
+                android:id="@+id/timerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="70dp"
+                android:layout_marginTop="35dp"
+                android:textSize = "20sp"
+                android:textColor="#000000"
+                android:layout_gravity="center_horizontal"
+                android:text="timer"
+                android:textAppearance="@style/ShapeAppearance.MaterialComponents.Tooltip"
+                tools:ignore="MissingConstraints" />
+
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/questionCounter"
@@ -46,17 +66,6 @@
             />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/timerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize = "20sp"
-        android:textColor="#000000"
-        android:layout_gravity="center_horizontal"
-        android:text="timer"
-        android:textAppearance="@style/ShapeAppearance.MaterialComponents.Tooltip"
-        tools:ignore="MissingConstraints" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"

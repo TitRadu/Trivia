@@ -9,56 +9,126 @@
     android:orientation="vertical"
     >
 
-    <Switch
-        android:id="@+id/sportCategorySwitch"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sport"
-        android:textSize="20sp"
-        android:textOff="OFF"
-        android:textOn="ON"
-        android:checked="true"
-        android:switchMinWidth="56dp"
-        android:layout_marginBottom="50dp"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="50dp">
 
-    <Switch
-        android:id="@+id/geographyCategorySwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Geography"
-        android:textSize="20sp"
-        android:textOff="OFF"
-        android:textOn="ON"
-        android:checked="true"
-        android:switchMinWidth="56dp"
-        android:layout_marginBottom="50dp"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
-    <Switch
-        android:id="@+id/mathsCategorySwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Maths"
-        android:textSize="20sp"
-        android:textOff="OFF"
-        android:textOn="ON"
-        android:checked="true"
-        android:switchMinWidth="56dp"
-        android:layout_marginBottom="50dp"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="20dp">
 
-    <Switch
-        android:id="@+id/othersCategorySwitch"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/soccer" />
+
+            <Switch
+                android:id="@+id/sportCategorySwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sport"
+                android:textSize="15sp"
+                android:textOff="OFF"
+                android:textOn="ON"
+                android:checked="true"
+                android:switchMinWidth="56dp"
+                android:layout_marginLeft="20dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="70dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/earth" />
+
+
+            <Switch
+                android:id="@+id/geographyCategorySwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Geography"
+                android:textSize="15sp"
+                android:textOff="OFF"
+                android:textOn="ON"
+                android:checked="true"
+                android:switchMinWidth="56dp"
+                android:layout_marginLeft="10dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Others"
-        android:textSize="20sp"
-        android:textOff="OFF"
-        android:textOn="ON"
-        android:checked="true"
-        android:switchMinWidth="56dp"
-        android:layout_marginBottom="50dp"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/function" />
+
+            <Switch
+                android:id="@+id/mathsCategorySwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Maths"
+                android:textSize="15sp"
+                android:textOff="OFF"
+                android:textOn="ON"
+                android:checked="true"
+                android:switchMinWidth="56dp"
+                android:layout_marginLeft="20dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="70dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/question" />
+
+
+            <Switch
+                android:id="@+id/othersCategorySwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Others"
+                android:textSize="15sp"
+                android:textOff="OFF"
+                android:textOn="ON"
+                android:checked="true"
+                android:switchMinWidth="56dp"
+                android:layout_marginLeft="20dp"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/playBtn"
@@ -66,7 +136,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/custom_botton_design_corners"
-        android:layout_margin="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="100dp"
+
         android:text="Play"
         android:onClick="openPlayActivity"/>
 

@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 import static com.example.triviaapp.LoggedUserData.MIC;
 import static com.example.triviaapp.LoggedUserData.optionList;
 
@@ -415,19 +416,17 @@ public class PlayActivity extends AppCompatActivity {
         if(userAnswer.equals(correctAnswer)){
             calculatePoints();
             answerCheck = true;
-            question.setText("Corect Answer!");
-            //view.setBackgroundResource(R.drawable.custom_botton_design_corners_green);
             answerCounter++;
             if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints*2;
-                sendPointsToDatabase(questionCounter, "You won!");
+                sendPointsToDatabase();
             }
         }
         else{
             ((SubmitButton) view).setBtn_LineColor(Color.RED);
             ((SubmitButton) view).setAnimationColor(Color.RED);
             LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
-            sendPointsToDatabase(question, "Wrong Answer!");
+            sendPointsToDatabase();
             answerCheck = false;
 
         }
@@ -439,8 +438,7 @@ public class PlayActivity extends AppCompatActivity {
         time = time + d;
         totalPoints = totalPoints + time;
         totalScoreView.setText("Score:\n   " + totalPoints);
-        Log.d("Punctaj Intrebare" + answerCounter,String.valueOf(time));
-        Log.d("Punctaj Total",String.valueOf(totalPoints));
+
     }
 
     private void setExtraTimeForMicrophone() {
@@ -471,10 +469,9 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
-    private void sendPointsToDatabase(TextView question, String s) {
+    private void sendPointsToDatabase() {
         populateMapWithUserData();
         FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
-        question.setText(s);
 
     }
 
@@ -515,7 +512,7 @@ public class PlayActivity extends AppCompatActivity {
            @Override
            public void onTick(long millisUntilFinished) {
                if(touchDisabled){
-                   timerView.setText("You answered!");
+                   question.setText("You answered!");
                    cancel();
                    return;
 
@@ -525,14 +522,20 @@ public class PlayActivity extends AppCompatActivity {
                    progressBarPercent+=10;
                    updateProgressBar();
                }
+               if(millisUntilFinished >= 10000){
+                   timerView.setText(String.valueOf(millisUntilFinished / 1000));
 
-               timerView.setText(String.valueOf(millisUntilFinished / 1000));
+               }else{
+                   timerView.setText(EMPTYSTRING + millisUntilFinished / 1000);
+
+               }
+
 
            }
 
            @Override
            public void onFinish() {
-               timerView.setText("Time expired!");
+               question.setText("Time expired!");
                populateMapWithUserData();
                FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
                LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
@@ -572,14 +575,14 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void setTextAfterAnswerQuestion(){
-        //questionScoreView.setText("Question score:" + time);
         questionScoreViewScore.setText(String.valueOf(time));
         if(answerCounter == 11){
             totalScoreNextView.setText("Total score X 2:");
+
         }
         else{
             totalScoreNextView.setText("Total score:");
-            totalScoreViewPoints.setText(String.valueOf(totalPoints));
+
         }
         totalScoreViewPoints.setText(String.valueOf(totalPoints));
 
@@ -628,10 +631,6 @@ public class PlayActivity extends AppCompatActivity {
         btnB.resetButton();
         btnC.resetButton();
         btnD.resetButton();
-//        btnA.setBackgroundResource(R.drawable.custom_botton_design_corners);
-//        btnB.setBackgroundResource(R.drawable.custom_botton_design_corners);
-//        btnC.setBackgroundResource(R.drawable.custom_botton_design_corners);
-//        btnD.setBackgroundResource(R.drawable.custom_botton_design_corners);
         questionCounter.setText("Question:\n   " + answerCounter + " / 10");
         setQuestion(questions);
         setAnswers(answers);

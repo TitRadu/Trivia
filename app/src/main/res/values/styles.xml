@@ -10,5 +10,9 @@
         <item name="android:indeterminateOnly">false</item>
         <item name="android:progressDrawable">@drawable/timer_circle</item>
     </style>
+    <style name="HiddenTitleTheme" parent="AppTheme">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
 
 </resources>

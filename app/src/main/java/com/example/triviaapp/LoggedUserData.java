@@ -16,6 +16,7 @@ public class LoggedUserData{
     public static List<User> ranksList = null;
     public static List<Option> optionList;
 
+    public static final String EMPTYSTRING = " ";
     public static final int MIC = 0;
     public static final int SPORT = 1;
     public static final int GEO = 2;

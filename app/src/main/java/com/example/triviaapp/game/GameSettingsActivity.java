@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 
 import static com.example.triviaapp.LoggedUserData.*;
