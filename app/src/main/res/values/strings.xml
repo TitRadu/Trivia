@@ -4,4 +4,17 @@
     <string name="title_home">Profile</string>
     <string name="title_dashboard">Score</string>
     <string name="title_notifications">Game</string>
+    <string name="helpText">Cum se joaca:
+In momentul in care apesi butonul Start, se va afisa prima intrebare. Ai timp 30 de secunde sa raspunzi
+la intrebare. Dupa fiecare intrebare la care s-a raspuns corect va aparea un meniu intermediar in care vei putea vedea punctajul total acumulat in jocul curent si punctajul obtinut
+obtinut pe intrebarea curenta.
+Ai 2 optiuni de alegere a raspunsului: prin atingerea butonului corespunzator variantei dorite sau cu ajutorul
+comenzii vocale daca acesta este activat(poate fi activat/dezactivat din meniul de start sau din meniul intermediar).
+Aceeasi situatie o avem si in meniul intermediar: pentru a trece la urmatoarea intrebare poti folosi comanda vocala, rostind "Next", sau apasand butonul "NEXT".
+Un joc dureaza 10 intrebari.
+
+Cum se puncteaza:
+Pe fiecare intrebarea primesti atatea puncte cate secunde au ramas de la afisarea intrebarii. In cazul in care folosesti comanda vocala, atunci vei primi un bonus la un raspuns corect
+, acest bonus acoperind timpul pierdut pana ce microfonul repereaza ceea ce spui. Daca gresesti la o intrebare nu vei primi punctaj pe acea intrebare si vei fi trimis care pagina de profil
+la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar.</string>
 </resources>
