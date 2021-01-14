@@ -11,14 +11,14 @@
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:text="Username"
+        android:layout_marginTop="30dp"
+        android:text="New username"
         android:textColor="#000000"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:textSize="20sp" />
 
     <EditText
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/newUserNameView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,9 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/newUserNameView"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
-        android:text="New password "
+        android:text="Old password "
         android:textColor="#000000"
         android:textSize="20sp" />
 
@@ -50,10 +50,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/oldPasswordView"
-        android:layout_marginTop="20dp"
-        android:text="Old password "
+        android:layout_marginTop="10dp"
+        android:text="New password "
         android:textColor="#000000"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:textSize="20sp" />
 
 
@@ -62,17 +62,53 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/oldPasswordView"
-        android:layout_marginLeft="150dp"
+        android:layout_marginStart="150dp"
         android:textColor="#000000"
         android:textSize="20sp"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="30dp"
         android:inputType="textPassword"/>
+
+    <TextView
+        android:id="@+id/chooseLanguageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/newPasswordView"
+        android:text="Choose language:"
+        android:textSize="20dp"
+        android:textColor="#000000">
+
+    </TextView>
+
+    <RadioGroup
+        android:id="@+id/chooseLanguageRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/chooseLanguageTextView">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ROM">
+
+        </RadioButton>
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ENG">
+
+        </RadioButton>
+
+    </RadioGroup>
 
     <Button
         android:id="@+id/editButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/newPasswordView"
+        android:layout_below="@+id/chooseLanguageRadioGroup"
         android:layout_centerHorizontal="true"
         android:text="Edit"
         android:background="@drawable/custom_botton_design_corners"

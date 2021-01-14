@@ -82,7 +82,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     public void setViews(){
-        questionScoreViewScore = findViewById(R.id.totalScoreNextViewScore);
+        questionScoreViewScore = findViewById(R.id.questionScoreViewPoints);
         totalScoreViewPoints = findViewById(R.id.totalScoreNextViewPoints);
         userAnswer = "";
         btnA = findViewById(R.id.varA);

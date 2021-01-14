@@ -209,10 +209,9 @@
         />
 
     <TextView
-        android:id="@+id/totalScoreNextViewScore"
+        android:id="@+id/questionScoreViewPoints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Score:"
         android:textSize = "20sp"
         android:textColor="#000000"
         android:visibility="gone"
@@ -223,7 +222,7 @@
         android:id="@+id/totalScoreNextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total points:"
+        android:text="Total score:"
         android:textSize = "20sp"
         android:textColor="#000000"
         android:visibility="gone"
@@ -233,7 +232,6 @@
         android:id="@+id/totalScoreNextViewPoints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Points"
         android:textSize = "20sp"
         android:textColor="#000000"
         android:visibility="gone"

@@ -44,13 +44,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean inputCheck(String userName, String email, String password){
         if(email.isEmpty()){
-            Toast.makeText(this,"Introduce a email!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Introduce an email!",Toast.LENGTH_SHORT).show();
             return false;
 
         }
 
         if(userName.isEmpty()){
-            Toast.makeText(this,"Introduce a user name!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Introduce an user name!",Toast.LENGTH_SHORT).show();
             return false;
 
         }
@@ -102,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(getBaseContext(), "Failed to create account!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(), "Email exists!", Toast.LENGTH_SHORT).show();
 
                         }
                     }
