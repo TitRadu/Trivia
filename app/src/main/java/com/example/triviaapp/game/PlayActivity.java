@@ -49,7 +49,7 @@ public class PlayActivity extends AppCompatActivity {
 
     public static final int TOTAL_QUESTION_TO_WIN_GAME = 11;
     String userAnswer, correctAnswer, voiceInput = null;
-    Button  nextQuestionButton;
+    Button  nextQuestionButton, tryAgainButton;
     SubmitButton btnA,btnB, btnC, btnD, selectedThroughVoiceOption;
     TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView,questionScoreViewScore,totalScoreViewPoints;
     Switch aSwitch;
@@ -101,6 +101,7 @@ public class PlayActivity extends AppCompatActivity {
         firstLineButtonsLayout = findViewById(R.id.firstLineButtonsLayout);
         infoLayout = findViewById(R.id.infoLayout);
         nextQuestionButton = findViewById(R.id.nextQuestionButton);
+        tryAgainButton = findViewById(R.id.tryAgainButton);
         questionScoreView = findViewById(R.id.questionScoreView);
         totalScoreNextView = findViewById(R.id.totalScoreNextView);
         progressBar = findViewById(R.id.progress_bar);
@@ -117,7 +118,7 @@ public class PlayActivity extends AppCompatActivity {
 
 
     private void updateProgressBar(){
-         progressBar.setProgress(progressBarPercent);
+        progressBar.setProgress(progressBarPercent);
     }
 
     private void speechInitialize(){
@@ -392,6 +393,13 @@ public class PlayActivity extends AppCompatActivity {
             case "next":
                 nextQuestionButton.callOnClick();
                 break;
+            case "Try again":
+            case "try again":
+                if(tryAgainButton.getVisibility() == View.VISIBLE){
+                    tryAgainButton.callOnClick();
+                    return;
+
+                }
             default:
                 Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();
@@ -411,9 +419,9 @@ public class PlayActivity extends AppCompatActivity {
             }
         }
         ((SubmitButton) view).startAnimation();
-        setExtraTimeForMicrophone();
         getUserAnswer(view);
         if(userAnswer.equals(correctAnswer)){
+            setExtraTimeForMicrophone();
             calculatePoints();
             answerCheck = true;
             answerCounter++;
@@ -485,13 +493,6 @@ public class PlayActivity extends AppCompatActivity {
 
     private void delay(int delay) {
         new Handler().postDelayed(() -> {
-            if(!answerCheck) {
-                Intent intent = new Intent(this, GameActivity.class);
-                startActivity(intent);
-                finishAndRemoveTask();
-                return;
-
-            }
             progressBarPercent = 0;
             progressBar.setProgress(progressBarPercent);
             hideQuestionSetup();
@@ -509,48 +510,47 @@ public class PlayActivity extends AppCompatActivity {
         prev[0]=0;
         new CountDownTimer(30000, 1) {
 
-           @Override
-           public void onTick(long millisUntilFinished) {
-               if(touchDisabled){
-                   question.setText("You answered!");
-                   cancel();
-                   return;
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if(touchDisabled){
+                    question.setText("You answered!");
+                    cancel();
+                    return;
 
-               }
-               if(millisUntilFinished / 1000 % 3 ==0 && millisUntilFinished / 1000 != prev[0]){
-                   prev[0] = millisUntilFinished / 1000;
-                   progressBarPercent+=10;
-                   updateProgressBar();
-               }
-               if(millisUntilFinished >= 10000){
-                   timerView.setText(String.valueOf(millisUntilFinished / 1000));
+                }
+                if(millisUntilFinished / 1000 % 3 ==0 && millisUntilFinished / 1000 != prev[0]){
+                    prev[0] = millisUntilFinished / 1000;
+                    progressBarPercent+=10;
+                    updateProgressBar();
+                }
+                if(millisUntilFinished >= 10000){
+                    timerView.setText(String.valueOf(millisUntilFinished / 1000));
 
-               }else{
-                   timerView.setText(EMPTYSTRING + millisUntilFinished / 1000);
+                }else{
+                    timerView.setText(EMPTYSTRING + millisUntilFinished / 1000);
 
-               }
+                }
 
+            }
 
-           }
+            @Override
+            public void onFinish() {
+                question.setText("Time expired!");
+                populateMapWithUserData();
+                FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
+                LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
+                finishAndRemoveTask();
+                Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+                startActivity(intent);
 
-           @Override
-           public void onFinish() {
-               question.setText("Time expired!");
-               populateMapWithUserData();
-               FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
-               LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
-               finishAndRemoveTask();
-               Intent intent = new Intent(getApplicationContext(), GameActivity.class);
-               startActivity(intent);
+            }
 
-           }
-
-       }.start();
+        }.start();
 
     }
 
     private boolean isGameFinished(){
-        if(answerCounter == 11){
+        if(answerCounter == 11 || !answerCheck){
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
             finishAndRemoveTask();
@@ -566,6 +566,10 @@ public class PlayActivity extends AppCompatActivity {
         materialCardView.setVisibility(View.GONE);
         firstLineButtonsLayout.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.VISIBLE);
+        if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME || !answerCheck) {
+            tryAgainButton.setVisibility(View.VISIBLE);
+
+        }
         questionScoreView.setVisibility(View.VISIBLE);
         totalScoreNextView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.INVISIBLE);
@@ -576,15 +580,15 @@ public class PlayActivity extends AppCompatActivity {
 
     private void setTextAfterAnswerQuestion(){
         questionScoreViewScore.setText(String.valueOf(time));
-        if(answerCounter == 11){
-            totalScoreNextView.setText("Total score X 2:");
+        totalScoreNextView.setText("Total score:");
+        if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
+            totalScoreViewPoints.setText(String.valueOf(totalPoints) + " X 2");
 
         }
         else{
-            totalScoreNextView.setText("Total score:");
+            totalScoreViewPoints.setText(String.valueOf(totalPoints));
 
         }
-        totalScoreViewPoints.setText(String.valueOf(totalPoints));
 
     }
 
@@ -608,6 +612,7 @@ public class PlayActivity extends AppCompatActivity {
     private void showQuestionSetup(){
         aSwitch.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.GONE);
+        tryAgainButton.setVisibility(View.GONE);
         questionScoreView.setVisibility(View.GONE);
         totalScoreNextView.setVisibility(View.GONE);
         infoLayout.setVisibility(View.VISIBLE);
@@ -625,12 +630,14 @@ public class PlayActivity extends AppCompatActivity {
         }
         if(isGameFinished()){
             return;
+
         }
         showQuestionSetup();
         btnA.resetButton();
         btnB.resetButton();
         btnC.resetButton();
         btnD.resetButton();
+        time = 0;
         questionCounter.setText("Question:\n   " + answerCounter + " / 10");
         setQuestion(questions);
         setAnswers(answers);
@@ -641,6 +648,13 @@ public class PlayActivity extends AppCompatActivity {
             getSpeechInput();
         }
         timer();
+    }
+
+    public void tryAgain(View view){
+        Intent intent = new Intent(this, GameSettingsActivity.class);
+        startActivity(intent);
+        finishAndRemoveTask();
+
     }
 
 }

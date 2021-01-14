@@ -12,6 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/HiddenTitleTheme">
+        <activity android:name=".game.HelpActivity"
+            android:screenOrientation="nosensor" />
         <activity android:name=".game.GameSettingsActivity"
             android:screenOrientation="nosensor" />
         <activity
