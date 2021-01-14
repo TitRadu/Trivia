@@ -128,14 +128,22 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
+    private String getLanguage(String param){
+        if(LoggedUserData.language.equals("en")){
+            return param.concat("En");
+        }else{
+            return param;
+        }
+    }
     private void readQuestionData(final  FirebaseCallback firebaseCallback){
         FirebaseHelper.questionDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String nodeQuestion = getLanguage("question");
                 if(questions.isEmpty()) {
                     for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                         Question question = new Question(Integer.parseInt(dataSnapshot1.getKey()),
-                                dataSnapshot1.child("question").getValue(String.class),
+                                dataSnapshot1.child(nodeQuestion).getValue(String.class),
                                 dataSnapshot1.child("category").getValue(String.class));
 
                         for(Option o : optionList)
@@ -162,11 +170,12 @@ public class PlayActivity extends AppCompatActivity {
         FirebaseHelper.answerDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String answerNode=getLanguage("answer");
                 if(answers.isEmpty()) {
                     for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
                         Answer a = new Answer
                                 (Integer.parseInt(dataSnapshot1.getKey()),
-                                        dataSnapshot.child(String.valueOf(dataSnapshot1.getKey())).child("answer").getValue(String.class),
+                                        dataSnapshot.child(String.valueOf(dataSnapshot1.getKey())).child(answerNode).getValue(String.class),
                                         dataSnapshot.child(String.valueOf(dataSnapshot1.getKey())).child("correct").getValue(Boolean.class),
                                         dataSnapshot.child(String.valueOf(dataSnapshot1.getKey())).child("questionId").getValue(Integer.class)
                                 );

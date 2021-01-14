@@ -22,5 +22,5 @@ public class LoggedUserData{
     public static final int GEO = 2;
     public static final int MATHS = 3;
     public static final int OTHERS = 4;
-
+    public static String language="en";
 }
