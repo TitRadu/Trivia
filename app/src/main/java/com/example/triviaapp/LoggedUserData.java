@@ -1,5 +1,7 @@
 package com.example.triviaapp;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.triviaapp.rank.User;
 
 import java.util.List;
@@ -22,5 +24,6 @@ public class LoggedUserData{
     public static final int GEO = 2;
     public static final int MATHS = 3;
     public static final int OTHERS = 4;
-    public static String language="en";
+    public static MutableLiveData<String> language= new MutableLiveData<>();
+
 }

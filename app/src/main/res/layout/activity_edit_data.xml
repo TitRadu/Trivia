@@ -89,16 +89,18 @@
         android:layout_below="@+id/chooseLanguageTextView">
 
         <RadioButton
+            android:id="@+id/engLanguageRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ROM">
+            android:text="ENG">
 
         </RadioButton>
 
         <RadioButton
+            android:id="@+id/romLanguageRadioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ENG">
+            android:text="ROM">
 
         </RadioButton>
 

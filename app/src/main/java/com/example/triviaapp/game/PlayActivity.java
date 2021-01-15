@@ -129,7 +129,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private String getLanguage(String param){
-        if(LoggedUserData.language.equals("en")){
+        if(LoggedUserData.language.equals("english")){
             return param.concat("En");
         }else{
             return param;

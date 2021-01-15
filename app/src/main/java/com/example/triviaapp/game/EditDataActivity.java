@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.triviaapp.FirebaseHelper;
@@ -26,6 +29,8 @@ import java.util.HashMap;
 public class EditDataActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     EditText newUserNameView, oldPasswordView, newPasswordView, passwordDeleteView;
+    RadioGroup chooseLanguageRadioGroup;
+    RadioButton engRadioButton, romRadioButton;
     Button confirmDeleteButton;
 
 
@@ -34,6 +39,9 @@ public class EditDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_data);
         initializeViews();
+        initializeRadioGroup();
+        languageChangeListener();
+
     }
 
     private void initializeViews(){
@@ -42,7 +50,48 @@ public class EditDataActivity extends AppCompatActivity {
         oldPasswordView = findViewById(R.id.oldPasswordView);
         newPasswordView = findViewById(R.id.newPasswordView);
         passwordDeleteView = findViewById(R.id.passwordDeleteView);
+        chooseLanguageRadioGroup = findViewById(R.id.chooseLanguageRadioGroup);
+        engRadioButton = findViewById(R.id.engLanguageRadioButton);
+        romRadioButton = findViewById(R.id.romLanguageRadioButton);
         confirmDeleteButton = findViewById(R.id.confirmDeleteButton);
+
+    }
+
+    private void initializeRadioGroup(){
+        String language = LoggedUserData.language.getValue();
+
+        switch (language){
+            case "english":
+                chooseLanguageRadioGroup.check(engRadioButton.getId());
+                break;
+            case "romanian":
+                chooseLanguageRadioGroup.check(romRadioButton.getId());
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + language);
+        }
+
+    }
+
+    private void languageChangeListener(){
+        SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+        chooseLanguageRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch(checkedId){
+                case R.id.engLanguageRadioButton:
+                    LoggedUserData.language.setValue("english");
+                    editor.putString("language","english");
+                    editor.apply();
+                    break;
+                case R.id.romLanguageRadioButton:
+                    LoggedUserData.language.setValue("romanian");
+                    editor.putString("language","romanian");
+                    editor.apply();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + checkedId);
+            }
+
+        });
 
     }
 

@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 
 import android.Manifest;
 import android.content.Intent;
@@ -12,8 +14,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.triviaapp.game.GameActivity;
@@ -41,16 +45,20 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout forgotPasswordLayout;
 
+    Button createAccountButton, sendMailButton;
+    TextView forgotPasswordTextView;
+    String emptyMailToast, emptyPasswordToast, successDataToast, wrongDataToast, successSendMailToast, wrongMailToast, audioGrantedToast, audioDeniedToast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initializeMicrophoneStatusAndCategoriesOptions();
         initializeViews();
         initializeUserNameList();
-        initializeOptionList();
-        initializeMicrophoneStatusAndCategoriesOptions();
         initializeLoggedUser();
         verifyAudioPermission();
+        languageChangeListener();
 
 
     }
@@ -65,6 +73,74 @@ public class MainActivity extends AppCompatActivity {
         forgotPasswordLayout = findViewById(R.id.forgotPasswordLayout);
         firebaseAuth = FirebaseAuth.getInstance();
 
+        createAccountButton = findViewById(R.id.createAccountButton);
+        sendMailButton = findViewById(R.id.sendMailButton);
+        forgotPasswordTextView = findViewById(R.id.tv_forgotPassword);
+
+        switch (LoggedUserData.language.getValue()){
+            case "english":
+                setViewForEnglishLanguage();
+                break;
+            case "romanian":
+                setViewForRomanianLanguage();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+        }
+
+    }
+
+    private void setViewForEnglishLanguage(){
+        passwordInput.setHint(R.string.passwordHintLogRegEditEn);
+        createAccountButton.setText(R.string.createButtonLogRegEn);
+        forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogEn);
+        sendMailButton.setText(R.string.sendMailButtonLogEn);
+        emptyMailToast = getString(R.string.emptyMailToastLogRegEn);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEn);
+        successDataToast = getString(R.string.successDataToastLogEn);
+        wrongDataToast = getString(R.string.wrongDataToastLogEn);
+        successSendMailToast = getString(R.string.successSendMailToastLogEn);
+        wrongMailToast = getString(R.string.wrongMailToastLogEn);
+        audioGrantedToast = getString(R.string.audioGrantedToastLogEn);
+        audioDeniedToast = getString(R.string.audioDeniedToastLogEn);
+
+    }
+
+    private void setViewForRomanianLanguage(){
+        passwordInput.setHint(R.string.passwordHintLogRegEditRou);
+        createAccountButton.setText(R.string.createButtonLogRegRou);
+        forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogRou);
+        sendMailButton.setText(R.string.sendMailButtonLogRou);
+        emptyMailToast = getString(R.string.emptyMailToastLogRegRou);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegRou);
+        successDataToast = getString(R.string.successDataToastLogRou);
+        wrongDataToast = getString(R.string.wrongDataToastLogRou);
+        successSendMailToast = getString(R.string.successSendMailToastLogRou);
+        wrongMailToast = getString(R.string.wrongMailToastLogRou);
+        audioGrantedToast = getString(R.string.audioGrantedToastLogRou);
+        audioDeniedToast = getString(R.string.audioDeniedToastLogRou);
+
+    }
+
+    private void languageChangeListener(){
+
+        LoggedUserData.language.observeForever(new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                switch (LoggedUserData.language.getValue()){
+                    case "english":
+                        setViewForEnglishLanguage();
+                        break;
+                    case "romanian":
+                        setViewForRomanianLanguage();
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+                }
+
+            }
+        });
+
     }
 
     private void initializeLoggedUser(){
@@ -78,13 +154,13 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean inputCheck(String email, String password){
         if(email.isEmpty()){
-            Toast.makeText(this,"Introduce an email!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,emptyMailToast,Toast.LENGTH_SHORT).show();
             return false;
 
         }
 
         if(password.isEmpty()){
-            Toast.makeText(this,"Introduce a password!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,emptyPasswordToast,Toast.LENGTH_SHORT).show();
             return false;
 
         }
@@ -108,32 +184,32 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         }
-            firebaseAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                LoggedUserData.loggedUserPassword = password;
-                                Toast.makeText(getBaseContext(), "Succes!", Toast.LENGTH_SHORT).show();
-                                updateUI();
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(getBaseContext(), "Email or password incorrect!", Toast.LENGTH_SHORT).show();
-
-                            }
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            LoggedUserData.loggedUserPassword = password;
+                            Toast.makeText(getBaseContext(), successDataToast, Toast.LENGTH_SHORT).show();
+                            updateUI();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(getBaseContext(), wrongDataToast, Toast.LENGTH_SHORT).show();
 
                         }
-                    });
 
-        }
+                    }
+                });
 
-        private void updateUI(){
-            LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-            Intent intent = new Intent(this, GameActivity.class);
-            startActivity(intent);
+    }
 
-        }
+    private void updateUI(){
+        LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        Intent intent = new Intent(this, GameActivity.class);
+        startActivity(intent);
+
+    }
 
     private void initializeUserNameList(){
         FirebaseHelper.userDatabaseReference.addValueEventListener(new ValueEventListener() {
@@ -178,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
         String email = forgotPasswordEmailInput.getText().toString();
 
         if(email.isEmpty()){
-            Toast.makeText(this,"Introduce an email!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,emptyMailToast,Toast.LENGTH_SHORT).show();
             return;
 
         }
@@ -187,10 +263,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "A reset-password mail was send!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), successSendMailToast, Toast.LENGTH_SHORT).show();
 
                 }else{
-                    Toast.makeText(getApplicationContext(), "Incorrect mail!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), wrongMailToast, Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -219,10 +295,10 @@ public class MainActivity extends AppCompatActivity {
 
         if(requestCode == RECORD_AUDIO && grantResults.length > 0){
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Audio record granted!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, audioGrantedToast, Toast.LENGTH_SHORT).show();
 
             }else{
-                Toast.makeText(this, "Audio record denied!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, audioDeniedToast, Toast.LENGTH_SHORT).show();
 
             }
 
@@ -241,6 +317,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeMicrophoneStatusAndCategoriesOptions(){
+        initializeOptionList();
+
         SharedPreferences prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
         String data;
 
@@ -248,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
             data = prefs.getString(option.getName(),"Key not found!");
 
             if(data.equals("Key not found!")){
-                SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = prefs.edit();
                 editor.putString(option.getName(),"true");
                 editor.apply();
                 option.setValue(true);
@@ -257,6 +335,18 @@ public class MainActivity extends AppCompatActivity {
                 option.setValue(data.equals("true"));
 
             }
+
+        }
+
+        data = prefs.getString("language", "Key not found!");
+        if(data.equals("Key not found!")){
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("language","english");
+            LoggedUserData.language.setValue("english");
+            editor.apply();
+
+        }else{
+            LoggedUserData.language.setValue(data);
 
         }
 

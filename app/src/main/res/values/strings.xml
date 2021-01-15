@@ -28,8 +28,18 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="emptyMailToastLogRegRou">Introduceti un email!</string>
     <string name="emptyPasswordToastLogRegEn">Introduce a password!</string>
     <string name="emptyPasswordToastLogRegRou">Introduceti o parola!</string>
+    <string name="successDataToastLogEn">Connected!</string>
+    <string name="successDataToastLogRou">Conectat!</string>
     <string name="wrongDataToastLogEn">Email or password incorrect!</string>
     <string name="wrongDataToastLogRou">Email sau parola incorecte!</string>
+    <string name="successSendMailToastLogEn">A reset-password mail was send!</string>
+    <string name="successSendMailToastLogRou">Un mail de schimbare a parolei a fost trimis!</string>
+    <string name="wrongMailToastLogEn">Incorrect mail!</string>
+    <string name="wrongMailToastLogRou">Mail gresit!</string>
+    <string name="audioGrantedToastLogEn">Audio record granted!</string>
+    <string name="audioGrantedToastLogRou">Inregistrarea audio permisa!</string>
+    <string name="audioDeniedToastLogEn">Audio record denied!</string>
+    <string name="audioDeniedToastLogRou">Inregistrarea audio respinsa!</string>
 
     <string name="alreadyHaveTextViewRegEn">Already have an account?</string>
     <string name="alreadyHaveTextViewRegRou">Aveti deja un cont?</string>
