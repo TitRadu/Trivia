@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
@@ -25,6 +27,7 @@ import com.example.triviaapp.rank.User;
 import com.example.triviaapp.rank.RankSorter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,8 +44,8 @@ public class HomeFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     Button editActivityButton, signOutButton;
-
     TextView userNameView, emailView, pointsView, placeView;
+    String emailTextViewString, placeTextViewString, pointsTextViewString;
 
 
 
@@ -54,8 +57,16 @@ public class HomeFragment extends Fragment {
         initializeViews(root);
         searchLoggedUser(LoggedUserData.loggedUserEmail);
         setOnClickListeners();
+        languageChangeListener();
 
         return root;
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        userNameView.setText(LoggedUserData.loggedUserName);
 
     }
 
@@ -67,8 +78,53 @@ public class HomeFragment extends Fragment {
         placeView = root.findViewById(R.id.placeView);
         signOutButton = root.findViewById(R.id.btn_sign_out_profile);
         userNameView = root.findViewById(R.id.userNameView);
-
         editActivityButton = root.findViewById(R.id.btn_edit_data);
+
+        chooseLanguage();
+
+    }
+
+    private void setViewForEnglishLanguage(){
+        emailTextViewString = getString(R.string.emailTextViewProfileEn);
+        placeTextViewString = getString(R.string.placeTextViewProfileEn);
+        pointsTextViewString = getString(R.string.pointsTextViewProfileEn);
+        editActivityButton.setText(R.string.editButtonProfileEditEn);
+        signOutButton.setText(R.string.signOutButtonProfileEn);
+
+    }
+
+
+    private void setViewForRomanianLanguage(){
+        emailTextViewString = getString(R.string.emailTextViewProfileRou);
+        placeTextViewString = getString(R.string.placeTextViewProfileRou);
+        pointsTextViewString = getString(R.string.pointsTextViewProfileRou);
+        editActivityButton.setText(R.string.editButtonProfileEditRou);
+        signOutButton.setText(R.string.signOutButtonProfileRou);
+
+    }
+
+    private void chooseLanguage(){
+        switch (LoggedUserData.language.getValue()){
+            case "english":
+                setViewForEnglishLanguage();
+                break;
+            case "romanian":
+                setViewForRomanianLanguage();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+        }
+
+    }
+
+    private void languageChangeListener(){
+        LoggedUserData.language.observeForever(s -> {
+            chooseLanguage();
+            emailView.setText(emailTextViewString + LoggedUserData.loggedUserEmail);
+            pointsView.setText(pointsTextViewString + LoggedUserData.loggedUserPoints);
+            placeView.setText(placeTextViewString + LoggedUserData.loggedUserPlace);
+
+        });
 
     }
 
@@ -118,9 +174,9 @@ public class HomeFragment extends Fragment {
 
                         LoggedUserData.loggedUserPassword = user.getPassword();
 
-                        emailView.setText("Signed as " + LoggedUserData.loggedUserEmail);
+                        emailView.setText(emailTextViewString + LoggedUserData.loggedUserEmail);
                         userNameView.setText(LoggedUserData.loggedUserName);
-                        pointsView.setText("Points:" + LoggedUserData.loggedUserPoints);
+                        pointsView.setText(pointsTextViewString + LoggedUserData.loggedUserPoints);
 
 
                     }
@@ -131,7 +187,7 @@ public class HomeFragment extends Fragment {
                 for (User rank1 : LoggedUserData.ranksList) {
                     if (rank1.getUserName().equals(LoggedUserData.loggedUserName)) {
                         LoggedUserData.loggedUserPlace = LoggedUserData.ranksList.indexOf(rank1) + 1;
-                        placeView.setText("Place:" + LoggedUserData.loggedUserPlace);
+                        placeView.setText(placeTextViewString + LoggedUserData.loggedUserPlace);
 
                     }
 
@@ -159,7 +215,6 @@ public class HomeFragment extends Fragment {
     private void EditDataActivity(){
         Intent intent = new Intent(getContext(), EditDataActivity.class);
         startActivity(intent);
-        getActivity().finishAndRemoveTask();
 
     }
 

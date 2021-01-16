@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.triviaapp.FirebaseHelper;
@@ -28,10 +29,12 @@ import java.util.HashMap;
 
 public class EditDataActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
-    EditText newUserNameView, oldPasswordView, newPasswordView, passwordDeleteView;
+    EditText newUserNameEditView, oldPasswordEditView, newPasswordEditView, passwordDeleteView;
     RadioGroup chooseLanguageRadioGroup;
     RadioButton engRadioButton, romRadioButton;
-    Button confirmDeleteButton;
+    Button editButton, deleteButton, confirmDeleteButton;
+    TextView newUserNameTextView, oldPasswordTextView, newPasswordTextView, chooseLanguageTextView;
+    String existUserNameToast, successUserNameToast, wrongPasswordToast, shortPasswordToast, successPasswordToast, emptyPasswordToast, successDeleteToast;
 
 
     @Override
@@ -46,16 +49,75 @@ public class EditDataActivity extends AppCompatActivity {
 
     private void initializeViews(){
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        newUserNameView = findViewById(R.id.newUserNameView);
-        oldPasswordView = findViewById(R.id.oldPasswordView);
-        newPasswordView = findViewById(R.id.newPasswordView);
+        newUserNameEditView = findViewById(R.id.newUserNameEditView);
+        oldPasswordEditView = findViewById(R.id.oldPasswordEditView);
+        newPasswordEditView = findViewById(R.id.newPasswordEditView);
         passwordDeleteView = findViewById(R.id.passwordDeleteView);
         chooseLanguageRadioGroup = findViewById(R.id.chooseLanguageRadioGroup);
         engRadioButton = findViewById(R.id.engLanguageRadioButton);
         romRadioButton = findViewById(R.id.romLanguageRadioButton);
         confirmDeleteButton = findViewById(R.id.confirmDeleteButton);
+        newUserNameTextView = findViewById(R.id.newUserNameTextView);
+        oldPasswordTextView = findViewById(R.id.oldPasswordTextView);
+        newPasswordTextView = findViewById(R.id.newPasswordTextView);
+        chooseLanguageTextView = findViewById(R.id.chooseLanguageTextView);
+        editButton = findViewById(R.id.editButton);
+        deleteButton = findViewById(R.id.deleteButton);
+        chooseLanguage();
 
     }
+
+    private void setViewForEnglishLanguage(){
+        newUserNameTextView.setText(R.string.userNameTextViewEditEn);
+        oldPasswordTextView.setText(R.string.oldPasswordTextViewEditEn);
+        newPasswordTextView.setText(R.string.newPasswordTextViewEditEn);
+        chooseLanguageTextView.setText(R.string.chooseLanguageTextViewEditEn);
+        deleteButton.setText(R.string.deleteAccountButtonEditEn);
+        passwordDeleteView.setHint(R.string.passwordHintLogRegEditEn);
+        confirmDeleteButton.setText(R.string.confirmButtonEditEn);
+        existUserNameToast = getString(R.string.existUserNameToastRegEditEn);
+        successUserNameToast = getString(R.string.successUserNameToastEditEn);
+        wrongPasswordToast = getString(R.string.wrongPasswordToastEditEn);
+        shortPasswordToast = getString(R.string.shortPasswordToastRegEditEn);
+        successPasswordToast = getString(R.string.successPasswordToastEditEn);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditEn);
+        successDeleteToast = getString(R.string.successDeleteToastEditEn);
+
+    }
+
+
+    private void setViewForRomanianLanguage(){
+        newUserNameTextView.setText(R.string.userNameTextViewEditRou);
+        oldPasswordTextView.setText(R.string.oldPasswordTextViewEditRou);
+        newPasswordTextView.setText(R.string.newPasswordTextViewEditRou);
+        chooseLanguageTextView.setText(R.string.chooseLanguageTextViewEditRou);
+        deleteButton.setText(R.string.deleteAccountButtonEditRou);
+        passwordDeleteView.setHint(R.string.passwordHintLogRegEditRou);
+        confirmDeleteButton.setText(R.string.confirmButtonEditRou);
+        existUserNameToast = getString(R.string.existUserNameToastRegEditRou);
+        successUserNameToast = getString(R.string.successUserNameToastEditRou);
+        wrongPasswordToast = getString(R.string.wrongPasswordToastEditRou);
+        shortPasswordToast = getString(R.string.shortPasswordToastRegEditRou);
+        successPasswordToast = getString(R.string.successPasswordToastEditRou);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditRou);
+        successDeleteToast = getString(R.string.successDeleteToastEditRou);
+
+    }
+
+    private void chooseLanguage(){
+        switch (LoggedUserData.language.getValue()){
+            case "english":
+                setViewForEnglishLanguage();
+                break;
+            case "romanian":
+                setViewForRomanianLanguage();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+        }
+
+    }
+
 
     private void initializeRadioGroup(){
         String language = LoggedUserData.language.getValue();
@@ -78,11 +140,13 @@ public class EditDataActivity extends AppCompatActivity {
         chooseLanguageRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch(checkedId){
                 case R.id.engLanguageRadioButton:
+                    setViewForEnglishLanguage();
                     LoggedUserData.language.setValue("english");
                     editor.putString("language","english");
                     editor.apply();
                     break;
                 case R.id.romLanguageRadioButton:
+                    setViewForRomanianLanguage();
                     LoggedUserData.language.setValue("romanian");
                     editor.putString("language","romanian");
                     editor.apply();
@@ -105,15 +169,15 @@ public class EditDataActivity extends AppCompatActivity {
     }
 
     private void clearPasswordInputs(){
-        oldPasswordView.getText().clear();
-        newPasswordView.getText().clear();
+        oldPasswordEditView.getText().clear();
+        newPasswordEditView.getText().clear();
 
     }
 
     public void updateData(View view){
-        String newUserName = newUserNameView.getText().toString();
-        String oldPassword = oldPasswordView.getText().toString();
-        String newPassword = newPasswordView.getText().toString();
+        String newUserName = newUserNameEditView.getText().toString();
+        String oldPassword = oldPasswordEditView.getText().toString();
+        String newPassword = newPasswordEditView.getText().toString();
 
         updateUserName(newUserName);
         updatePassword(oldPassword, newPassword);
@@ -127,15 +191,15 @@ public class EditDataActivity extends AppCompatActivity {
         }
 
         if (LoggedUserData.userNameList.contains(newUserName)) {
-            Toast.makeText(getBaseContext(), "Username exists!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), existUserNameToast, Toast.LENGTH_SHORT).show();
             return;
 
         }
         LoggedUserData.loggedUserName = newUserName;
         HashMap<String, Object> map = populateMap();
         FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
-        Toast.makeText(getBaseContext(), "Username changed successfully!", Toast.LENGTH_SHORT).show();
-        newUserNameView.getText().clear();
+        Toast.makeText(getBaseContext(), successUserNameToast, Toast.LENGTH_SHORT).show();
+        newUserNameEditView.getText().clear();
 
     }
 
@@ -146,13 +210,13 @@ public class EditDataActivity extends AppCompatActivity {
         }
 
         if (!oldPassword.equals(LoggedUserData.loggedUserPassword)) {
-            Toast.makeText(getBaseContext(), "Actual password is incorrect!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), wrongPasswordToast, Toast.LENGTH_SHORT).show();
             return;
 
         }
 
         if (newPassword.length() < 6) {
-            Toast.makeText(getBaseContext(), "Password must contain minimum 6 characters!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), shortPasswordToast, Toast.LENGTH_SHORT).show();
             return;
 
         }
@@ -170,7 +234,7 @@ public class EditDataActivity extends AppCompatActivity {
                                 LoggedUserData.loggedUserPassword = newPassword;
                                 HashMap<String, Object> map = populateMap();
                                 FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
-                                Toast.makeText(getBaseContext(), "Password changed successfully!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), successPasswordToast, Toast.LENGTH_SHORT).show();
                                 clearPasswordInputs();
                             }else{
                                 Toast.makeText(getBaseContext(), "Change failed!", Toast.LENGTH_SHORT).show();
@@ -186,8 +250,6 @@ public class EditDataActivity extends AppCompatActivity {
     }
 
     public void exit(View view){
-        Intent intent = new Intent(this, GameActivity.class);
-        startActivity(intent);
         finishAndRemoveTask();
 
     }
@@ -209,13 +271,13 @@ public class EditDataActivity extends AppCompatActivity {
         String password = passwordDeleteView.getText().toString();
 
         if(password.isEmpty()){
-            Toast.makeText(getBaseContext(), "Introduce password!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), emptyPasswordToast, Toast.LENGTH_SHORT).show();
             return;
 
         }
 
         if (!password.equals(LoggedUserData.loggedUserPassword)) {
-            Toast.makeText(getBaseContext(), "Actual password is incorrect!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), wrongPasswordToast, Toast.LENGTH_SHORT).show();
             return;
 
         }
@@ -232,7 +294,7 @@ public class EditDataActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
                                 FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).removeValue();
-                                Toast.makeText(getBaseContext(), "User account deleted!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), successDeleteToast, Toast.LENGTH_SHORT).show();
                                 finishAndRemoveTask();
                             }else{
                                 Toast.makeText(getBaseContext(), "Delete failed!", Toast.LENGTH_SHORT).show();

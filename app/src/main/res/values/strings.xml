@@ -1,9 +1,12 @@
 <resources>
-    <string name="app_name">TriviaApp</string>
+    <string name="app_name">Trivia</string>
     <string name="title_activity_game">MainActivity</string>
-    <string name="title_home">Profile</string>
-    <string name="title_dashboard">Score</string>
-    <string name="title_notifications">Game</string>
+    <string name="title_profileEn">Profile</string>
+    <string name="title_profileRou">Profil</string>
+    <string name="title_scoreEn">Score</string>
+    <string name="title_scoreRou">Scor</string>
+    <string name="title_gameEn">Game</string>
+    <string name="title_gameRou">Joc</string>
     <string name="helpText">Cum se joaca:\n
 In momentul in care apesi butonul Start, se va afisa prima intrebare. Ai timp 30 de secunde sa raspunzi
 la intrebare. Dupa fiecare intrebare la care s-a raspuns corect va aparea un meniu intermediar in care vei putea vedea punctajul total acumulat in jocul curent si punctajul obtinut
@@ -18,6 +21,8 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
 
     <string name="passwordHintLogRegEditEn">password</string>
     <string name="passwordHintLogRegEditRou">parola</string>
+    <string name="logInButtonLogRegEn">Log In</string>
+    <string name="logInButtonLogRegRou">Conectează-te</string>
     <string name="createButtonLogRegEn">Create account</string>
     <string name="createButtonLogRegRou">Creează cont</string>
     <string name="forgotPasswordTextViewLogEn">Forgot Password</string>
@@ -26,8 +31,8 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="sendMailButtonLogRou">Trimite mail</string>
     <string name="emptyMailToastLogRegEn">Introduce an email!</string>
     <string name="emptyMailToastLogRegRou">Introduceti un email!</string>
-    <string name="emptyPasswordToastLogRegEn">Introduce a password!</string>
-    <string name="emptyPasswordToastLogRegRou">Introduceti o parola!</string>
+    <string name="emptyPasswordToastLogRegEditEn">Introduce a password!</string>
+    <string name="emptyPasswordToastLogRegEditRou">Introduceti o parola!</string>
     <string name="successDataToastLogEn">Connected!</string>
     <string name="successDataToastLogRou">Conectat!</string>
     <string name="wrongDataToastLogEn">Email or password incorrect!</string>
@@ -41,30 +46,38 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="audioDeniedToastLogEn">Audio record denied!</string>
     <string name="audioDeniedToastLogRou">Inregistrarea audio respinsa!</string>
 
+    <string name="userNameHintRegEn">username</string>
+    <string name="userNameHintRegRou">nume de utilizator</string>
     <string name="alreadyHaveTextViewRegEn">Already have an account?</string>
     <string name="alreadyHaveTextViewRegRou">Aveti deja un cont?</string>
-    <string name="shortPasswordToastRegEn">Password must contain minimum 6 characters!</string>
-    <string name="shortPasswordToastRegRou">Parola trebuie sa contina minimum 6 caractere!</string>
-    <string name="existUserNameToastRegEn">User name exists!</string>
-    <string name="existUserNameToastRegRou">Numele de utilizator este indisponibil!</string>
+    <string name="emptyUserNameToastRegEn">Introduce an username!</string>
+    <string name="emptyUserNameToastRegRou">Introduceti un nume de utilizator</string>
+    <string name="shortPasswordToastRegEditEn">Password must contain minimum 6 characters!</string>
+    <string name="shortPasswordToastRegEditRou">Parola trebuie sa contina minimum 6 caractere!</string>
+    <string name="existUserNameToastRegEditEn">User name exists!</string>
+    <string name="existUserNameToastRegEditRou">Numele de utilizator este indisponibil!</string>
+    <string name="successCreateToastRegEn">Account created successfully!s!</string>
+    <string name="successCreateToastRegRou">Contul a fost creat cu succes!</string>
     <string name="existEmailToastRegEn">Email exists!</string>
     <string name="existEmailToastRegRou">Email indisponibil!</string>
 
     <string name="emailTextViewProfileEn">Signed as </string>
-    <string name="emailTextViewProfileRou">Logat ca </string>
+    <string name="emailTextViewProfileRou">Conectat ca </string>
     <string name="placeTextViewProfileEn">Place:</string>
     <string name="placeTextViewProfileRou">Loc:</string>
     <string name="pointsTextViewProfileEn">Points:</string>
     <string name="pointsTextViewProfileRou">Puncte:</string>
     <string name="editButtonProfileEditEn">Edit</string>
-    <string name="editButtonProfilEditRou">Actualizare</string>
-    <string name="singOutButtonProfileEn">Sign out</string>
-    <string name="singOutButtonProfileRou">Delogare</string>
+    <string name="editButtonProfileEditRou">Actualizare</string>
+    <string name="signOutButtonProfileEn">Sign out</string>
+    <string name="signOutButtonProfileRou">Deconectează-te</string>
 
-    <string name="placeButtonRankEn">Place</string>
-    <string name="placeButtonRankRou">Loc</string>
-    <string name="pointsButtonRankEn">Points</string>
-    <string name="pointsButtonRankRou">Puncte</string>
+    <string name="placeTextViewRankEn">Place</string>
+    <string name="placeTextViewRankRou">Loc</string>
+    <string name="pointsTextViewRankEn">Points</string>
+    <string name="pointsTextViewRankRou">Puncte</string>
+    <string name="userNameTextViewRankEn">Username:</string>
+    <string name="userNameTextViewRankRou">Utilizator:</string>
 
 
     <string name="microphoneSwitchGameMenuPlayEn">Microphone</string>
@@ -72,8 +85,8 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="helpButtonGameMenuEn">Help</string>
     <string name="helpButtonGameMenuRou">Ajutor</string>
 
-    <string name="userNameTextViewEditEn">New userName</string>
-    <string name="userNameTextViewEditRou">UserName nou</string>
+    <string name="userNameTextViewEditEn">New username</string>
+    <string name="userNameTextViewEditRou">Nume nou</string>
     <string name="oldPasswordTextViewEditEn">Old password</string>
     <string name="oldPasswordTextViewEditRou">Parola veche</string>
     <string name="newPasswordTextViewEditEn">New password</string>
@@ -84,6 +97,14 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="deleteAccountButtonEditRou">Sterge cont</string>
     <string name="confirmButtonEditEn">Confirm</string>
     <string name="confirmButtonEditRou">Confirmare</string>
+    <string name="successUserNameToastEditEn">Username changed successfully!</string>
+    <string name="successUserNameToastEditRou">Numele de utilizator a fost schimbat cu succes!</string>
+    <string name="wrongPasswordToastEditEn">Actual password is incorrect!</string>
+    <string name="wrongPasswordToastEditRou">Parola actuală este incorectă!</string>
+    <string name="successPasswordToastEditEn">Password changed successfully!</string>
+    <string name="successPasswordToastEditRou">Parola a fost schimbată cu succes!</string>
+    <string name="successDeleteToastEditEn">User account deleted!</string>
+    <string name="successDeleteToastEditRou">Contul a fost șters cu succes!</string>
 
     <string name="geographySwitchSettingsEn">Geography</string>
     <string name="geographySwitchSettingsRou">Geografie</string>
@@ -93,6 +114,8 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="othersSwitchSettingsRou">Altele</string>
     <string name="playButtonSettingsEn">Play</string>
     <string name="playButtonSettingsRou">Joaca</string>
+    <string name="oneCategoryToastSettingsEn">Please select minimum one category!</string>
+    <string name="oneCategoryToastSettingsRou">Selectează minim o categorie!</string>
 
     <string name="totalScoreTextViewPlayEn">Score:\n</string>
     <string name="totalScoreTextViewPlayRou">Scor:\n</string>
@@ -104,6 +127,7 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="questionScoreTextViewPlayRou">Punctaj intrebare:</string>
     <string name="totalScoreNextTextViewPlayEn">Total score:</string>
     <string name="totalScoreNextTextViewPlayRou">Punctaj total:</string>
+
 
 
 </resources>

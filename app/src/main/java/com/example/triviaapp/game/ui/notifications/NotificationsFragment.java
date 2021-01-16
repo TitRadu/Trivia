@@ -27,7 +27,7 @@ public class NotificationsFragment extends Fragment {
     Button startButton, exitButton,helpButton;
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    Switch switchMicropohone;
+    Switch switchMicrophone;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,16 +41,44 @@ public class NotificationsFragment extends Fragment {
     private void initializeViews(View root){
         startButton = root.findViewById(R.id.startBtn);
         exitButton = root.findViewById(R.id.exitBtn);
-        switchMicropohone = root.findViewById(R.id.sw_microphone);
-        switchMicropohone.setChecked(optionList.get(MIC).isValue());
+        switchMicrophone = root.findViewById(R.id.sw_microphone);
+        switchMicrophone.setChecked(optionList.get(MIC).isValue());
         helpButton = root.findViewById(R.id.helpBtn);
+        chooseLanguage();
+
+    }
+
+    private void setViewForEnglishLanguage(){
+        switchMicrophone.setText(R.string.microphoneSwitchGameMenuPlayEn);
+        helpButton.setText(R.string.helpButtonGameMenuEn);
+
+    }
+
+
+    private void setViewForRomanianLanguage(){
+        switchMicrophone.setText(R.string.microphoneSwitchGameMenuPlayRou);
+        helpButton.setText(R.string.helpButtonGameMenuRou);
+
+    }
+
+    private void chooseLanguage(){
+        switch (LoggedUserData.language.getValue()){
+            case "english":
+                setViewForEnglishLanguage();
+                break;
+            case "romanian":
+                setViewForRomanianLanguage();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+        }
 
     }
 
     private void setOnClickListeners(){
         startButton.setOnClickListener((v) -> {openGameSettingsActivity();});
         exitButton.setOnClickListener((v) -> {exit();});
-        switchMicropohone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        switchMicrophone.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
             optionList.get(MIC).setValue(isChecked);
             editor.putString(optionList.get(MIC).getName(),String.valueOf(isChecked));

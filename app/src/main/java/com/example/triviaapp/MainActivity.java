@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout forgotPasswordLayout;
 
-    Button createAccountButton, sendMailButton;
+    Button logInButton, createAccountButton, sendMailButton;
     TextView forgotPasswordTextView;
     String emptyMailToast, emptyPasswordToast, successDataToast, wrongDataToast, successSendMailToast, wrongMailToast, audioGrantedToast, audioDeniedToast;
 
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         verifyAudioPermission();
         languageChangeListener();
 
-
     }
 
     private void initializeViews(){
@@ -73,10 +72,50 @@ public class MainActivity extends AppCompatActivity {
         forgotPasswordLayout = findViewById(R.id.forgotPasswordLayout);
         firebaseAuth = FirebaseAuth.getInstance();
 
+        logInButton = findViewById(R.id.logInButton);
         createAccountButton = findViewById(R.id.createAccountButton);
         sendMailButton = findViewById(R.id.sendMailButton);
         forgotPasswordTextView = findViewById(R.id.tv_forgotPassword);
 
+        chooseLanguage();
+
+    }
+
+    private void setViewForEnglishLanguage(){
+        passwordInput.setHint(R.string.passwordHintLogRegEditEn);
+        logInButton.setText(R.string.logInButtonLogRegEn);
+        createAccountButton.setText(R.string.createButtonLogRegEn);
+        forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogEn);
+        sendMailButton.setText(R.string.sendMailButtonLogEn);
+        emptyMailToast = getString(R.string.emptyMailToastLogRegEn);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditEn);
+        successDataToast = getString(R.string.successDataToastLogEn);
+        wrongDataToast = getString(R.string.wrongDataToastLogEn);
+        successSendMailToast = getString(R.string.successSendMailToastLogEn);
+        wrongMailToast = getString(R.string.wrongMailToastLogEn);
+        audioGrantedToast = getString(R.string.audioGrantedToastLogEn);
+        audioDeniedToast = getString(R.string.audioDeniedToastLogEn);
+
+    }
+
+    private void setViewForRomanianLanguage(){
+        passwordInput.setHint(R.string.passwordHintLogRegEditRou);
+        logInButton.setText(R.string.logInButtonLogRegRou);
+        createAccountButton.setText(R.string.createButtonLogRegRou);
+        forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogRou);
+        sendMailButton.setText(R.string.sendMailButtonLogRou);
+        emptyMailToast = getString(R.string.emptyMailToastLogRegRou);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditRou);
+        successDataToast = getString(R.string.successDataToastLogRou);
+        wrongDataToast = getString(R.string.wrongDataToastLogRou);
+        successSendMailToast = getString(R.string.successSendMailToastLogRou);
+        wrongMailToast = getString(R.string.wrongMailToastLogRou);
+        audioGrantedToast = getString(R.string.audioGrantedToastLogRou);
+        audioDeniedToast = getString(R.string.audioDeniedToastLogRou);
+
+    }
+
+    private void chooseLanguage(){
         switch (LoggedUserData.language.getValue()){
             case "english":
                 setViewForEnglishLanguage();
@@ -90,56 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setViewForEnglishLanguage(){
-        passwordInput.setHint(R.string.passwordHintLogRegEditEn);
-        createAccountButton.setText(R.string.createButtonLogRegEn);
-        forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogEn);
-        sendMailButton.setText(R.string.sendMailButtonLogEn);
-        emptyMailToast = getString(R.string.emptyMailToastLogRegEn);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEn);
-        successDataToast = getString(R.string.successDataToastLogEn);
-        wrongDataToast = getString(R.string.wrongDataToastLogEn);
-        successSendMailToast = getString(R.string.successSendMailToastLogEn);
-        wrongMailToast = getString(R.string.wrongMailToastLogEn);
-        audioGrantedToast = getString(R.string.audioGrantedToastLogEn);
-        audioDeniedToast = getString(R.string.audioDeniedToastLogEn);
-
-    }
-
-    private void setViewForRomanianLanguage(){
-        passwordInput.setHint(R.string.passwordHintLogRegEditRou);
-        createAccountButton.setText(R.string.createButtonLogRegRou);
-        forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogRou);
-        sendMailButton.setText(R.string.sendMailButtonLogRou);
-        emptyMailToast = getString(R.string.emptyMailToastLogRegRou);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegRou);
-        successDataToast = getString(R.string.successDataToastLogRou);
-        wrongDataToast = getString(R.string.wrongDataToastLogRou);
-        successSendMailToast = getString(R.string.successSendMailToastLogRou);
-        wrongMailToast = getString(R.string.wrongMailToastLogRou);
-        audioGrantedToast = getString(R.string.audioGrantedToastLogRou);
-        audioDeniedToast = getString(R.string.audioDeniedToastLogRou);
-
-    }
-
     private void languageChangeListener(){
-
-        LoggedUserData.language.observeForever(new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                switch (LoggedUserData.language.getValue()){
-                    case "english":
-                        setViewForEnglishLanguage();
-                        break;
-                    case "romanian":
-                        setViewForRomanianLanguage();
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
-                }
-
-            }
-        });
+        LoggedUserData.language.observeForever(s -> { chooseLanguage(); });
 
     }
 

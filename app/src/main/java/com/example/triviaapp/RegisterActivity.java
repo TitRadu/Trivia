@@ -2,11 +2,14 @@ package com.example.triviaapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.triviaapp.game.GameActivity;
@@ -24,12 +27,16 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText userNameInput, emailInput, passwordInput;
 
+    Button createAccountButton;
+    TextView alreadyHaveAccountTextView;
+    String emptyEmailToast, emptyUserNameToast, emptyPasswordToast, shortPasswordToast, existUserNameToast, successCreateToast, existEmailToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         initializeViews();
+        languageChangeListener();
 
     }
 
@@ -40,29 +47,84 @@ public class RegisterActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseHelper = FirebaseHelper.getInstance();
 
+        createAccountButton = findViewById(R.id.createAccountButton);
+        alreadyHaveAccountTextView = findViewById(R.id.im_already_have_an_account);
+
+        chooseLanguage();
+
+    }
+
+    private void setViewForEnglishLanguage(){
+        userNameInput.setHint(R.string.userNameHintRegEn);
+        passwordInput.setHint(R.string.passwordHintLogRegEditEn);
+        createAccountButton.setText(R.string.createButtonLogRegEn);
+        alreadyHaveAccountTextView.setText(R.string.alreadyHaveTextViewRegEn);
+        emptyEmailToast = getString(R.string.emptyMailToastLogRegEn);
+        emptyUserNameToast = getString(R.string.emptyUserNameToastRegEn);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditEn);
+        shortPasswordToast = getString(R.string.shortPasswordToastRegEditEn);
+        existUserNameToast = getString(R.string.existUserNameToastRegEditEn);
+        successCreateToast = getString(R.string.successCreateToastRegEn);
+        existEmailToast = getString(R.string.existEmailToastRegEn);
+
+    }
+
+
+    private void setViewForRomanianLanguage(){
+        userNameInput.setHint(R.string.userNameHintRegRou);
+        passwordInput.setHint(R.string.passwordHintLogRegEditRou);
+        createAccountButton.setText(R.string.createButtonLogRegRou);
+        alreadyHaveAccountTextView.setText(R.string.alreadyHaveTextViewRegRou);
+        emptyEmailToast = getString(R.string.emptyMailToastLogRegRou);
+        emptyUserNameToast = getString(R.string.emptyUserNameToastRegRou);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditRou);
+        shortPasswordToast = getString(R.string.shortPasswordToastRegEditRou);
+        existUserNameToast = getString(R.string.existUserNameToastRegEditRou);
+        successCreateToast = getString(R.string.successCreateToastRegRou);
+        existEmailToast = getString(R.string.existEmailToastRegRou);
+
+    }
+
+    private void chooseLanguage(){
+        switch (LoggedUserData.language.getValue()){
+            case "english":
+                setViewForEnglishLanguage();
+                break;
+            case "romanian":
+                setViewForRomanianLanguage();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+        }
+
+    }
+
+    private void languageChangeListener(){
+        LoggedUserData.language.observeForever(s -> { chooseLanguage(); });
+
     }
 
     private boolean inputCheck(String userName, String email, String password){
         if(email.isEmpty()){
-            Toast.makeText(this,"Introduce an email!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,emptyEmailToast,Toast.LENGTH_SHORT).show();
             return false;
 
         }
 
         if(userName.isEmpty()){
-            Toast.makeText(this,"Introduce an user name!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,emptyUserNameToast,Toast.LENGTH_SHORT).show();
             return false;
 
         }
 
         if(password.isEmpty()){
-            Toast.makeText(this,"Introduce a password!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,emptyPasswordToast,Toast.LENGTH_SHORT).show();
             return false;
 
         }
 
         if(password.length() < 6){
-            Toast.makeText(this,"Password must contain minimum 6 characters!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,shortPasswordToast,Toast.LENGTH_SHORT).show();
             return false;
 
         }
@@ -81,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if(LoggedUserData.userNameList.contains(userName)){
-            Toast.makeText(getBaseContext(), "User name exists!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), existUserNameToast, Toast.LENGTH_SHORT).show();
             return;
 
         }
@@ -94,7 +156,7 @@ public class RegisterActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             User registeredUser = new User(email, userName, password, 0);
                             firebaseHelper.userDatabaseReference.child(UUID.randomUUID().toString()).setValue(registeredUser);
-                            Toast.makeText(getBaseContext(), "Account created successfully!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(), successCreateToast, Toast.LENGTH_SHORT).show();
                             LoggedUserData.loggedUserPassword = password;
                             LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
@@ -102,7 +164,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(getBaseContext(), "Email exists!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(), existEmailToast, Toast.LENGTH_SHORT).show();
 
                         }
                     }
