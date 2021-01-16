@@ -49,7 +49,7 @@ public class PlayActivity extends AppCompatActivity {
 
     public static final int TOTAL_QUESTION_TO_WIN_GAME = 11;
     String userAnswer, correctAnswer, voiceInput = null;
-    Button  nextQuestionButton, tryAgainButton;
+    Button  nextQuestionButton, tryAgainButton, btn_superpower;
     SubmitButton btnA,btnB, btnC, btnD, selectedThroughVoiceOption;
     TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView,questionScoreViewScore,totalScoreViewPoints;
     Switch aSwitch;
@@ -79,9 +79,18 @@ public class PlayActivity extends AppCompatActivity {
             getSpeechInput();
         }
         listenerStatusMicrophone();
+        listener();
     }
-
+    private void listener(){
+        btn_superpower.setOnClickListener(v -> {
+            LoggedUserData.loggedSuperPowerFiftyFifty--;
+            setAnswers(answers,true);
+            //btn_superpower.setVisibility(View.GONE);
+            btn_superpower.setEnabled(false);
+        });
+    }
     public void setViews(){
+        btn_superpower = findViewById(R.id.btn_superPower);
         questionScoreViewScore = findViewById(R.id.questionScoreViewPoints);
         totalScoreViewPoints = findViewById(R.id.totalScoreNextViewPoints);
         userAnswer = "";
@@ -108,12 +117,21 @@ public class PlayActivity extends AppCompatActivity {
         materialCardView = findViewById(R.id.materialCardView);
         aSwitch = findViewById(R.id.sw_microphonePlay);
         aSwitch.setChecked(optionList.get(MIC).isValue());
-        setTextViewWithQuestionAndAnswers();
+        setTextViewWithQuestionAndAnswers(false);
+        setSuperpowerView();
         if(optionList.get(MIC).isValue()) {
             speechInitialize();
-
         }
 
+    }
+    private void setSuperpowerView(){
+        if(LoggedUserData.loggedSuperPowerFiftyFifty>0){
+            btn_superpower.setEnabled(true);
+            btn_superpower.setVisibility(View.VISIBLE);
+
+        }else{
+            btn_superpower.setVisibility(View.GONE);
+        }
     }
 
 
@@ -196,7 +214,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    public void setTextViewWithQuestionAndAnswers(){
+    public void setTextViewWithQuestionAndAnswers(boolean isFifty){
         readQuestionData(new FirebaseCallback() {
             @Override
             public void onCallbackQuestions(List<Question> questions) {
@@ -218,8 +236,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
-                setAnswers(answers);
-
+                setAnswers(answers,isFifty);
             }
 
         });
@@ -241,10 +258,12 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setAnswers(List<Answer> answers) {
+    private void setAnswers(List<Answer> answers,boolean fifty) {
+        setButtonsVisible();
         List<Answer> currentAnswers = new ArrayList<>();
         Random rand = new Random();
         List<Integer> randomCurrentAnswersList = new ArrayList<>();
+        List<Integer> randomEliminateList=new ArrayList<>();
         int r;
 
         while(randomCurrentAnswersList.size() < 4){
@@ -270,33 +289,67 @@ public class PlayActivity extends AppCompatActivity {
             btnC.setText("C: "+currentAnswers.get(randomCurrentAnswersList.get(2)).getAnswer());
             btnD.setText("D: "+currentAnswers.get(randomCurrentAnswersList.get(3)).getAnswer());
 
-            setCorrectAnswer(
+            int correct = setCorrectAnswer(
                     currentAnswers.get(randomCurrentAnswersList.get(0)).isCorrect(),
                     currentAnswers.get(randomCurrentAnswersList.get(1)).isCorrect(),
                     currentAnswers.get(randomCurrentAnswersList.get(2)).isCorrect(),
-                    currentAnswers.get(randomCurrentAnswersList.get(3)).isCorrect());
-        }
+                    currentAnswers.get(randomCurrentAnswersList.get(3)).isCorrect()
+            );
+            if(fifty){
+                generateRandomAnswerForEliminate(rand, randomEliminateList, correct);
+                set2WrongAnswerAsInvisible(randomEliminateList);
+            }
 
+        }
     }
 
-    private void setCorrectAnswer(boolean first,boolean second,boolean third,boolean fourth){
+    private void set2WrongAnswerAsInvisible(List<Integer> randomEliminateList) {
+        for(Integer i: randomEliminateList){
+            switch (i){
+                case 0:btnA.setVisibility(View.INVISIBLE);break;
+                case 1:btnB.setVisibility(View.INVISIBLE);break;
+                case 2:btnC.setVisibility(View.INVISIBLE);break;
+                case 3:btnD.setVisibility(View.INVISIBLE);break;
+            }
+        }
+    }
+
+    private void generateRandomAnswerForEliminate(Random rand, List<Integer> randomEliminateList, int correct) {
+        int r;
+        while(randomEliminateList.size()!=2) {
+            r = rand.nextInt(4);
+            if (r != correct && !randomEliminateList.contains(r)) {
+                randomEliminateList.add(r);
+            }
+        }
+    }
+
+    private void setButtonsVisible() {
+        btnA.setVisibility(View.VISIBLE);
+        btnB.setVisibility(View.VISIBLE);
+        btnC.setVisibility(View.VISIBLE);
+        btnD.setVisibility(View.VISIBLE);
+    }
+
+
+    private int setCorrectAnswer(boolean first,boolean second,boolean third,boolean fourth){
         if(first){
             correctAnswer = "A";
-
+            return 0;
         }
         if(second){
             correctAnswer = "B";
-
+            return 1;
         }
         if(third){
             correctAnswer = "C";
-
+            return 2;
         }
         if(fourth){
             correctAnswer = "D";
 
         }
-
+        return 3;
     }
 
     private void getSpeechInput() {
@@ -436,6 +489,7 @@ public class PlayActivity extends AppCompatActivity {
             answerCounter++;
             if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints*2;
+                ++LoggedUserData.loggedSuperPowerFiftyFifty;
                 sendPointsToDatabase();
             }
         }
@@ -451,7 +505,8 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void calculatePoints() {
-        int d = Integer.parseInt(timerView.getText().toString());
+        String timer = timerView.getText().toString().replaceFirst(" ", "");
+        int d = Integer.parseInt(timer);
         time = time + d;
         totalPoints = totalPoints + time;
         totalScoreView.setText("Score:\n   " + totalPoints);
@@ -495,9 +550,10 @@ public class PlayActivity extends AppCompatActivity {
     private void populateMapWithUserData() {
         map = new HashMap<>();
         map.put("email", LoggedUserData.loggedUserEmail);
-        map.put("userName", LoggedUserData.loggedUserName);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
+        map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("userName", LoggedUserData.loggedUserName);
     }
 
     private void delay(int delay) {
@@ -631,6 +687,7 @@ public class PlayActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         questionScoreViewScore.setVisibility(View.GONE);
         totalScoreViewPoints.setVisibility(View.GONE);
+        setSuperpowerView();
     }
 
     public void nextQuestionSetup(View view){
@@ -649,7 +706,7 @@ public class PlayActivity extends AppCompatActivity {
         time = 0;
         questionCounter.setText("Question:\n   " + answerCounter + " / 10");
         setQuestion(questions);
-        setAnswers(answers);
+        setAnswers(answers,false);
         touchDisabled = false;
         voiceInput = null;
         selectedThroughVoiceOption = null;

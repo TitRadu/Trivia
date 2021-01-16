@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void languageChangeListener(){
         LoggedUserData.language.observeForever(s -> { chooseLanguage(); });
-
     }
 
     private void initializeLoggedUser(){

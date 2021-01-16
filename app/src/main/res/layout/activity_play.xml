@@ -149,6 +149,11 @@
             app:sub_btn_line_color="#3AF598"
             app:sub_btn_tick_color="@color/white"
             android:onClick="clicked"/>
+        <Button
+            android:id="@+id/btn_superPower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Superpower"/>
 
 
     </LinearLayout>

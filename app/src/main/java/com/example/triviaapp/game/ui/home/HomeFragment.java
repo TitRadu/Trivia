@@ -9,8 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +20,6 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.EditDataActivity;
-import com.example.triviaapp.game.GameActivity;
 import com.example.triviaapp.rank.User;
 import com.example.triviaapp.rank.RankSorter;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -131,9 +128,10 @@ public class HomeFragment extends Fragment {
     private HashMap<String, Object> populateMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("email", LoggedUserData.loggedUserEmail);
-        map.put("userName", LoggedUserData.loggedUserName);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
+        map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("userName", LoggedUserData.loggedUserName);
         return map;
     }
 
@@ -161,6 +159,8 @@ public class HomeFragment extends Fragment {
                         LoggedUserData.loggedUserName = user.getUserName();
                         LoggedUserData.loggedUserPoints = user.getPoints();
                         LoggedUserData.loggedUserKey = dataSnapshot1.getKey();
+                        LoggedUserData.loggedSuperPowerFiftyFifty = user.getSuperpower();
+                        Log.e("superpower",LoggedUserData.loggedSuperPowerFiftyFifty+"");
 
                         if(!LoggedUserData.loggedUserPasswordUpdateVerify)
                         if(!LoggedUserData.loggedUserPassword.equals("empty")) {

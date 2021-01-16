@@ -11,6 +11,7 @@ public class LoggedUserData{
     public static String loggedUserEmail = "empty";
     public static String loggedUserPassword = "empty";
     public static String loggedUserKey = "empty";
+    public static int loggedSuperPowerFiftyFifty = 0;
     public static int loggedUserPlace = 0;
     public static int loggedUserPoints = 0;
     public static boolean loggedUserPasswordUpdateVerify;

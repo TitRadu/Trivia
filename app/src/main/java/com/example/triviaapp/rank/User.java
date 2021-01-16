@@ -2,15 +2,17 @@ package com.example.triviaapp.rank;
 
 public class User{
     private String email;
-    private String userName;
     private String password;
     private int points;
+    private int superpower;
+    private String userName;
 
-    public User(String email, String userName, String password, int points) {
+    public User(String email, String password, int points, int superpower,String userName) {
         this.email = email;
         this.userName = userName;
         this.password = password;
         this.points = points;
+        this.superpower = superpower;
     }
 
     public User(){}
@@ -42,5 +44,12 @@ public class User{
     public int getPoints() { return points; }
 
     public void setPoints(int points) { this.points = points; }
+    public int getSuperpower() {
+        return superpower;
+    }
+
+    public void setSuperpower(int superpower) {
+        this.superpower = superpower;
+    }
 
 }

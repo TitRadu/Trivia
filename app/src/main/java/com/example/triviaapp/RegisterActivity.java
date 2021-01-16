@@ -154,7 +154,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            User registeredUser = new User(email, userName, password, 0);
+                            User registeredUser = new User(email, password, 0,0, userName);
                             firebaseHelper.userDatabaseReference.child(UUID.randomUUID().toString()).setValue(registeredUser);
                             Toast.makeText(getBaseContext(), successCreateToast, Toast.LENGTH_SHORT).show();
                             LoggedUserData.loggedUserPassword = password;
