@@ -62,7 +62,7 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void chooseLanguage(){
-        switch (LoggedUserData.language.getValue()){
+        switch (LoggedUserData.language){
             case "english":
                 setViewForEnglishLanguage();
                 break;
@@ -70,7 +70,7 @@ public class NotificationsFragment extends Fragment {
                 setViewForRomanianLanguage();
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
         }
 
     }

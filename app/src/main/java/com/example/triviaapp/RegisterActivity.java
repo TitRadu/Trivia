@@ -36,7 +36,13 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         initializeViews();
-        languageChangeListener();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        chooseLanguage();
 
     }
 
@@ -46,10 +52,8 @@ public class RegisterActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.passwordRegInput);
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseHelper = FirebaseHelper.getInstance();
-
         createAccountButton = findViewById(R.id.createAccountButton);
         alreadyHaveAccountTextView = findViewById(R.id.im_already_have_an_account);
-
         chooseLanguage();
 
     }
@@ -86,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void chooseLanguage(){
-        switch (LoggedUserData.language.getValue()){
+        switch (LoggedUserData.language){
             case "english":
                 setViewForEnglishLanguage();
                 break;
@@ -94,13 +98,8 @@ public class RegisterActivity extends AppCompatActivity {
                 setViewForRomanianLanguage();
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
         }
-
-    }
-
-    private void languageChangeListener(){
-        LoggedUserData.language.observeForever(s -> { chooseLanguage(); });
 
     }
 
@@ -161,6 +160,7 @@ public class RegisterActivity extends AppCompatActivity {
                             LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                             startActivity(intent);
+                            finishAndRemoveTask();
 
                         } else {
                             // If sign in fails, display a message to the user.

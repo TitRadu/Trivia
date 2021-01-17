@@ -25,6 +25,6 @@ public class LoggedUserData{
     public static final int GEO = 2;
     public static final int MATHS = 3;
     public static final int OTHERS = 4;
-    public static MutableLiveData<String> language= new MutableLiveData<>();
+    public static String language= EMPTYSTRING;
 
 }

@@ -87,6 +87,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/custom_botton_design_corners"
         android:layout_margin="20dp"
+        android:textColor="#000000"
         android:text="Edit" />
 
         <Button
@@ -96,5 +97,6 @@
             android:layout_gravity="end"
             android:background="@drawable/custom_botton_design_corners"
             android:layout_margin="20dp"
+            android:textColor="#000000"
             android:text="Sign Out" />
 </LinearLayout>

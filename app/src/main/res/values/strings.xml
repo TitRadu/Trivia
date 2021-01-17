@@ -56,19 +56,19 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="shortPasswordToastRegEditRou">Parola trebuie sa contina minimum 6 caractere!</string>
     <string name="existUserNameToastRegEditEn">User name exists!</string>
     <string name="existUserNameToastRegEditRou">Numele de utilizator este indisponibil!</string>
-    <string name="successCreateToastRegEn">Account created successfully!s!</string>
+    <string name="successCreateToastRegEn">Account created successfully!</string>
     <string name="successCreateToastRegRou">Contul a fost creat cu succes!</string>
     <string name="existEmailToastRegEn">Email exists!</string>
     <string name="existEmailToastRegRou">Email indisponibil!</string>
 
-    <string name="emailTextViewProfileEn">Signed as </string>
-    <string name="emailTextViewProfileRou">Conectat ca </string>
+    <string name="emailTextViewProfileEn">Signed as</string>
+    <string name="emailTextViewProfileRou">Conectat ca</string>
     <string name="placeTextViewProfileEn">Place:</string>
     <string name="placeTextViewProfileRou">Loc:</string>
     <string name="pointsTextViewProfileEn">Points:</string>
     <string name="pointsTextViewProfileRou">Puncte:</string>
-    <string name="editButtonProfileEditEn">Edit</string>
-    <string name="editButtonProfileEditRou">Actualizare</string>
+    <string name="editButtonProfileEn">Edit profile</string>
+    <string name="editButtonProfileRou">Actualizare profil</string>
     <string name="signOutButtonProfileEn">Sign out</string>
     <string name="signOutButtonProfileRou">Deconectează-te</string>
 
@@ -90,11 +90,15 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="oldPasswordTextViewEditEn">Old password</string>
     <string name="oldPasswordTextViewEditRou">Parola veche</string>
     <string name="newPasswordTextViewEditEn">New password</string>
-    <string name="newPasswordTextViewEditRou">Parola noua</string>
+    <string name="newPasswordTextViewEditRou">Parola nouă</string>
     <string name="chooseLanguageTextViewEditEn">Choose language:</string>
-    <string name="chooseLanguageTextViewEditRou">Selecteaza limb:</string>
+    <string name="chooseLanguageTextViewEditRou">Selectează limba:</string>
+    <string name="editButtonEditEn">Edit</string>
+    <string name="editButtonEditRou">Actualizează</string>
+    <string name="backButtonEditEn">Back</string>
+    <string name="backButtonEditRou">Înapoi</string>
     <string name="deleteAccountButtonEditEn">Delete account</string>
-    <string name="deleteAccountButtonEditRou">Sterge cont</string>
+    <string name="deleteAccountButtonEditRou">Șterge contul</string>
     <string name="confirmButtonEditEn">Confirm</string>
     <string name="confirmButtonEditRou">Confirmare</string>
     <string name="successUserNameToastEditEn">Username changed successfully!</string>
@@ -127,6 +131,13 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="questionScoreTextViewPlayRou">Punctaj intrebare:</string>
     <string name="totalScoreNextTextViewPlayEn">Total score:</string>
     <string name="totalScoreNextTextViewPlayRou">Punctaj total:</string>
+    <string name="invalidInputToastPlayEn">Please say a valid input!</string>
+    <string name="invalidInputToastPlayRou">Spune un răspuns valid!</string>
+    <string name="youAnsweredTextPlayEn">You answered!</string>
+    <string name="youAnsweredTextPlayRou">Ai răspuns!</string>
+    <string name="timeExpiredTextPlayEn">Time expired!</string>
+    <string name="timeExpiredTextPlayRou">Timpul a expirat!</string>
+
 
 
 

@@ -69,6 +69,10 @@ public class PlayActivity extends AppCompatActivity {
     SpeechRecognizer speechRecognizer;
     LinearLayout firstLineButtonsLayout, infoLayout;
 
+    String totalScoreTextViewString, questionTextViewString;
+    String invalidInputToast;
+    String youAnsweredText, timeExpiredText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +89,6 @@ public class PlayActivity extends AppCompatActivity {
         btn_superpower.setOnClickListener(v -> {
             LoggedUserData.loggedSuperPowerFiftyFifty--;
             setAnswers(answers,true);
-            //btn_superpower.setVisibility(View.GONE);
             btn_superpower.setEnabled(false);
         });
     }
@@ -93,7 +96,7 @@ public class PlayActivity extends AppCompatActivity {
         btn_superpower = findViewById(R.id.btn_superPower);
         questionScoreViewScore = findViewById(R.id.questionScoreViewPoints);
         totalScoreViewPoints = findViewById(R.id.totalScoreNextViewPoints);
-        userAnswer = "";
+        userAnswer = EMPTYSTRING;
         btnA = findViewById(R.id.varA);
         btnB = findViewById(R.id.varB);
         btnC = findViewById(R.id.varC);
@@ -117,6 +120,7 @@ public class PlayActivity extends AppCompatActivity {
         materialCardView = findViewById(R.id.materialCardView);
         aSwitch = findViewById(R.id.sw_microphonePlay);
         aSwitch.setChecked(optionList.get(MIC).isValue());
+        chooseLanguage();
         setTextViewWithQuestionAndAnswers(false);
         setSuperpowerView();
         if(optionList.get(MIC).isValue()) {
@@ -124,6 +128,50 @@ public class PlayActivity extends AppCompatActivity {
         }
 
     }
+
+    private void setViewForEnglishLanguage(){
+        aSwitch.setText(R.string.microphoneSwitchGameMenuPlayEn);
+        totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayEn);
+        questionTextViewString = getString(R.string.questionTextViewPlayEn);
+        tryAgainButton.setText(R.string.tryAgainButtonPlayEn);
+        questionScoreView.setText(R.string.questionScoreTextViewPlayEn);
+        totalScoreNextView.setText(R.string.totalScoreNextTextViewPlayEn);
+        invalidInputToast = getString(R.string.invalidInputToastPlayEn);
+        youAnsweredText = getString(R.string.youAnsweredTextPlayEn);
+        timeExpiredText = getString(R.string.timeExpiredTextPlayEn);
+
+    }
+
+    private void setViewForRomanianLanguage(){
+        aSwitch.setText(R.string.microphoneSwitchGameMenuPlayRou);
+        totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayRou);
+        questionTextViewString = getString(R.string.questionTextViewPlayRou);
+        tryAgainButton.setText(R.string.tryAgainButtonPlayRou);
+        questionScoreView.setText(R.string.questionScoreTextViewPlayRou);
+        totalScoreNextView.setText(R.string.totalScoreNextTextViewPlayRou);
+        invalidInputToast = getString(R.string.invalidInputToastPlayRou);
+        youAnsweredText = getString(R.string.youAnsweredTextPlayRou);
+        timeExpiredText = getString(R.string.timeExpiredTextPlayRou);
+
+    }
+
+    private void chooseLanguage(){
+        switch (LoggedUserData.language){
+            case "english":
+                setViewForEnglishLanguage();
+                break;
+            case "romanian":
+                setViewForRomanianLanguage();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
+        }
+        totalScoreView.setText(totalScoreTextViewString + "   " + totalPoints);
+        questionCounter.setText(questionTextViewString + "   " + answerCounter + " / 10");
+
+    }
+
+
     private void setSuperpowerView(){
         if(LoggedUserData.loggedSuperPowerFiftyFifty>0){
             btn_superpower.setEnabled(true);
@@ -248,11 +296,9 @@ public class PlayActivity extends AppCompatActivity {
 
         if (questions.size() != 0) {
             int random = rand.nextInt(questions.size());
-            Log.d("random", random + "");
             currentQuestion = questions.get(random);
             question.setText(currentQuestion.getQuestion());
             questions.remove(random);
-            Log.d("dimensiune lista",questions.size()+"");
 
         }
 
@@ -383,7 +429,6 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onError(int error) {
-                Log.d("Speech",String.valueOf(error));
                 if(error == SpeechRecognizer.ERROR_NO_MATCH) {
                     speechRecognizer.destroy();
                     getSpeechInput();
@@ -439,7 +484,7 @@ public class PlayActivity extends AppCompatActivity {
                 selectedThroughVoiceOption=btnD;
                 break;
             default:
-                Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();
                 getSpeechInput();
                 return;
@@ -463,7 +508,7 @@ public class PlayActivity extends AppCompatActivity {
 
                 }
             default:
-                Toast.makeText(this,"Please say a valid input!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();
                 getSpeechInput();
 
@@ -509,7 +554,7 @@ public class PlayActivity extends AppCompatActivity {
         int d = Integer.parseInt(timer);
         time = time + d;
         totalPoints = totalPoints + time;
-        totalScoreView.setText("Score:\n   " + totalPoints);
+        totalScoreView.setText(totalScoreTextViewString + "   " + totalPoints);
 
     }
 
@@ -578,7 +623,7 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 if(touchDisabled){
-                    question.setText("You answered!");
+                    question.setText(youAnsweredText);
                     cancel();
                     return;
 
@@ -600,7 +645,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                question.setText("Time expired!");
+                question.setText(timeExpiredText);
                 populateMapWithUserData();
                 FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
@@ -645,7 +690,6 @@ public class PlayActivity extends AppCompatActivity {
 
     private void setTextAfterAnswerQuestion(){
         questionScoreViewScore.setText(String.valueOf(time));
-        totalScoreNextView.setText("Total score:");
         if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
             totalScoreViewPoints.setText(String.valueOf(totalPoints) + " X 2");
 
@@ -704,7 +748,7 @@ public class PlayActivity extends AppCompatActivity {
         btnC.resetButton();
         btnD.resetButton();
         time = 0;
-        questionCounter.setText("Question:\n   " + answerCounter + " / 10");
+        questionCounter.setText(questionTextViewString + "   " + answerCounter + " / 10");
         setQuestion(questions);
         setAnswers(answers,false);
         touchDisabled = false;

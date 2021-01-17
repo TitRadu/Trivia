@@ -31,7 +31,13 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_game);
         initializeViews();
         LoadFragment();
-        LoggedUserData.language.observeForever(s -> { chooseLanguage(); });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        chooseLanguage();
 
     }
 
@@ -64,7 +70,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void chooseLanguage(){
-        switch (LoggedUserData.language.getValue()){
+        switch (LoggedUserData.language){
             case "english":
                 setMenuItemsForEnglishLanguage();
                 break;
@@ -72,7 +78,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 setMenuItemsForRomanianLanguage();
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
         }
 
     }

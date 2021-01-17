@@ -58,7 +58,13 @@ public class MainActivity extends AppCompatActivity {
         initializeUserNameList();
         initializeLoggedUser();
         verifyAudioPermission();
-        languageChangeListener();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        chooseLanguage();
 
     }
 
@@ -116,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void chooseLanguage(){
-        switch (LoggedUserData.language.getValue()){
+        switch (LoggedUserData.language){
             case "english":
                 setViewForEnglishLanguage();
                 break;
@@ -124,13 +130,9 @@ public class MainActivity extends AppCompatActivity {
                 setViewForRomanianLanguage();
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
         }
 
-    }
-
-    private void languageChangeListener(){
-        LoggedUserData.language.observeForever(s -> { chooseLanguage(); });
     }
 
     private void initializeLoggedUser(){
@@ -159,10 +161,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void clearInputs(){
+        emailInput.getText().clear();
+        passwordInput.getText().clear();
+        forgotPasswordEmailInput.getText().clear();
+        forgotPasswordLayout.setVisibility(View.GONE);
+
+    }
 
     public void  registerActivity(View view){
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
+        clearInputs();
 
     }
 
@@ -183,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                             LoggedUserData.loggedUserPassword = password;
                             Toast.makeText(getBaseContext(), successDataToast, Toast.LENGTH_SHORT).show();
                             updateUI();
+                            clearInputs();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getBaseContext(), wrongDataToast, Toast.LENGTH_SHORT).show();
@@ -332,11 +343,11 @@ public class MainActivity extends AppCompatActivity {
         if(data.equals("Key not found!")){
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("language","english");
-            LoggedUserData.language.setValue("english");
+            LoggedUserData.language = "english";
             editor.apply();
 
         }else{
-            LoggedUserData.language.setValue(data);
+            LoggedUserData.language = data;
 
         }
 

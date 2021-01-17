@@ -32,7 +32,7 @@ public class EditDataActivity extends AppCompatActivity {
     EditText newUserNameEditView, oldPasswordEditView, newPasswordEditView, passwordDeleteView;
     RadioGroup chooseLanguageRadioGroup;
     RadioButton engRadioButton, romRadioButton;
-    Button editButton, deleteButton, confirmDeleteButton;
+    Button editButton, backButton, deleteButton, confirmDeleteButton;
     TextView newUserNameTextView, oldPasswordTextView, newPasswordTextView, chooseLanguageTextView;
     String existUserNameToast, successUserNameToast, wrongPasswordToast, shortPasswordToast, successPasswordToast, emptyPasswordToast, successDeleteToast;
 
@@ -63,6 +63,7 @@ public class EditDataActivity extends AppCompatActivity {
         chooseLanguageTextView = findViewById(R.id.chooseLanguageTextView);
         editButton = findViewById(R.id.editButton);
         deleteButton = findViewById(R.id.deleteButton);
+        backButton = findViewById(R.id.exitButton);
         chooseLanguage();
 
     }
@@ -72,6 +73,8 @@ public class EditDataActivity extends AppCompatActivity {
         oldPasswordTextView.setText(R.string.oldPasswordTextViewEditEn);
         newPasswordTextView.setText(R.string.newPasswordTextViewEditEn);
         chooseLanguageTextView.setText(R.string.chooseLanguageTextViewEditEn);
+        editButton.setText(R.string.editButtonEditEn);
+        backButton.setText(R.string.backButtonEditEn);
         deleteButton.setText(R.string.deleteAccountButtonEditEn);
         passwordDeleteView.setHint(R.string.passwordHintLogRegEditEn);
         confirmDeleteButton.setText(R.string.confirmButtonEditEn);
@@ -91,6 +94,8 @@ public class EditDataActivity extends AppCompatActivity {
         oldPasswordTextView.setText(R.string.oldPasswordTextViewEditRou);
         newPasswordTextView.setText(R.string.newPasswordTextViewEditRou);
         chooseLanguageTextView.setText(R.string.chooseLanguageTextViewEditRou);
+        editButton.setText(R.string.editButtonEditRou);
+        backButton.setText(R.string.backButtonEditRou);
         deleteButton.setText(R.string.deleteAccountButtonEditRou);
         passwordDeleteView.setHint(R.string.passwordHintLogRegEditRou);
         confirmDeleteButton.setText(R.string.confirmButtonEditRou);
@@ -105,7 +110,7 @@ public class EditDataActivity extends AppCompatActivity {
     }
 
     private void chooseLanguage(){
-        switch (LoggedUserData.language.getValue()){
+        switch (LoggedUserData.language){
             case "english":
                 setViewForEnglishLanguage();
                 break;
@@ -113,16 +118,14 @@ public class EditDataActivity extends AppCompatActivity {
                 setViewForRomanianLanguage();
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language.getValue());
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
         }
 
     }
 
 
     private void initializeRadioGroup(){
-        String language = LoggedUserData.language.getValue();
-
-        switch (language){
+        switch (LoggedUserData.language){
             case "english":
                 chooseLanguageRadioGroup.check(engRadioButton.getId());
                 break;
@@ -130,7 +133,7 @@ public class EditDataActivity extends AppCompatActivity {
                 chooseLanguageRadioGroup.check(romRadioButton.getId());
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + language);
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
         }
 
     }
@@ -141,13 +144,13 @@ public class EditDataActivity extends AppCompatActivity {
             switch(checkedId){
                 case R.id.engLanguageRadioButton:
                     setViewForEnglishLanguage();
-                    LoggedUserData.language.setValue("english");
+                    LoggedUserData.language = "english";
                     editor.putString("language","english");
                     editor.apply();
                     break;
                 case R.id.romLanguageRadioButton:
                     setViewForRomanianLanguage();
-                    LoggedUserData.language.setValue("romanian");
+                    LoggedUserData.language = "romanian";
                     editor.putString("language","romanian");
                     editor.apply();
                     break;
@@ -250,6 +253,8 @@ public class EditDataActivity extends AppCompatActivity {
     }
 
     public void exit(View view){
+        Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+        startActivity(intent);
         finishAndRemoveTask();
 
     }

@@ -46,7 +46,6 @@
                 android:textSize = "20sp"
                 android:textColor="#000000"
                 android:layout_gravity="center_horizontal"
-                android:text="timer"
                 android:textAppearance="@style/ShapeAppearance.MaterialComponents.Tooltip"
                 tools:ignore="MissingConstraints" />
 
@@ -85,7 +84,6 @@
             android:textAlignment="center"
             android:textSize = "15sp"
             android:textColor="#000000"
-            android:text="Current question."
 
             />
 
@@ -153,7 +151,7 @@
             android:id="@+id/btn_superPower"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Superpower"/>
+            android:text="50:50"/>
 
 
     </LinearLayout>
@@ -164,7 +162,6 @@
         android:id="@+id/sw_microphonePlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Microphone"
         android:textOff="OFF"
         android:textOn="ON"
         android:checked="true"
@@ -193,7 +190,6 @@
         android:id="@+id/tryAgainButton"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:text="Try Again"
         android:visibility="gone"
         android:onClick="tryAgain"
         android:layout_gravity="center_horizontal"
@@ -206,7 +202,6 @@
         android:id="@+id/questionScoreView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Question points:"
         android:textSize = "20sp"
         android:textColor="#000000"
         android:visibility="gone"
@@ -227,7 +222,6 @@
         android:id="@+id/totalScoreNextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total score:"
         android:textSize = "20sp"
         android:textColor="#000000"
         android:visibility="gone"
