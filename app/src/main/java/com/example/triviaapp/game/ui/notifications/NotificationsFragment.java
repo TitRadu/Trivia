@@ -49,15 +49,19 @@ public class NotificationsFragment extends Fragment {
     }
 
     private void setViewForEnglishLanguage(){
-        switchMicrophone.setText(R.string.microphoneSwitchGameMenuPlayEn);
-        helpButton.setText(R.string.helpButtonGameMenuEn);
+        startButton.setText(R.string.startButtonMenuEn);
+        switchMicrophone.setText(R.string.microphoneSwitchMenuPlayEn);
+        helpButton.setText(R.string.helpButtonMenuEn);
+        exitButton.setText(R.string.exitButtonMenuHelpEn);
 
     }
 
 
     private void setViewForRomanianLanguage(){
-        switchMicrophone.setText(R.string.microphoneSwitchGameMenuPlayRou);
-        helpButton.setText(R.string.helpButtonGameMenuRou);
+        startButton.setText(R.string.startButtonMenuRou);
+        switchMicrophone.setText(R.string.microphoneSwitchMenuPlayRou);
+        helpButton.setText(R.string.helpButtonMenuRou);
+        exitButton.setText(R.string.exitButtonMenuHelpRou);
 
     }
 

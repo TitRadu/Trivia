@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 
+import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 
 public class HelpActivity extends AppCompatActivity {
@@ -20,4 +21,29 @@ public class HelpActivity extends AppCompatActivity {
             finishAndRemoveTask();
         });
     }
+
+    private void setViewForEnglishLanguage(){
+
+
+    }
+
+
+    private void setViewForRomanianLanguage(){
+
+    }
+
+    private void chooseLanguage(){
+        switch (LoggedUserData.language){
+            case "english":
+                setViewForEnglishLanguage();
+                break;
+            case "romanian":
+                setViewForRomanianLanguage();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
+        }
+
+    }
+
 }

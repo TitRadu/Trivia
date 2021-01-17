@@ -216,6 +216,7 @@
         android:textColor="#000000"
         android:visibility="gone"
         android:layout_gravity="center_horizontal"
+        android:text="0"
         />
 
     <TextView
@@ -235,6 +236,7 @@
         android:textColor="#000000"
         android:visibility="gone"
         android:layout_gravity="center_horizontal"
+        android:text="0"
         />
 
 </LinearLayout>

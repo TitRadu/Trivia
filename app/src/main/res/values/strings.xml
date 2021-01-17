@@ -7,7 +7,7 @@
     <string name="title_scoreRou">Scor</string>
     <string name="title_gameEn">Game</string>
     <string name="title_gameRou">Joc</string>
-    <string name="helpTextCumSeJoaca">\n\n\n
+    <string name="helpTextCumSeJoaca">\n\n
 In momentul in care apesi butonul Start, se va afisa prima intrebare. Ai timp 30 de secunde sa raspunzi
 la intrebare. Dupa fiecare intrebare la care s-a raspuns corect va aparea un meniu intermediar in care vei putea vedea punctajul total acumulat in jocul curent si punctajul obtinut
 obtinut pe intrebarea curenta.
@@ -15,7 +15,7 @@ Ai 2 optiuni de alegere a raspunsului: prin atingerea butonului corespunzator va
 comenzii vocale daca acesta este activat(poate fi activat/dezactivat din meniul de start sau din meniul intermediar).
 Aceeasi situatie o avem si in meniul intermediar: pentru a trece la urmatoarea intrebare poti folosi comanda vocala, rostind "Next", sau apasand butonul "NEXT". Un joc dureaza 10 intrebari.\n
     </string>
-    <string name="helpTextCumSePuncteaza">\n\n\n
+    <string name="helpTextCumSePuncteaza">\n\n
 Pe fiecare intrebarea primesti atatea puncte cate secunde au ramas de la afisarea intrebarii. In cazul in care folosesti comanda vocala, atunci vei primi un bonus la un raspuns corect
 , acest bonus acoperind timpul pierdut pana ce microfonul repereaza ceea ce spui. Daca gresesti la o intrebare nu vei primi punctaj pe acea intrebare si vei fi trimis care pagina de profil
 la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar.
@@ -81,11 +81,14 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="userNameTextViewRankEn">Username:</string>
     <string name="userNameTextViewRankRou">Utilizator:</string>
 
-
-    <string name="microphoneSwitchGameMenuPlayEn">Microphone</string>
-    <string name="microphoneSwitchGameMenuPlayRou">Microfon</string>
-    <string name="helpButtonGameMenuEn">Help</string>
-    <string name="helpButtonGameMenuRou">Ajutor</string>
+    <string name="startButtonMenuEn">Start</string>
+    <string name="startButtonMenuRou">Începe</string>
+    <string name="microphoneSwitchMenuPlayEn">Microphone</string>
+    <string name="microphoneSwitchMenuPlayRou">Microfon</string>
+    <string name="helpButtonMenuEn">Help</string>
+    <string name="helpButtonMenuRou">Ajutor</string>
+    <string name="exitButtonMenuHelpEn">Exit</string>
+    <string name="exitButtonMenuHelpRou">Ieșire</string>
 
     <string name="userNameTextViewEditEn">New username</string>
     <string name="userNameTextViewEditRou">Nume nou</string>
@@ -123,6 +126,8 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="oneCategoryToastSettingsEn">Please select minimum one category!</string>
     <string name="oneCategoryToastSettingsRou">Selectează minim o categorie!</string>
 
+    <string name="nextButtonPlayEn">Next</string>
+    <string name="nextButtonPlayRou">Continuă</string>
     <string name="totalScoreTextViewPlayEn">Score:\n</string>
     <string name="totalScoreTextViewPlayRou">Scor:\n</string>
     <string name="questionTextViewPlayEn">Question:\n</string>

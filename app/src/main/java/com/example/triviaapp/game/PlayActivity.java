@@ -72,6 +72,7 @@ public class PlayActivity extends AppCompatActivity {
     String totalScoreTextViewString, questionTextViewString;
     String invalidInputToast;
     String youAnsweredText, timeExpiredText;
+    Locale selectedLanguage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,28 +131,32 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void setViewForEnglishLanguage(){
-        aSwitch.setText(R.string.microphoneSwitchGameMenuPlayEn);
+        aSwitch.setText(R.string.microphoneSwitchMenuPlayEn);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayEn);
         questionTextViewString = getString(R.string.questionTextViewPlayEn);
+        nextQuestionButton.setText(R.string.nextButtonPlayEn);
         tryAgainButton.setText(R.string.tryAgainButtonPlayEn);
         questionScoreView.setText(R.string.questionScoreTextViewPlayEn);
         totalScoreNextView.setText(R.string.totalScoreNextTextViewPlayEn);
         invalidInputToast = getString(R.string.invalidInputToastPlayEn);
         youAnsweredText = getString(R.string.youAnsweredTextPlayEn);
         timeExpiredText = getString(R.string.timeExpiredTextPlayEn);
+        selectedLanguage = Locale.ENGLISH;
 
     }
 
     private void setViewForRomanianLanguage(){
-        aSwitch.setText(R.string.microphoneSwitchGameMenuPlayRou);
+        aSwitch.setText(R.string.microphoneSwitchMenuPlayRou);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayRou);
         questionTextViewString = getString(R.string.questionTextViewPlayRou);
+        nextQuestionButton.setText(R.string.nextButtonPlayRou);
         tryAgainButton.setText(R.string.tryAgainButtonPlayRou);
         questionScoreView.setText(R.string.questionScoreTextViewPlayRou);
         totalScoreNextView.setText(R.string.totalScoreNextTextViewPlayRou);
         invalidInputToast = getString(R.string.invalidInputToastPlayRou);
         youAnsweredText = getString(R.string.youAnsweredTextPlayRou);
         timeExpiredText = getString(R.string.timeExpiredTextPlayRou);
+        selectedLanguage = Locale.getDefault();
 
     }
 
@@ -190,7 +195,7 @@ public class PlayActivity extends AppCompatActivity {
     private void speechInitialize(){
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, selectedLanguage);
 
     }
 
@@ -445,7 +450,16 @@ public class PlayActivity extends AppCompatActivity {
                     afterQuestionSpeechInput(voiceInput);
 
                 }else{
-                    afterNextSpeechInput(voiceInput);
+                    switch (LoggedUserData.language){
+                        case "english":
+                            afterNextSpeechInputEn(voiceInput);
+                            break;
+                        case "romanian":
+                            afterNextSpeechInputRou(voiceInput);
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
+                    }
 
                 }
 
@@ -494,7 +508,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void afterNextSpeechInput(String voiceInput){
+    private void afterNextSpeechInputEn(String voiceInput){
         switch (voiceInput) {
             case "Next":
             case "next":
@@ -515,6 +529,29 @@ public class PlayActivity extends AppCompatActivity {
         }
 
     }
+
+    private void afterNextSpeechInputRou(String voiceInput){
+        switch (voiceInput) {
+            case "Next":
+            case "next":
+                nextQuestionButton.callOnClick();
+                break;
+            case "Încearcă din nou":
+            case "încearcă din nou":
+                if(tryAgainButton.getVisibility() == View.VISIBLE){
+                    tryAgainButton.callOnClick();
+                    return;
+
+                }
+            default:
+                Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
+                speechRecognizer.destroy();
+                getSpeechInput();
+
+        }
+
+    }
+
 
     public void clicked(View view) {
         if(touchDisabled){
@@ -649,9 +686,8 @@ public class PlayActivity extends AppCompatActivity {
                 populateMapWithUserData();
                 FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
-                finishAndRemoveTask();
-                Intent intent = new Intent(getApplicationContext(), GameActivity.class);
-                startActivity(intent);
+                answerCheck = false;
+                hideQuestionSetup();
 
             }
 
@@ -691,7 +727,7 @@ public class PlayActivity extends AppCompatActivity {
     private void setTextAfterAnswerQuestion(){
         questionScoreViewScore.setText(String.valueOf(time));
         if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
-            totalScoreViewPoints.setText(String.valueOf(totalPoints) + " X 2");
+            totalScoreViewPoints.setText(totalPoints + " X 2");
 
         }
         else{

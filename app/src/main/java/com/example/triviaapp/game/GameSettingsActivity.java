@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
@@ -32,8 +33,10 @@ public class GameSettingsActivity extends AppCompatActivity {
     private Intent speechIntent;
     private SpeechRecognizer speechRecognizer;
 
-    String geographySpeechOption, mathsSpeechOption, othersSpeechOption, playSpeechOption;
     String invalidInputToast;
+    Locale selectedLanguage;
+
+    boolean currentState;
 
 
     @Override
@@ -56,6 +59,9 @@ public class GameSettingsActivity extends AppCompatActivity {
         othersCategorySwitch.setChecked(optionList.get(OTHERS).isValue());
         playButton = findViewById(R.id.playBtn);
         chooseLanguage();
+        if(optionList.get(MIC).isValue()) {
+            speechInitialize();
+        }
 
     }
 
@@ -66,17 +72,9 @@ public class GameSettingsActivity extends AppCompatActivity {
         playButton.setText(R.string.playButtonSettingsEn);
         oneCategoryToast = getString(R.string.oneCategoryToastSettingsEn);
         invalidInputToast = getString(R.string.invalidInputToastPlayEn);
+        selectedLanguage = Locale.ENGLISH;
 
     }
-
-    private void setSpeechOptionsForEnglishLanguage(){
-        geographySpeechOption = "geography";
-        mathsSpeechOption = "maths";
-        othersSpeechOption = "others";
-        playSpeechOption = "play";
-
-    }
-
 
     private void setViewForRomanianLanguage(){
         geographyCategorySwitch.setText(R.string.geographySwitchSettingsRou);
@@ -85,14 +83,7 @@ public class GameSettingsActivity extends AppCompatActivity {
         playButton.setText(R.string.playButtonSettingsRou);
         oneCategoryToast = getString(R.string.oneCategoryToastSettingsRou);
         invalidInputToast = getString(R.string.invalidInputToastPlayRou);
-
-    }
-
-    private void setSpeechOptionsForRomanianLanguage(){
-        geographySpeechOption = "geografie";
-        mathsSpeechOption = "mate";
-        othersSpeechOption = "altele";
-        playSpeechOption = "joacă";
+        selectedLanguage = Locale.getDefault();
 
     }
 
@@ -100,11 +91,9 @@ public class GameSettingsActivity extends AppCompatActivity {
         switch (LoggedUserData.language){
             case "english":
                 setViewForEnglishLanguage();
-                setSpeechOptionsForEnglishLanguage();
                 break;
             case "romanian":
                 setViewForRomanianLanguage();
-                setSpeechOptionsForRomanianLanguage();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
@@ -157,14 +146,11 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     }
 
-  /*  private void speechInitialize(){
+    private void speechInitialize(){
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        switch (language){
-            case "english":speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());break;
-            case "romanian":speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);break;
-
-        }
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, selectedLanguage);
+        getSpeechInput();
 
     }
 
@@ -198,6 +184,7 @@ public class GameSettingsActivity extends AppCompatActivity {
 
             @Override
             public void onError(int error) {
+                Log.d("error",String.valueOf(error));
                 if(error == SpeechRecognizer.ERROR_NO_MATCH) {
                     speechRecognizer.destroy();
                     getSpeechInput();
@@ -210,7 +197,17 @@ public class GameSettingsActivity extends AppCompatActivity {
             public void onResults(Bundle results) {
                 ArrayList<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 String response = result.get(0);
-                afterSpeechInput(response);
+                Log.d("speech",response);
+                switch (LoggedUserData.language){
+                    case "english":
+                        afterSpeechInputEn(response);
+                        break;
+                    case "romanian":
+                        afterSpeechInputRou(response);
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
+                }
 
             }
 
@@ -228,22 +225,37 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     }
 
-    private void afterSpeechInput(String response){
+    private void changeSwitchOption(Switch s){
+        currentState = s.isChecked();
+        currentState = !currentState;
+        s.setChecked(currentState);
+        speechRecognizer.destroy();
+        getSpeechInput();
+
+    }
+
+    private void afterSpeechInputEn(String response){
         switch (response){
+            case "Sport":
             case "sport":
-                sportCategorySwitch.callOnClick();
+                changeSwitchOption(sportCategorySwitch);
                 break;
-            case geographySpeechOption:
-                geographyCategorySwitch.callOnClick();
+            case "Geography":
+            case "geography":
+                changeSwitchOption(geographyCategorySwitch);
                 break;
-            case mathsSpeechOption:
-                mathsCategorySwitch.callOnClick();
+            case "Maths":
+            case "maths":
+                changeSwitchOption(mathsCategorySwitch);
                 break;
-            case othersSpeechOption:
-                othersCategorySwitch.callOnClick();
+            case "Others":
+            case "others":
+                changeSwitchOption(othersCategorySwitch);
                 break;
-            case playSpeechOption:
+            case "Play":
+            case "play":
                 playButton.performClick();
+                speechRecognizer.destroy();
                 break;
             default:Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();
@@ -252,5 +264,53 @@ public class GameSettingsActivity extends AppCompatActivity {
         }
 
     }
-    */
+
+    private void afterSpeechInputRou(String response){
+        switch (response){
+            case "Sport":
+            case "sport":
+                currentState = sportCategorySwitch.isChecked();
+                currentState = !currentState;
+                sportCategorySwitch.setChecked(currentState);
+                speechRecognizer.destroy();
+                getSpeechInput();
+                break;
+            case "Geografie":
+            case "geografie":
+                currentState = geographyCategorySwitch.isChecked();
+                currentState = !currentState;
+                geographyCategorySwitch.setChecked(currentState);
+                speechRecognizer.destroy();
+                getSpeechInput();
+                break;
+            case "Mate":
+            case "mate":
+                currentState = mathsCategorySwitch.isChecked();
+                currentState = !currentState;
+                mathsCategorySwitch.setChecked(currentState);
+                speechRecognizer.destroy();
+                getSpeechInput();
+                break;
+            case "Altele":
+            case "altele":
+                currentState = othersCategorySwitch.isChecked();
+                currentState = !currentState;
+                othersCategorySwitch.setChecked(currentState);
+                speechRecognizer.destroy();
+                getSpeechInput();
+                break;
+            case "Joacă":
+            case "joacă":
+                playButton.performClick();
+                speechRecognizer.destroy();
+                getSpeechInput();
+                break;
+            default:Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
+                speechRecognizer.destroy();
+                getSpeechInput();
+
+        }
+
+    }
+
 }
