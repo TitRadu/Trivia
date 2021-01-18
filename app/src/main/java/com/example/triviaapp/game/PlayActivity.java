@@ -604,6 +604,8 @@ public class PlayActivity extends AppCompatActivity {
             if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints*2;
                 ++LoggedUserData.loggedSuperPowerFiftyFifty;
+                ++LoggedUserData.loggedGamesWon;
+                increaseRightAnswerSuperpower();
                 sendPointsToDatabase();
             }
         }
@@ -616,6 +618,12 @@ public class PlayActivity extends AppCompatActivity {
 
         }
         delay(3000);
+    }
+
+    private void increaseRightAnswerSuperpower() {
+        if(LoggedUserData.loggedGamesWon%2==0){
+           ++LoggedUserData.loggedSuperPowerCorrectAnswer;
+        }
     }
 
     private void calculatePoints() {
@@ -664,6 +672,7 @@ public class PlayActivity extends AppCompatActivity {
     private void populateMapWithUserData() {
         map = new HashMap<>();
         map.put("email", LoggedUserData.loggedUserEmail);
+        map.put("gamesWon",LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
         map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);

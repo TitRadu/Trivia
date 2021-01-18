@@ -100,6 +100,7 @@ public class HomeFragment extends Fragment {
     private HashMap<String, Object> populateMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("email", LoggedUserData.loggedUserEmail);
+        map.put("gamesWon",LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
         map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
@@ -134,6 +135,7 @@ public class HomeFragment extends Fragment {
                         LoggedUserData.loggedUserKey = dataSnapshot1.getKey();
                         LoggedUserData.loggedSuperPowerFiftyFifty = user.getSuperpower();
                         LoggedUserData.loggedSuperPowerCorrectAnswer = user.getSuperpowerCorrectAnswer();
+                        LoggedUserData.loggedGamesWon = user.getGamesWon();
                         Log.e("superpower",LoggedUserData.loggedSuperPowerCorrectAnswer+"");
 
                         if(!LoggedUserData.loggedUserPasswordUpdateVerify)

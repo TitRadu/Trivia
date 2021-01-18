@@ -154,7 +154,7 @@
             android:orientation="horizontal">
             <Button
                 android:id="@+id/btn_superPower"
-                android:layout_width="110dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_botton_design_corners"
                 android:textSize="10sp"
@@ -162,7 +162,7 @@
                 android:text="50:50 \n Remainings 2"/>
             <Button
                 android:id="@+id/btn_superPowerRightAnswer"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="50dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="10sp"

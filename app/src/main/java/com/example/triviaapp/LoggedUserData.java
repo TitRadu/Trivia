@@ -13,6 +13,7 @@ public class LoggedUserData{
     public static String loggedUserKey = "empty";
     public static int loggedSuperPowerFiftyFifty = 0;
     public static int loggedSuperPowerCorrectAnswer = 0;
+    public static int loggedGamesWon = 0;
     public static int loggedUserPlace = 0;
     public static int loggedUserPoints = 0;
     public static boolean loggedUserPasswordUpdateVerify;

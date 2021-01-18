@@ -6,15 +6,17 @@ public class User{
     private int points;
     private int superpower;
     private int superpowerCorrectAnswer;
+    private int gamesWon;
     private String userName;
 
-    public User(String email, String password, int points, int superpower,int superpowerCorrectAnswer,String userName) {
+    public User(String email,int gamesWon ,String password, int points, int superpower,int superpowerCorrectAnswer,String userName) {
         this.email = email;
         this.userName = userName;
         this.password = password;
         this.points = points;
         this.superpower = superpower;
         this.superpowerCorrectAnswer = superpowerCorrectAnswer;
+        this.gamesWon = gamesWon;
     }
 
     public User(){}
@@ -60,5 +62,9 @@ public class User{
 
     public void setSuperpowerCorrectAnswer(int superpowerCorrectAnswer) {
         this.superpowerCorrectAnswer = superpowerCorrectAnswer;
+    }
+
+    public int getGamesWon() {
+        return gamesWon;
     }
 }
