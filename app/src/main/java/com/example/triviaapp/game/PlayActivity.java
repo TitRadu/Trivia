@@ -73,6 +73,7 @@ public class PlayActivity extends AppCompatActivity {
     String totalScoreTextViewString, questionTextViewString;
     String invalidInputToast;
     String youAnsweredText, timeExpiredText;
+    String remainings,rights;
     Locale selectedLanguage;
 
     @Override
@@ -93,13 +94,13 @@ public class PlayActivity extends AppCompatActivity {
             LoggedUserData.loggedSuperPowerFiftyFifty--;
             setAnswers(answers,true);
             btn_superpower.setEnabled(false);
-            btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty+ " remainings");
+            btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty+ remainings);
         });
         btn_RightAnswer.setOnClickListener(v -> {
             LoggedUserData.loggedSuperPowerCorrectAnswer--;
             clickCorrectAnswer();
             btn_RightAnswer.setEnabled(false);
-            btn_RightAnswer.setText("Right Answers \n "+LoggedUserData.loggedSuperPowerCorrectAnswer+ " remainings");
+            btn_RightAnswer.setText(rights+LoggedUserData.loggedSuperPowerCorrectAnswer+ remainings);
         });
     }
 
@@ -162,6 +163,8 @@ public class PlayActivity extends AppCompatActivity {
         youAnsweredText = getString(R.string.youAnsweredTextPlayEn);
         timeExpiredText = getString(R.string.timeExpiredTextPlayEn);
         selectedLanguage = Locale.ENGLISH;
+        remainings = getString(R.string.superPowerRemainingEn);
+        rights = getString(R.string.superPowerRightAnwerEn);
 
     }
 
@@ -177,7 +180,8 @@ public class PlayActivity extends AppCompatActivity {
         youAnsweredText = getString(R.string.youAnsweredTextPlayRou);
         timeExpiredText = getString(R.string.timeExpiredTextPlayRou);
         selectedLanguage = Locale.getDefault();
-
+        remainings = getString(R.string.superPowerRemainingRou);
+        rights = getString(R.string.superPowerRightAnwerRou);
     }
 
     private void chooseLanguage(){
@@ -199,8 +203,8 @@ public class PlayActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setSuperpowerView(){
-        btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty+ " remainings");
-        btn_RightAnswer.setText("Right Answers \n "+LoggedUserData.loggedSuperPowerCorrectAnswer+ " remainings");
+        btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty+" "+ remainings);
+        btn_RightAnswer.setText(rights+LoggedUserData.loggedSuperPowerCorrectAnswer+" "+ remainings);
         if(LoggedUserData.loggedSuperPowerFiftyFifty>0){
             btn_superpower.setEnabled(true);
             btn_superpower.setVisibility(View.VISIBLE);

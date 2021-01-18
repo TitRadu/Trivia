@@ -303,7 +303,6 @@ public class GameSettingsActivity extends AppCompatActivity {
             case "joacă":
                 playButton.performClick();
                 speechRecognizer.destroy();
-                getSpeechInput();
                 break;
             default:Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();

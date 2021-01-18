@@ -161,5 +161,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="howToPlayTextViewHelpRou">Cum se joacă?</string>
     <string name="howToScoreTextViewHelpEn">How to score?</string>
     <string name="howToScoreTextViewHelpRou">Cum se punctează?</string>
-
+    <string name="superPowerRemainingEn"> Remaining</string>
+    <string name="superPowerRemainingRou"> Ramase</string>
+    <string name="superPowerRightAnwerEn">"Right Answers \n "</string>
+    <string name="superPowerRightAnwerRou">"Raspunsuri corecte \n "</string>
 </resources>
