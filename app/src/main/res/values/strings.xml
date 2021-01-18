@@ -7,18 +7,30 @@
     <string name="title_scoreRou">Scor</string>
     <string name="title_gameEn">Game</string>
     <string name="title_gameRou">Joc</string>
-    <string name="helpTextCumSeJoaca">\n\n
-In momentul in care apesi butonul Start, se va afisa prima intrebare. Ai timp 30 de secunde sa raspunzi
-la intrebare. Dupa fiecare intrebare la care s-a raspuns corect va aparea un meniu intermediar in care vei putea vedea punctajul total acumulat in jocul curent si punctajul obtinut
-obtinut pe intrebarea curenta.
-Ai 2 optiuni de alegere a raspunsului: prin atingerea butonului corespunzator variantei dorite sau cu ajutorul
+    <string name="helpTextCumSeJoacaRou">\n
+În momentul în care apeși butonul Începe, se va afișa un meniu pentru alegerea categoriilor. După ce se apasă butonul Joacă, ai timp 30 de secunde sa răspunzi
+la întrebare. După fiecare întrebare la care s-a răspuns sau în cazul în care expiră timpul, va apărea un meniu intermediar în care vei putea vedea punctajul total acumulat în jocul curent și punctajul
+obținut pe întrebarea curentă.
+Ai 2 opțiuni de alegere a răspunsului: prin atingerea butonului corespunzător variantei dorite sau cu ajutorul
 comenzii vocale daca acesta este activat(poate fi activat/dezactivat din meniul de start sau din meniul intermediar).
-Aceeasi situatie o avem si in meniul intermediar: pentru a trece la urmatoarea intrebare poti folosi comanda vocala, rostind "Next", sau apasand butonul "NEXT". Un joc dureaza 10 intrebari.\n
+Aceeași situație o avem și în meniul intermediar: pentru a trece la următoarea întrebare poți folosi comanda vocală, rostind "Continuă", sau apasând butonul "Continuă". Un joc conține 10 intrebări.\n\n
     </string>
-    <string name="helpTextCumSePuncteaza">\n\n
-Pe fiecare intrebarea primesti atatea puncte cate secunde au ramas de la afisarea intrebarii. In cazul in care folosesti comanda vocala, atunci vei primi un bonus la un raspuns corect
-, acest bonus acoperind timpul pierdut pana ce microfonul repereaza ceea ce spui. Daca gresesti la o intrebare nu vei primi punctaj pe acea intrebare si vei fi trimis care pagina de profil
-la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar.
+    <string name="helpTextCumSeJoacaEn">\n
+    When you press the Start button, a menu for choosing categories will be displayed. After pressing the Play button, you have 30 seconds to respond
+to the question. After each question answered or if time expires, an intermediate menu will appear in which you will be able to see the total score accumulated in the current game and the score
+obtained on the current question.
+You have 2 options to choose the answer: by touching the button corresponding to the desired variant or with the help
+voice command if it is activated (it can be activated / deactivated from the start menu or from the intermediate menu).
+We have the same situation in the intermediate menu: to move to the next question you can use the voice command, saying "Continue", or by pressing the "Continue" button. A game contains 10 questions.\n\n
+    </string>
+
+    <string name="helpTextCumSePuncteazaRou">\n
+Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afișarea intrebării. În cazul în care folosești comanda vocală, atunci vei primi un bonus la un răspuns corect
+, acest bonus acoperind timpul pierdut până ce microfonul reperează ceea ce spui. Daca greșești la o întrebare sau timpul expiră, nu vei primi punctaj pe acea întrebare.\n\n
+    </string>
+    <string name="helpTextCumSePuncteazaEn">\n
+        For each question you receive as many points as there are seconds left from displaying the question. If you use voice command, then you will receive a bonus to a correct answer
+, this bonus covering the time lost until the microphone detects what you are saying. If you make a mistake in a question or the time expires, you will not receive a score on that question.\n\n
     </string>
 
     <string name="passwordHintLogRegEditEn">password</string>
@@ -144,8 +156,10 @@ la fel si dupa ce raspunzi corect la 10 intrebari si iesi din meniul intermediar
     <string name="youAnsweredTextPlayRou">Ai răspuns!</string>
     <string name="timeExpiredTextPlayEn">Time expired!</string>
     <string name="timeExpiredTextPlayRou">Timpul a expirat!</string>
-    <string name="helpCumSePuncteaza">Cum se puncteaza ?</string>
-    <string name="helpCumSeJoaca">Cum se Joaca ?</string>
 
+    <string name="howToPlayTextViewHelpEn">How to play?</string>
+    <string name="howToPlayTextViewHelpRou">Cum se joacă?</string>
+    <string name="howToScoreTextViewHelpEn">How to score?</string>
+    <string name="howToScoreTextViewHelpRou">Cum se punctează?</string>
 
 </resources>
