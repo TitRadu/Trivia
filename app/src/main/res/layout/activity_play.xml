@@ -147,11 +147,29 @@
             app:sub_btn_line_color="#3AF598"
             app:sub_btn_tick_color="@color/white"
             android:onClick="clicked"/>
-        <Button
-            android:id="@+id/btn_superPower"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="50:50"/>
+            android:gravity="center"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btn_superPower"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_botton_design_corners"
+                android:textSize="10sp"
+                android:textColor="#000000"
+                android:text="50:50 \n Remainings 2"/>
+            <Button
+                android:id="@+id/btn_superPowerRightAnswer"
+                android:layout_marginLeft="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:textColor="#000000"
+                android:background="@drawable/custom_botton_design_corners"
+                android:text="Right Answer"/>
+        </LinearLayout>
 
 
     </LinearLayout>

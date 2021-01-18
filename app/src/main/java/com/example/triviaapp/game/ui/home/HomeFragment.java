@@ -103,6 +103,7 @@ public class HomeFragment extends Fragment {
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
         map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
         return map;
     }
@@ -132,7 +133,8 @@ public class HomeFragment extends Fragment {
                         LoggedUserData.loggedUserPoints = user.getPoints();
                         LoggedUserData.loggedUserKey = dataSnapshot1.getKey();
                         LoggedUserData.loggedSuperPowerFiftyFifty = user.getSuperpower();
-                        Log.e("superpower",LoggedUserData.loggedSuperPowerFiftyFifty+"");
+                        LoggedUserData.loggedSuperPowerCorrectAnswer = user.getSuperpowerCorrectAnswer();
+                        Log.e("superpower",LoggedUserData.loggedSuperPowerCorrectAnswer+"");
 
                         if(!LoggedUserData.loggedUserPasswordUpdateVerify)
                         if(!LoggedUserData.loggedUserPassword.equals("empty")) {

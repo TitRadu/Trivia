@@ -1,5 +1,6 @@
 package com.example.triviaapp.game;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -49,7 +50,7 @@ public class PlayActivity extends AppCompatActivity {
 
     public static final int TOTAL_QUESTION_TO_WIN_GAME = 11;
     String userAnswer, correctAnswer, voiceInput = null;
-    Button  nextQuestionButton, tryAgainButton, btn_superpower;
+    Button  nextQuestionButton, tryAgainButton, btn_superpower, btn_RightAnswer;
     SubmitButton btnA,btnB, btnC, btnD, selectedThroughVoiceOption;
     TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView,questionScoreViewScore,totalScoreViewPoints;
     Switch aSwitch;
@@ -86,14 +87,33 @@ public class PlayActivity extends AppCompatActivity {
         listenerStatusMicrophone();
         listener();
     }
+    @SuppressLint("SetTextI18n")
     private void listener(){
         btn_superpower.setOnClickListener(v -> {
             LoggedUserData.loggedSuperPowerFiftyFifty--;
             setAnswers(answers,true);
             btn_superpower.setEnabled(false);
+            btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty+ " remainings");
+        });
+        btn_RightAnswer.setOnClickListener(v -> {
+            LoggedUserData.loggedSuperPowerCorrectAnswer--;
+            clickCorrectAnswer();
+            btn_RightAnswer.setEnabled(false);
+            btn_RightAnswer.setText("Right Answers \n "+LoggedUserData.loggedSuperPowerCorrectAnswer+ " remainings");
         });
     }
+
+    private void clickCorrectAnswer() {
+        switch (correctAnswer){
+            case "A":clicked(btnA);break;
+            case "B":clicked(btnB);break;
+            case "C":clicked(btnC);break;
+            case "D":clicked(btnD);break;
+        }
+    }
+
     public void setViews(){
+        btn_RightAnswer = findViewById(R.id.btn_superPowerRightAnswer);
         btn_superpower = findViewById(R.id.btn_superPower);
         questionScoreViewScore = findViewById(R.id.questionScoreViewPoints);
         totalScoreViewPoints = findViewById(R.id.totalScoreNextViewPoints);
@@ -177,13 +197,25 @@ public class PlayActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("SetTextI18n")
     private void setSuperpowerView(){
+        btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty+ " remainings");
+        btn_RightAnswer.setText("Right Answers \n "+LoggedUserData.loggedSuperPowerCorrectAnswer+ " remainings");
         if(LoggedUserData.loggedSuperPowerFiftyFifty>0){
             btn_superpower.setEnabled(true);
             btn_superpower.setVisibility(View.VISIBLE);
 
         }else{
-            btn_superpower.setVisibility(View.GONE);
+            btn_superpower.setEnabled(false);
+            btn_superpower.setTextColor(Color.GRAY);
+        }
+        if(LoggedUserData.loggedSuperPowerCorrectAnswer>0){
+            btn_RightAnswer.setEnabled(true);
+            btn_RightAnswer.setVisibility(View.VISIBLE);
+
+        }else{
+            btn_RightAnswer.setEnabled(false);
+            btn_RightAnswer.setTextColor(Color.GRAY);
         }
     }
 
@@ -635,6 +667,7 @@ public class PlayActivity extends AppCompatActivity {
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
         map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
     }
 
