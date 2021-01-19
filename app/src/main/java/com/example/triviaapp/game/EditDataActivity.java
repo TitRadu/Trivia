@@ -165,9 +165,12 @@ public class EditDataActivity extends AppCompatActivity {
     private HashMap<String, Object> populateMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("email", LoggedUserData.loggedUserEmail);
-        map.put("userName", LoggedUserData.loggedUserName);
+        map.put("gamesWon",LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
+        map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
+        map.put("userName", LoggedUserData.loggedUserName);
         return map;
     }
 
