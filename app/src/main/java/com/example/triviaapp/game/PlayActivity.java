@@ -44,6 +44,8 @@ import java.util.Random;
 
 import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 import static com.example.triviaapp.LoggedUserData.MIC;
+import static com.example.triviaapp.LoggedUserData.loggedSuperPowerCorrectAnswer;
+import static com.example.triviaapp.LoggedUserData.loggedSuperPowerFiftyFifty;
 import static com.example.triviaapp.LoggedUserData.optionList;
 
 public class PlayActivity extends AppCompatActivity {
@@ -482,8 +484,19 @@ public class PlayActivity extends AppCompatActivity {
             public void onResults(Bundle results) {
                 ArrayList<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 voiceInput = result.get(0);
+                Log.d("input",result.get(0));
                 if(nextQuestionButton.getVisibility() == View.GONE) {
-                    afterQuestionSpeechInput(voiceInput);
+
+                    switch (LoggedUserData.language){
+                        case "english":
+                            afterQuestionSpeechInputEn(voiceInput);
+                            break;
+                        case "romanian":
+                            afterQuestionSpeechInputRou(voiceInput);
+                            break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
+                    }
 
                 }else{
                     switch (LoggedUserData.language){
@@ -515,7 +528,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void afterQuestionSpeechInput(String voiceInput){
+    private void afterQuestionSpeechInputEn(String voiceInput){
         switch (voiceInput) {
             case "A":
             case "a":
@@ -533,6 +546,68 @@ public class PlayActivity extends AppCompatActivity {
             case "d":
                 selectedThroughVoiceOption=btnD;
                 break;
+            case "Fifty fifty":
+            case "fifty fifty":
+                if(loggedSuperPowerFiftyFifty > 0){
+                    btn_superpower.performClick();
+                }
+                speechRecognizer.destroy();
+                getSpeechInput();
+                return;
+            case "Right answer":
+            case "right answer":
+                case "right Answer":
+                if(loggedSuperPowerCorrectAnswer > 0){
+                    btn_RightAnswer.performClick();
+                }
+                speechRecognizer.destroy();
+                getSpeechInput();
+                return;
+            default:
+                Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
+                speechRecognizer.destroy();
+                getSpeechInput();
+                return;
+
+        }
+        clicked(selectedThroughVoiceOption);
+
+    }
+
+
+    private void afterQuestionSpeechInputRou(String voiceInput){
+        switch (voiceInput) {
+            case "A":
+            case "a":
+                selectedThroughVoiceOption=btnA;
+                break;
+            case "B":
+            case "b":
+                selectedThroughVoiceOption=btnB;
+                break;
+            case "C":
+            case "c":
+                selectedThroughVoiceOption=btnC;
+                break;
+            case "D":
+            case "d":
+                selectedThroughVoiceOption=btnD;
+                break;
+            case "50 50":
+                if(loggedSuperPowerFiftyFifty > 0){
+                    btn_superpower.performClick();
+                }
+                speechRecognizer.destroy();
+                getSpeechInput();
+                return;
+            case "Răspuns corect":
+            case "răspuns corect":
+                if(loggedSuperPowerCorrectAnswer > 0){
+                    btn_RightAnswer.performClick();
+                }
+                speechRecognizer.destroy();
+                getSpeechInput();
+                return;
             default:
                 Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();
@@ -626,7 +701,7 @@ public class PlayActivity extends AppCompatActivity {
 
     private void increaseRightAnswerSuperpower() {
         if(LoggedUserData.loggedGamesWon%2==0){
-           ++LoggedUserData.loggedSuperPowerCorrectAnswer;
+            ++LoggedUserData.loggedSuperPowerCorrectAnswer;
         }
     }
 
