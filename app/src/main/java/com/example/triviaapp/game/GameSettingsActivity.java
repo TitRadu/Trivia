@@ -136,6 +136,9 @@ public class GameSettingsActivity extends AppCompatActivity {
     public void openPlayActivity(View view){
         if(!optionList.get(SPORT).isValue() && !optionList.get(GEO).isValue() && !optionList.get(MATHS).isValue() && !optionList.get(OTHERS).isValue()){
             Toast.makeText(getBaseContext(),oneCategoryToast,Toast.LENGTH_SHORT).show();
+            if(optionList.get(MIC).isValue()) {
+                getSpeechInput();
+            }
             return;
 
         }
@@ -244,8 +247,8 @@ public class GameSettingsActivity extends AppCompatActivity {
             case "geography":
                 changeSwitchOption(geographyCategorySwitch);
                 break;
-            case "Maths":
-            case "maths":
+            case "Mathematics":
+            case "mathematics":
                 changeSwitchOption(mathsCategorySwitch);
                 break;
             case "Others":
@@ -269,40 +272,24 @@ public class GameSettingsActivity extends AppCompatActivity {
         switch (response){
             case "Sport":
             case "sport":
-                currentState = sportCategorySwitch.isChecked();
-                currentState = !currentState;
-                sportCategorySwitch.setChecked(currentState);
-                speechRecognizer.destroy();
-                getSpeechInput();
+                changeSwitchOption(sportCategorySwitch);
                 break;
             case "Geografie":
             case "geografie":
-                currentState = geographyCategorySwitch.isChecked();
-                currentState = !currentState;
-                geographyCategorySwitch.setChecked(currentState);
-                speechRecognizer.destroy();
-                getSpeechInput();
+                changeSwitchOption(geographyCategorySwitch);
                 break;
             case "Mate":
             case "mate":
-                currentState = mathsCategorySwitch.isChecked();
-                currentState = !currentState;
-                mathsCategorySwitch.setChecked(currentState);
-                speechRecognizer.destroy();
-                getSpeechInput();
+                changeSwitchOption(mathsCategorySwitch);
                 break;
             case "Altele":
             case "altele":
-                currentState = othersCategorySwitch.isChecked();
-                currentState = !currentState;
-                othersCategorySwitch.setChecked(currentState);
-                speechRecognizer.destroy();
-                getSpeechInput();
+                changeSwitchOption(othersCategorySwitch);
                 break;
             case "Joacă":
             case "joacă":
-                playButton.performClick();
                 speechRecognizer.destroy();
+                playButton.performClick();
                 break;
             default:Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();

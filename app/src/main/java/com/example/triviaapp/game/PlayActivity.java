@@ -94,13 +94,13 @@ public class PlayActivity extends AppCompatActivity {
             LoggedUserData.loggedSuperPowerFiftyFifty--;
             setAnswers(answers,true);
             btn_superpower.setEnabled(false);
-            btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty+ remainings);
+            btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty + " " + remainings);
         });
         btn_RightAnswer.setOnClickListener(v -> {
             LoggedUserData.loggedSuperPowerCorrectAnswer--;
             clickCorrectAnswer();
             btn_RightAnswer.setEnabled(false);
-            btn_RightAnswer.setText(rights+LoggedUserData.loggedSuperPowerCorrectAnswer+ remainings);
+            btn_RightAnswer.setText(rights+LoggedUserData.loggedSuperPowerCorrectAnswer + " " + remainings);
         });
     }
 
@@ -568,8 +568,8 @@ public class PlayActivity extends AppCompatActivity {
 
     private void afterNextSpeechInputRou(String voiceInput){
         switch (voiceInput) {
-            case "Next":
-            case "next":
+            case "Continuă":
+            case "continuă":
                 nextQuestionButton.callOnClick();
                 break;
             case "Încearcă din nou":

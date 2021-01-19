@@ -34,40 +34,40 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     </string>
 
     <string name="passwordHintLogRegEditEn">password</string>
-    <string name="passwordHintLogRegEditRou">parola</string>
+    <string name="passwordHintLogRegEditRou">parolă</string>
     <string name="logInButtonLogRegEn">Log In</string>
     <string name="logInButtonLogRegRou">Conectează-te</string>
     <string name="createButtonLogRegEn">Create account</string>
     <string name="createButtonLogRegRou">Creează cont</string>
-    <string name="forgotPasswordTextViewLogEn">Forgot Password</string>
-    <string name="forgotPasswordTextViewLogRou">Parolă uitată</string>
+    <string name="forgotPasswordTextViewLogEn">Forgot your password?</string>
+    <string name="forgotPasswordTextViewLogRou">Ai uitat parola?</string>
     <string name="sendMailButtonLogEn">Send Email</string>
     <string name="sendMailButtonLogRou">Trimite mail</string>
     <string name="emptyMailToastLogRegEn">Introduce an email!</string>
-    <string name="emptyMailToastLogRegRou">Introduceti un email!</string>
+    <string name="emptyMailToastLogRegRou">Introduceți un email!</string>
     <string name="emptyPasswordToastLogRegEditEn">Introduce a password!</string>
-    <string name="emptyPasswordToastLogRegEditRou">Introduceti o parola!</string>
+    <string name="emptyPasswordToastLogRegEditRou">Introduceți o parolă!</string>
     <string name="successDataToastLogEn">Connected!</string>
     <string name="successDataToastLogRou">Conectat!</string>
     <string name="wrongDataToastLogEn">Email or password incorrect!</string>
-    <string name="wrongDataToastLogRou">Email sau parola incorecte!</string>
+    <string name="wrongDataToastLogRou">Email sau parolă incorecte!</string>
     <string name="successSendMailToastLogEn">A reset-password mail was send!</string>
     <string name="successSendMailToastLogRou">Un mail de schimbare a parolei a fost trimis!</string>
     <string name="wrongMailToastLogEn">Incorrect mail!</string>
-    <string name="wrongMailToastLogRou">Mail gresit!</string>
+    <string name="wrongMailToastLogRou">Mail greșit!</string>
     <string name="audioGrantedToastLogEn">Audio record granted!</string>
-    <string name="audioGrantedToastLogRou">Inregistrarea audio permisa!</string>
+    <string name="audioGrantedToastLogRou">Înregistrarea audio permisă!</string>
     <string name="audioDeniedToastLogEn">Audio record denied!</string>
-    <string name="audioDeniedToastLogRou">Inregistrarea audio respinsa!</string>
+    <string name="audioDeniedToastLogRou">Înregistrarea audio respinsă!</string>
 
     <string name="userNameHintRegEn">username</string>
     <string name="userNameHintRegRou">nume de utilizator</string>
     <string name="alreadyHaveTextViewRegEn">Already have an account?</string>
-    <string name="alreadyHaveTextViewRegRou">Aveti deja un cont?</string>
+    <string name="alreadyHaveTextViewRegRou">Aveți deja un cont?</string>
     <string name="emptyUserNameToastRegEn">Introduce an username!</string>
-    <string name="emptyUserNameToastRegRou">Introduceti un nume de utilizator</string>
+    <string name="emptyUserNameToastRegRou">Introduceți un nume de utilizator</string>
     <string name="shortPasswordToastRegEditEn">Password must contain minimum 6 characters!</string>
-    <string name="shortPasswordToastRegEditRou">Parola trebuie sa contina minimum 6 caractere!</string>
+    <string name="shortPasswordToastRegEditRou">Parola trebuie să conțină minimum 6 caractere!</string>
     <string name="existUserNameToastRegEditEn">User name exists!</string>
     <string name="existUserNameToastRegEditRou">Numele de utilizator este indisponibil!</string>
     <string name="successCreateToastRegEn">Account created successfully!</string>
@@ -105,9 +105,9 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="userNameTextViewEditEn">New username</string>
     <string name="userNameTextViewEditRou">Nume nou</string>
     <string name="oldPasswordTextViewEditEn">Old password</string>
-    <string name="oldPasswordTextViewEditRou">Parola veche</string>
+    <string name="oldPasswordTextViewEditRou">Parolă veche</string>
     <string name="newPasswordTextViewEditEn">New password</string>
-    <string name="newPasswordTextViewEditRou">Parola nouă</string>
+    <string name="newPasswordTextViewEditRou">Parolă nouă</string>
     <string name="chooseLanguageTextViewEditEn">Choose language:</string>
     <string name="chooseLanguageTextViewEditRou">Selectează limba:</string>
     <string name="editButtonEditEn">Edit</string>
@@ -129,12 +129,12 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
 
     <string name="geographySwitchSettingsEn">Geography</string>
     <string name="geographySwitchSettingsRou">Geografie</string>
-    <string name="mathsSwitchSettingsEn">Maths</string>
+    <string name="mathsSwitchSettingsEn">Math</string>
     <string name="mathsSwitchSettingsRou">Mate</string>
     <string name="othersSwitchSettingsEn">Others</string>
     <string name="othersSwitchSettingsRou">Altele</string>
     <string name="playButtonSettingsEn">Play</string>
-    <string name="playButtonSettingsRou">Joaca</string>
+    <string name="playButtonSettingsRou">Joacă</string>
     <string name="oneCategoryToastSettingsEn">Please select minimum one category!</string>
     <string name="oneCategoryToastSettingsRou">Selectează minim o categorie!</string>
 
@@ -143,9 +143,9 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="totalScoreTextViewPlayEn">Score:\n</string>
     <string name="totalScoreTextViewPlayRou">Scor:\n</string>
     <string name="questionTextViewPlayEn">Question:\n</string>
-    <string name="questionTextViewPlayRou">Intrebarea:\n</string>
+    <string name="questionTextViewPlayRou">Întrebarea:\n</string>
     <string name="tryAgainButtonPlayEn">Try again</string>
-    <string name="tryAgainButtonPlayRou">Incearca din nou</string>
+    <string name="tryAgainButtonPlayRou">Încearcă din nou</string>
     <string name="questionScoreTextViewPlayEn">Question points:</string>
     <string name="questionScoreTextViewPlayRou">Punctaj intrebare:</string>
     <string name="totalScoreNextTextViewPlayEn">Total score:</string>
@@ -162,7 +162,7 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="howToScoreTextViewHelpEn">How to score?</string>
     <string name="howToScoreTextViewHelpRou">Cum se punctează?</string>
     <string name="superPowerRemainingEn"> Remaining</string>
-    <string name="superPowerRemainingRou"> Ramase</string>
+    <string name="superPowerRemainingRou"> Rămase</string>
     <string name="superPowerRightAnwerEn">"Right Answers \n "</string>
-    <string name="superPowerRightAnwerRou">"Raspunsuri corecte \n "</string>
+    <string name="superPowerRightAnwerRou">"Răspunsuri corecte \n "</string>
 </resources>
