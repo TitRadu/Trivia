@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +37,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,6 +75,7 @@ public class PlayActivity extends AppCompatActivity {
     Intent speechIntent = null;
     SpeechRecognizer speechRecognizer;
     LinearLayout firstLineButtonsLayout, infoLayout;
+    private TextToSpeech textToSpeech;
 
     String totalScoreTextViewString, questionTextViewString;
     String invalidInputToast;
@@ -83,13 +88,72 @@ public class PlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
         setViews();
-        timer();
-        if(optionList.get(MIC).isValue()) {
-            getSpeechInput();
-        }
+        //if(optionList.get(MIC).isValue()) {
+        //    getSpeechInput();
+        //}
+        //timer();
         listenerStatusMicrophone();
         listener();
     }
+
+    private void textToSpeechListener(){
+        textToSpeech = new TextToSpeech(this, status -> {
+            if(status == TextToSpeech.SUCCESS){
+                textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                    @Override
+                    public void onStart(String utteranceId) {
+
+                    }
+
+                    @Override
+                    public void onDone(String utteranceId) {
+                        Runnable runnable = () -> {
+                            if(optionList.get(MIC).isValue()) {
+                                getSpeechInput();
+                            }
+                            timer();
+                        };
+
+                        runOnUiThread(runnable);
+
+                    }
+
+                    @Override
+                    public void onError(String utteranceId) {
+
+                    }
+                });
+
+                int result = textToSpeech.setLanguage(selectedLanguage);
+                textToSpeech.setPitch(1);
+                textToSpeech.setSpeechRate(0.75f);
+                speak();
+
+
+                if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
+                   Toast.makeText(getBaseContext(), "Language not supported!",Toast.LENGTH_SHORT).show();
+
+                }
+
+            }else{
+                Toast.makeText(getBaseContext(), "Initialization failed!",Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+    }
+
+    private void speak(){
+        String text = currentQuestion.getQuestion();
+        text = text + "\n" + btnA.getText();
+        text = text + "\n" + btnB.getText();
+        text = text + "\n" + btnC.getText();
+        text = text + "\n" + btnD.getText();
+        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+
+    }
+
     @SuppressLint("SetTextI18n")
     private void listener(){
         btn_superpower.setOnClickListener(v -> {
@@ -145,11 +209,11 @@ public class PlayActivity extends AppCompatActivity {
         aSwitch = findViewById(R.id.sw_microphonePlay);
         aSwitch.setChecked(optionList.get(MIC).isValue());
         chooseLanguage();
-        setTextViewWithQuestionAndAnswers(false);
-        setSuperpowerView();
         if(optionList.get(MIC).isValue()) {
             speechInitialize();
         }
+        setTextViewWithQuestionAndAnswers(false);
+        setSuperpowerView();
 
     }
 
@@ -328,6 +392,8 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
                 setAnswers(answers,isFifty);
+                textToSpeechListener();
+
             }
 
         });
@@ -665,6 +731,11 @@ public class PlayActivity extends AppCompatActivity {
 
 
     public void clicked(View view) {
+        if(textToSpeech.isSpeaking()){
+            return;
+
+        }
+
         if(touchDisabled){
             return;
         }else{
@@ -673,6 +744,7 @@ public class PlayActivity extends AppCompatActivity {
                 speechRecognizer.destroy();
             }
         }
+        textToSpeech.stop();
         ((SubmitButton) view).startAnimation();
         getUserAnswer(view);
         if(userAnswer.equals(correctAnswer)){
@@ -882,6 +954,7 @@ public class PlayActivity extends AppCompatActivity {
         questionScoreView.setVisibility(View.GONE);
         totalScoreNextView.setVisibility(View.GONE);
         infoLayout.setVisibility(View.VISIBLE);
+        timerView.setText("30");
         timerView.setVisibility(View.VISIBLE);
         materialCardView.setVisibility(View.VISIBLE);
         firstLineButtonsLayout.setVisibility(View.VISIBLE);
@@ -911,10 +984,11 @@ public class PlayActivity extends AppCompatActivity {
         touchDisabled = false;
         voiceInput = null;
         selectedThroughVoiceOption = null;
-        if(optionList.get(MIC).isValue()) {
-            getSpeechInput();
-        }
-        timer();
+     //   if(optionList.get(MIC).isValue()) {
+     //       getSpeechInput();
+     //   }
+        speak();
+        //timer();
     }
 
     public void tryAgain(View view){
