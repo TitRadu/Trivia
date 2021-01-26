@@ -21,13 +21,14 @@ import com.example.triviaapp.game.PlayActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.triviaapp.LoggedUserData.MIC;
+import static com.example.triviaapp.LoggedUserData.SPEAKER;
 import static com.example.triviaapp.LoggedUserData.optionList;
 
 public class NotificationsFragment extends Fragment {
     Button startButton, exitButton,helpButton;
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    Switch switchMicrophone;
+    Switch switchMicrophone, switchSpeaker;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,6 +44,8 @@ public class NotificationsFragment extends Fragment {
         exitButton = root.findViewById(R.id.exitBtn);
         switchMicrophone = root.findViewById(R.id.sw_microphone);
         switchMicrophone.setChecked(optionList.get(MIC).isValue());
+        switchSpeaker = root.findViewById(R.id.sw_speaker);
+        switchSpeaker.setChecked(optionList.get(SPEAKER).isValue());
         helpButton = root.findViewById(R.id.helpBtn);
         chooseLanguage();
 
@@ -86,6 +89,13 @@ public class NotificationsFragment extends Fragment {
             SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
             optionList.get(MIC).setValue(isChecked);
             editor.putString(optionList.get(MIC).getName(),String.valueOf(isChecked));
+            editor.apply();
+
+        });
+        switchSpeaker.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+            optionList.get(SPEAKER).setValue(isChecked);
+            editor.putString(optionList.get(SPEAKER).getName(),String.valueOf(isChecked));
             editor.apply();
 
         });

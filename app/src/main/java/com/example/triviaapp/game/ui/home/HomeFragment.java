@@ -2,6 +2,7 @@ package com.example.triviaapp.game.ui.home;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +30,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
     FirebaseAuth firebaseAuth;
@@ -37,11 +41,15 @@ public class HomeFragment extends Fragment {
     Button editActivityButton, signOutButton;
     TextView userNameView, emailView, pointsView, placeView;
     String emailTextViewString, placeTextViewString, pointsTextViewString;
+    Date date;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        firebaseAuth = FirebaseAuth.getInstance();
+        date = new Date();
+        verifyTime();
         initializeViews(root);
         searchLoggedUser(LoggedUserData.loggedUserEmail);
         setOnClickListeners();
@@ -50,8 +58,25 @@ public class HomeFragment extends Fragment {
 
     }
 
+
+
+    private void verifyTime(){
+        if(date.getTime() -  LoggedUserData.millis >= 300000)
+        {
+            Toast.makeText(getContext(), "Au trecut 5 minute! Reintroduceti datele",Toast.LENGTH_SHORT).show();
+            LoggedUserData.millis = date.getTime();
+            SharedPreferences prefs = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("millis",String.valueOf(LoggedUserData.millis));
+            editor.apply();
+            signOut();
+            getActivity().finishAndRemoveTask();
+
+        }
+
+    }
+
     private void initializeViews(View root) {
-        firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         emailView = root.findViewById(R.id.emailView);
         pointsView = root.findViewById(R.id.pointsView);

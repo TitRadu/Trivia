@@ -33,6 +33,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.example.triviaapp.LoggedUserData.optionList;
 
@@ -49,10 +50,13 @@ public class MainActivity extends AppCompatActivity {
     TextView forgotPasswordTextView;
     String emptyMailToast, emptyPasswordToast, successDataToast, wrongDataToast, successSendMailToast, wrongMailToast, audioGrantedToast, audioDeniedToast;
 
+    Date date;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        date = new Date();
         initializeMicrophoneStatusAndCategoriesOptions();
         initializeViews();
         initializeUserNameList();
@@ -310,6 +314,7 @@ public class MainActivity extends AppCompatActivity {
     private void initializeOptionList(){
         optionList = new ArrayList<>();
         optionList.add(new Option("mic",true));
+        optionList.add(new Option("speaker",true));
         optionList.add(new Option("sport",true));
         optionList.add(new Option("geography",true));
         optionList.add(new Option("maths",true));
@@ -348,6 +353,18 @@ public class MainActivity extends AppCompatActivity {
 
         }else{
             LoggedUserData.language = data;
+
+        }
+
+        data = prefs.getString("millis", "Key not found!");
+        if(data.equals("Key not found!")){
+            LoggedUserData.millis = date.getTime();
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("millis",String.valueOf(LoggedUserData.millis));
+            editor.apply();
+
+        }else{
+            LoggedUserData.millis = Long.parseLong(data);
 
         }
 

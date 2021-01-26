@@ -20,13 +20,15 @@ public class LoggedUserData{
     public static List<String> userNameList = null;
     public static List<User> ranksList = null;
     public static List<Option> optionList;
+    public static long millis;
 
     public static final String EMPTYSTRING = " ";
     public static final int MIC = 0;
-    public static final int SPORT = 1;
-    public static final int GEO = 2;
-    public static final int MATHS = 3;
-    public static final int OTHERS = 4;
+    public static final int SPEAKER = 1;
+    public static final int SPORT = 2;
+    public static final int GEO = 3;
+    public static final int MATHS = 4;
+    public static final int OTHERS = 5;
     public static String language= EMPTYSTRING;
 
 }

@@ -48,6 +48,7 @@ import java.util.Random;
 
 import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 import static com.example.triviaapp.LoggedUserData.MIC;
+import static com.example.triviaapp.LoggedUserData.SPEAKER;
 import static com.example.triviaapp.LoggedUserData.loggedSuperPowerCorrectAnswer;
 import static com.example.triviaapp.LoggedUserData.loggedSuperPowerFiftyFifty;
 import static com.example.triviaapp.LoggedUserData.optionList;
@@ -88,42 +89,31 @@ public class PlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
         setViews();
-        //if(optionList.get(MIC).isValue()) {
-        //    getSpeechInput();
-        //}
-        //timer();
+        if(!optionList.get(SPEAKER).isValue()){
+            if(optionList.get(MIC).isValue()) {
+                getSpeechInput();
+            }
+            timer();
+        }
         listenerStatusMicrophone();
         listener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(textToSpeech != null){
+            textToSpeech.stop();
+            textToSpeech.shutdown();
+
+        }
+        super.onDestroy();
+
     }
 
     private void textToSpeechListener(){
         textToSpeech = new TextToSpeech(this, status -> {
             if(status == TextToSpeech.SUCCESS){
-                textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-                    @Override
-                    public void onStart(String utteranceId) {
-
-                    }
-
-                    @Override
-                    public void onDone(String utteranceId) {
-                        Runnable runnable = () -> {
-                            if(optionList.get(MIC).isValue()) {
-                                getSpeechInput();
-                            }
-                            timer();
-                        };
-
-                        runOnUiThread(runnable);
-
-                    }
-
-                    @Override
-                    public void onError(String utteranceId) {
-
-                    }
-                });
-
+                setProgressListener();
                 int result = textToSpeech.setLanguage(selectedLanguage);
                 textToSpeech.setPitch(1);
                 textToSpeech.setSpeechRate(0.75f);
@@ -140,6 +130,36 @@ public class PlayActivity extends AppCompatActivity {
 
             }
 
+        });
+
+    }
+
+    private void setProgressListener(){
+        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+
+            }
+
+            @Override
+            public void onDone(String utteranceId) {
+                Runnable runnable = () -> {
+                    if(optionList.get(SPEAKER).isValue()){
+                        if(optionList.get(MIC).isValue()) {
+                            getSpeechInput();
+                        }
+                        timer();
+                    }
+                };
+
+                runOnUiThread(runnable);
+
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+
+            }
         });
 
     }
@@ -392,7 +412,9 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
                 setAnswers(answers,isFifty);
-                textToSpeechListener();
+                if(optionList.get(SPEAKER).isValue()) {
+                    textToSpeechListener();
+                }
 
             }
 
@@ -731,7 +753,7 @@ public class PlayActivity extends AppCompatActivity {
 
 
     public void clicked(View view) {
-        if(textToSpeech.isSpeaking()){
+        if(optionList.get(SPEAKER).isValue() && textToSpeech.isSpeaking()){
             return;
 
         }
@@ -744,7 +766,10 @@ public class PlayActivity extends AppCompatActivity {
                 speechRecognizer.destroy();
             }
         }
-        textToSpeech.stop();
+        if(optionList.get(SPEAKER).isValue()){
+            textToSpeech.stop();
+
+        }
         ((SubmitButton) view).startAnimation();
         getUserAnswer(view);
         if(userAnswer.equals(correctAnswer)){
@@ -984,11 +1009,17 @@ public class PlayActivity extends AppCompatActivity {
         touchDisabled = false;
         voiceInput = null;
         selectedThroughVoiceOption = null;
-     //   if(optionList.get(MIC).isValue()) {
-     //       getSpeechInput();
-     //   }
-        speak();
-        //timer();
+        if(!optionList.get(SPEAKER).isValue()){
+            if(optionList.get(MIC).isValue()) {
+                getSpeechInput();
+            }
+            timer();
+
+         }else{
+            speak();
+
+         }
+
     }
 
     public void tryAgain(View view){
