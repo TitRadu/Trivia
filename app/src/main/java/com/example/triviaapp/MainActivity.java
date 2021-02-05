@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,12 +52,13 @@ public class MainActivity extends AppCompatActivity {
     String emptyMailToast, emptyPasswordToast, successDataToast, wrongDataToast, successSendMailToast, wrongMailToast, audioGrantedToast, audioDeniedToast;
 
     Date date;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        date = new Date();
+        initialize();
         initializeMicrophoneStatusAndCategoriesOptions();
         initializeViews();
         initializeUserNameList();
@@ -72,10 +74,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initialize(){
+        prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
+
+    }
+
     private void initializeViews(){
         FirebaseHelper.getInstance();
         LoggedUserData.userNameList = new ArrayList<>();
-        FirebaseHelper.getInstance();
         emailInput = findViewById(R.id.emailLogInput);
         passwordInput = findViewById(R.id.passwordLogInput);
         forgotPasswordEmailInput = findViewById(R.id.forgotPasswordEmailInput);
@@ -142,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
     private void initializeLoggedUser(){
         loggedUser = FirebaseAuth.getInstance().getCurrentUser();
         if(loggedUser != null){
+            String data = prefs.getString("millis", "Key not found!");
+            LoggedUserData.millis = Long.parseLong(data);
             updateUI();
 
         }
@@ -180,6 +188,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void updateMillis(){
+        date = new Date();
+        LoggedUserData.millis = date.getTime();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("millis",String.valueOf(LoggedUserData.millis));
+        editor.apply();
+
+    }
+
     public void  logInActivity(View view){
         final String email = emailInput.getText().toString();
         final String password = passwordInput.getText().toString();
@@ -196,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             LoggedUserData.loggedUserPassword = password;
                             Toast.makeText(getBaseContext(), successDataToast, Toast.LENGTH_SHORT).show();
+                            updateMillis();
                             updateUI();
                             clearInputs();
                         } else {
@@ -324,8 +342,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeMicrophoneStatusAndCategoriesOptions(){
         initializeOptionList();
-
-        SharedPreferences prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
         String data;
 
         for(Option option : optionList){
@@ -358,13 +374,7 @@ public class MainActivity extends AppCompatActivity {
 
         data = prefs.getString("millis", "Key not found!");
         if(data.equals("Key not found!")){
-            LoggedUserData.millis = date.getTime();
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("millis",String.valueOf(LoggedUserData.millis));
-            editor.apply();
-
-        }else{
-            LoggedUserData.millis = Long.parseLong(data);
+            updateMillis();
 
         }
 

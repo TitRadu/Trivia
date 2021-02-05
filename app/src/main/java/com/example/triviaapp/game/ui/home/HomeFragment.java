@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -47,8 +46,7 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
-        firebaseAuth = FirebaseAuth.getInstance();
-        date = new Date();
+        initialize();
         verifyTime();
         initializeViews(root);
         searchLoggedUser(LoggedUserData.loggedUserEmail);
@@ -58,7 +56,11 @@ public class HomeFragment extends Fragment {
 
     }
 
+    private void initialize(){
+        firebaseAuth = FirebaseAuth.getInstance();
+        date = new Date();
 
+    }
 
     private void verifyTime(){
         if(date.getTime() -  LoggedUserData.millis >= 300000)
@@ -69,7 +71,7 @@ public class HomeFragment extends Fragment {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("millis",String.valueOf(LoggedUserData.millis));
             editor.apply();
-            signOut();
+            firebaseAuth.signOut();
             getActivity().finishAndRemoveTask();
 
         }
