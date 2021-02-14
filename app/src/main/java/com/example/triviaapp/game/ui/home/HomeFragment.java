@@ -1,6 +1,7 @@
 package com.example.triviaapp.game.ui.home;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.EditDataActivity;
+import com.example.triviaapp.game.PlayActivity;
 import com.example.triviaapp.rank.User;
 import com.example.triviaapp.rank.RankSorter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +44,12 @@ public class HomeFragment extends Fragment {
     TextView userNameView, emailView, pointsView, placeView;
     String emailTextViewString, placeTextViewString, pointsTextViewString;
     Date date;
+
+    private Button dailyQuestionButton;
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+    private ImageView xImageViewPopUp;
+    private Button continueButtonPopUp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -87,6 +96,7 @@ public class HomeFragment extends Fragment {
         userNameView = root.findViewById(R.id.userNameView);
         editActivityButton = root.findViewById(R.id.btn_edit_data);
 
+        dailyQuestionButton = root.findViewById(R.id.dailyQuestionButton);
         chooseLanguage();
 
     }
@@ -140,6 +150,7 @@ public class HomeFragment extends Fragment {
     private void setOnClickListeners() {
         signOutButton.setOnClickListener((v) -> signOut());
         editActivityButton.setOnClickListener((v) -> EditDataActivity());
+        dailyQuestionButton.setOnClickListener((v) -> dailyQuestionPopUp());
 
     }
 
@@ -218,6 +229,30 @@ public class HomeFragment extends Fragment {
         Intent intent = new Intent(getContext(), EditDataActivity.class);
         startActivity(intent);
         getActivity().finishAndRemoveTask();
+
+    }
+
+    private void continueToDailyQuestion(){
+        LoggedUserData.dailyQuestion = true;
+        Intent intent = new Intent(getContext(), PlayActivity.class);
+        startActivity(intent);
+        getActivity().finishAndRemoveTask();
+
+    }
+
+    private void dailyQuestionPopUp(){
+        dialogBuilder = new AlertDialog.Builder(getContext());
+        View questionPopUpView = getLayoutInflater().inflate(R.layout.daily_question_pop_up, null);
+        xImageViewPopUp = questionPopUpView.findViewById(R.id.xImageViewPopUp);
+        continueButtonPopUp = questionPopUpView.findViewById(R.id.continueButtonPopUp);
+
+        dialogBuilder.setView(questionPopUpView);
+        dialogBuilder.setCancelable(false);
+        dialog = dialogBuilder.create();
+        dialog.show();
+
+        xImageViewPopUp.setOnClickListener((v) -> dialog.dismiss());
+        continueButtonPopUp.setOnClickListener((v) -> continueToDailyQuestion());
 
     }
 

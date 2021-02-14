@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <ImageView
+        android:id="@+id/xImageViewPopUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/x_button32">
+
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/questionImageViewPopUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/xImageViewPopUp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/question">
+
+    </ImageView>
+
+    <TextView
+        android:id="@+id/infoTextViewPopUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/questionImageViewPopUp"
+        android:layout_centerHorizontal="true"
+        android:text="Vrei sa raspunzi la intrebarea zilei?"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/continueButtonPopUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/infoTextViewPopUp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/custom_botton_design_corners"
+        android:text="Continue"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        tools:layout_editor_absoluteX="74dp"
+        tools:layout_editor_absoluteY="236dp"
+        tools:ignore="MissingConstraints" />
+
+</RelativeLayout>

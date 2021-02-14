@@ -38,8 +38,6 @@ import com.google.firebase.database.DatabaseError;
 
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +47,7 @@ import java.util.Random;
 import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 import static com.example.triviaapp.LoggedUserData.MIC;
 import static com.example.triviaapp.LoggedUserData.SPEAKER;
+import static com.example.triviaapp.LoggedUserData.dailyQuestion;
 import static com.example.triviaapp.LoggedUserData.loggedSuperPowerCorrectAnswer;
 import static com.example.triviaapp.LoggedUserData.loggedSuperPowerFiftyFifty;
 import static com.example.triviaapp.LoggedUserData.optionList;
@@ -59,7 +58,7 @@ public class PlayActivity extends AppCompatActivity {
     String userAnswer, correctAnswer, voiceInput = null;
     Button  nextQuestionButton, tryAgainButton, btn_superpower, btn_RightAnswer;
     SubmitButton btnA,btnB, btnC, btnD, selectedThroughVoiceOption;
-    TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView,questionScoreViewScore,totalScoreViewPoints;
+    TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView,questionScoreViewScore,totalScoreNextViewPoints;
     Switch aSwitch;
     ProgressBar progressBar;
     MaterialCardView materialCardView;
@@ -203,7 +202,7 @@ public class PlayActivity extends AppCompatActivity {
         btn_RightAnswer = findViewById(R.id.btn_superPowerRightAnswer);
         btn_superpower = findViewById(R.id.btn_superPower);
         questionScoreViewScore = findViewById(R.id.questionScoreViewPoints);
-        totalScoreViewPoints = findViewById(R.id.totalScoreNextViewPoints);
+        totalScoreNextViewPoints = findViewById(R.id.totalScoreNextViewPoints);
         userAnswer = EMPTYSTRING;
         btnA = findViewById(R.id.varA);
         btnB = findViewById(R.id.varB);
@@ -220,6 +219,11 @@ public class PlayActivity extends AppCompatActivity {
         answers = new ArrayList<>();
         firstLineButtonsLayout = findViewById(R.id.firstLineButtonsLayout);
         infoLayout = findViewById(R.id.infoLayout);
+        if(LoggedUserData.dailyQuestion){
+            questionCounter.setVisibility(View.INVISIBLE);
+            totalScoreView.setVisibility(View.INVISIBLE);
+
+        }
         nextQuestionButton = findViewById(R.id.nextQuestionButton);
         tryAgainButton = findViewById(R.id.tryAgainButton);
         questionScoreView = findViewById(R.id.questionScoreView);
@@ -289,6 +293,12 @@ public class PlayActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setSuperpowerView(){
+        if(LoggedUserData.dailyQuestion){
+            btn_superpower.setVisibility(View.GONE);
+            btn_RightAnswer.setVisibility(View.GONE);
+            return;
+        }
+
         btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty+" "+ remainings);
         btn_RightAnswer.setText(rights+LoggedUserData.loggedSuperPowerCorrectAnswer+" "+ remainings);
         if(LoggedUserData.loggedSuperPowerFiftyFifty>0){
@@ -340,8 +350,10 @@ public class PlayActivity extends AppCompatActivity {
                                 dataSnapshot1.child("category").getValue(String.class));
 
                         for(Option o : optionList)
-                            if(o.isValue() && o.getName().equals(question.getCategory())) {
+                            if(o.isValue() && o.getName().equals(question.getCategory()) || LoggedUserData.dailyQuestion) {
                                 questions.add(question);
+                                break;
+
                             }
 
                     }
@@ -782,14 +794,14 @@ public class PlayActivity extends AppCompatActivity {
                 ++LoggedUserData.loggedSuperPowerFiftyFifty;
                 ++LoggedUserData.loggedGamesWon;
                 increaseRightAnswerSuperpower();
-                sendPointsToDatabase();
+                sendToDatabase();
             }
         }
         else{
             ((SubmitButton) view).setBtn_LineColor(Color.RED);
             ((SubmitButton) view).setAnimationColor(Color.RED);
             LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
-            sendPointsToDatabase();
+            sendToDatabase();
             answerCheck = false;
 
         }
@@ -839,7 +851,7 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
-    private void sendPointsToDatabase() {
+    private void sendToDatabase() {
         populateMapWithUserData();
         FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
 
@@ -856,10 +868,35 @@ public class PlayActivity extends AppCompatActivity {
         map.put("userName", LoggedUserData.loggedUserName);
     }
 
+    private void generateRandomPrizeForDailyQuestion(){
+        Random rand = new Random();
+        int r = rand.nextInt(2);
+
+        if(answerCheck) {
+            if (r == 0) {
+                questionScoreView.setText("You won a fifty-fifty!");
+                loggedSuperPowerFiftyFifty++;
+
+            } else {
+                questionScoreView.setText("You won a right answer!");
+                loggedSuperPowerCorrectAnswer++;
+
+            }
+            sendToDatabase();
+        }else{
+            questionScoreView.setText("You answer wrong!");
+
+        }
+
+    }
+
     private void delay(int delay) {
         new Handler().postDelayed(() -> {
             progressBarPercent = 0;
             progressBar.setProgress(progressBarPercent);
+            if(LoggedUserData.dailyQuestion){
+                generateRandomPrizeForDailyQuestion();
+            }
             hideQuestionSetup();
             setTextAfterAnswerQuestion();
             if(optionList.get(MIC).isValue()) {
@@ -901,10 +938,11 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 question.setText(timeExpiredText);
+                LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
                 populateMapWithUserData();
                 FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
-                LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
                 answerCheck = false;
+                setTextAfterAnswerQuestion();
                 hideQuestionSetup();
 
             }
@@ -914,7 +952,8 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private boolean isGameFinished(){
-        if(answerCounter == 11 || !answerCheck){
+        if((answerCounter == 11 || !answerCheck) || (answerCounter == 2 && LoggedUserData.dailyQuestion)){
+            LoggedUserData.dailyQuestion = false;
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
             finishAndRemoveTask();
@@ -926,30 +965,33 @@ public class PlayActivity extends AppCompatActivity {
 
     private void hideQuestionSetup(){
         infoLayout.setVisibility(View.GONE);
-        timerView.setVisibility(View.GONE);
         materialCardView.setVisibility(View.GONE);
         firstLineButtonsLayout.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.VISIBLE);
-        if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME || !answerCheck) {
+        if((answerCounter == TOTAL_QUESTION_TO_WIN_GAME || !answerCheck) && !LoggedUserData.dailyQuestion) {
             tryAgainButton.setVisibility(View.VISIBLE);
 
         }
-        questionScoreView.setVisibility(View.VISIBLE);
-        totalScoreNextView.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
         aSwitch.setVisibility(View.VISIBLE);
-        questionScoreViewScore.setVisibility(View.VISIBLE);
-        totalScoreViewPoints.setVisibility(View.VISIBLE);
+        questionScoreView.setVisibility(View.VISIBLE);
+
+        if(!LoggedUserData.dailyQuestion) {
+            questionScoreViewScore.setVisibility(View.VISIBLE);
+            totalScoreNextView.setVisibility(View.VISIBLE);
+            totalScoreNextViewPoints.setVisibility(View.VISIBLE);
+
+        }
+
     }
 
     private void setTextAfterAnswerQuestion(){
         questionScoreViewScore.setText(String.valueOf(time));
         if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
-            totalScoreViewPoints.setText(totalPoints + " X 2");
+            totalScoreNextViewPoints.setText(totalPoints + " X 2");
 
         }
         else{
-            totalScoreViewPoints.setText(String.valueOf(totalPoints));
+            totalScoreNextViewPoints.setText(String.valueOf(totalPoints));
 
         }
 
@@ -985,7 +1027,7 @@ public class PlayActivity extends AppCompatActivity {
         firstLineButtonsLayout.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.VISIBLE);
         questionScoreViewScore.setVisibility(View.GONE);
-        totalScoreViewPoints.setVisibility(View.GONE);
+        totalScoreNextViewPoints.setVisibility(View.GONE);
         setSuperpowerView();
     }
 

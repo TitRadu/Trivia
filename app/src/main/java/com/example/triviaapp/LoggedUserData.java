@@ -29,6 +29,8 @@ public class LoggedUserData{
     public static final int GEO = 3;
     public static final int MATHS = 4;
     public static final int OTHERS = 5;
+
     public static String language= EMPTYSTRING;
+    public static boolean dailyQuestion = false;
 
 }

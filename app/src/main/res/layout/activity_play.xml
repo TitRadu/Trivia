@@ -175,7 +175,7 @@
 
     </LinearLayout>
 
-    <!--View after correct Answer-->
+    <!--View after answer-->
     <Switch
         android:layout_marginTop="200dp"
         android:id="@+id/sw_microphonePlay"
