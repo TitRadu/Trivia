@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -31,10 +33,14 @@ public class RegisterActivity extends AppCompatActivity {
     TextView alreadyHaveAccountTextView;
     String emptyEmailToast, emptyUserNameToast, emptyPasswordToast, shortPasswordToast, existUserNameToast, successCreateToast, existEmailToast;
 
+    Date date;
+    SharedPreferences prefs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        initialize();
         initializeViews();
 
     }
@@ -43,6 +49,11 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         chooseLanguage();
+
+    }
+
+    private void initialize(){
+        prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
 
     }
 
@@ -103,6 +114,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    private void updateMillis(){
+        date = new Date();
+        LoggedUserData.millis = date.getTime();
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("millis",String.valueOf(LoggedUserData.millis));
+        editor.apply();
+
+    }
+
     private boolean inputCheck(String userName, String email, String password){
         if(email.isEmpty()){
             Toast.makeText(this,emptyEmailToast,Toast.LENGTH_SHORT).show();
@@ -153,11 +173,12 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            User registeredUser = new User(email,0, password, 0, 0,0, userName);
+                            User registeredUser = new User(email,0, password, 0, 0,0, userName,0);
                             firebaseHelper.userDatabaseReference.child(UUID.randomUUID().toString()).setValue(registeredUser);
                             Toast.makeText(getBaseContext(), successCreateToast, Toast.LENGTH_SHORT).show();
                             LoggedUserData.loggedUserPassword = password;
                             LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                            updateMillis();
                             Intent intent = new Intent(getApplicationContext(), GameActivity.class);
                             startActivity(intent);
                             finishAndRemoveTask();

@@ -171,6 +171,7 @@ public class EditDataActivity extends AppCompatActivity {
         map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
         map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
+        map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
         return map;
     }
 

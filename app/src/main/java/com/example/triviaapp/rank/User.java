@@ -8,8 +8,9 @@ public class User{
     private int superpowerCorrectAnswer;
     private int gamesWon;
     private String userName;
+    private long dailyQuestionTime;
 
-    public User(String email,int gamesWon ,String password, int points, int superpower,int superpowerCorrectAnswer,String userName) {
+    public User(String email,int gamesWon ,String password, int points, int superpower,int superpowerCorrectAnswer,String userName, long dailyQuestionTime) {
         this.email = email;
         this.userName = userName;
         this.password = password;
@@ -17,6 +18,8 @@ public class User{
         this.superpower = superpower;
         this.superpowerCorrectAnswer = superpowerCorrectAnswer;
         this.gamesWon = gamesWon;
+        this.dailyQuestionTime = dailyQuestionTime;
+
     }
 
     public User(){}
@@ -66,5 +69,13 @@ public class User{
 
     public int getGamesWon() {
         return gamesWon;
+    }
+
+    public long getDailyQuestionTime() {
+        return dailyQuestionTime;
+    }
+
+    public void setDailyQuestionTime(long dailyQuestionTime) {
+        this.dailyQuestionTime = dailyQuestionTime;
     }
 }

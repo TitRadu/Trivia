@@ -46,6 +46,7 @@ import java.util.Random;
 
 import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 import static com.example.triviaapp.LoggedUserData.MIC;
+import static com.example.triviaapp.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.LoggedUserData.SPEAKER;
 import static com.example.triviaapp.LoggedUserData.dailyQuestion;
 import static com.example.triviaapp.LoggedUserData.loggedSuperPowerCorrectAnswer;
@@ -866,6 +867,7 @@ public class PlayActivity extends AppCompatActivity {
         map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
         map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
+        map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
     }
 
     private void generateRandomPrizeForDailyQuestion(){
@@ -929,7 +931,7 @@ public class PlayActivity extends AppCompatActivity {
                     timerView.setText(String.valueOf(millisUntilFinished / 1000));
 
                 }else{
-                    timerView.setText(EMPTYSTRING + millisUntilFinished / 1000);
+                    timerView.setText(SPACESTRING + millisUntilFinished / 1000);
 
                 }
 
@@ -939,8 +941,7 @@ public class PlayActivity extends AppCompatActivity {
             public void onFinish() {
                 question.setText(timeExpiredText);
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
-                populateMapWithUserData();
-                FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
+                sendToDatabase();
                 answerCheck = false;
                 setTextAfterAnswerQuestion();
                 hideQuestionSetup();

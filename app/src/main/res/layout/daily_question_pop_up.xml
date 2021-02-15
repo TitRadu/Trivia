@@ -32,9 +32,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/questionImageViewPopUp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
         android:text="Vrei sa raspunzi la intrebarea zilei?"
         android:textColor="#000000"
-        android:textSize="15sp" />
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/continueButtonPopUp"
@@ -42,6 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/infoTextViewPopUp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/custom_botton_design_corners"
         android:text="Continue"
         android:textColor="@color/black"

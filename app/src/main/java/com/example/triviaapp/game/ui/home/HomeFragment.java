@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 
 public class HomeFragment extends Fragment {
     FirebaseAuth firebaseAuth;
@@ -143,6 +145,7 @@ public class HomeFragment extends Fragment {
         map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
         map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
+        map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
         return map;
     }
 
@@ -174,6 +177,7 @@ public class HomeFragment extends Fragment {
                         LoggedUserData.loggedSuperPowerFiftyFifty = user.getSuperpower();
                         LoggedUserData.loggedSuperPowerCorrectAnswer = user.getSuperpowerCorrectAnswer();
                         LoggedUserData.loggedGamesWon = user.getGamesWon();
+                        LoggedUserData.loggedUserDailyQuestionTime = user.getDailyQuestionTime();
                         Log.e("superpower",LoggedUserData.loggedSuperPowerCorrectAnswer+"");
 
                         if(!LoggedUserData.loggedUserPasswordUpdateVerify)
@@ -206,6 +210,7 @@ public class HomeFragment extends Fragment {
 
                 }
 
+                setDailyQuestionButton();
             }
 
             @Override
@@ -233,6 +238,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void continueToDailyQuestion(){
+        dialog.dismiss();
+        updateDailyQuestionTime();
         LoggedUserData.dailyQuestion = true;
         Intent intent = new Intent(getContext(), PlayActivity.class);
         startActivity(intent);
@@ -253,6 +260,79 @@ public class HomeFragment extends Fragment {
 
         xImageViewPopUp.setOnClickListener((v) -> dialog.dismiss());
         continueButtonPopUp.setOnClickListener((v) -> continueToDailyQuestion());
+
+    }
+
+    private void timer(long miliseconds){
+        final long[] hours = {300000 / 3600000};
+        final String[] oneDigitHours = {""};
+        final long[] minutes = {(300000 / 60000) % (60)};
+        final String[] oneDigitMinutes = {""};
+        final long[] seconds = {(300000 / 1000) % 60};
+        final String[] oneDigitSeconds = {""};
+        new CountDownTimer(miliseconds, 1) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                hours[0] = (millisUntilFinished/3600000);
+                minutes[0] = (millisUntilFinished/60000)%60;
+                seconds[0] = (millisUntilFinished/1000)%60;
+                if(hours[0] < 10){
+                    oneDigitHours[0] = "0";
+
+                }else{
+                    oneDigitHours[0] = EMPTYSTRING;
+
+                }
+                if(minutes[0] < 10){
+                    oneDigitMinutes[0] = "0";
+
+                }else{
+                    oneDigitMinutes[0] = EMPTYSTRING;
+
+                }
+                if(seconds[0] < 10){
+                    oneDigitSeconds[0] = "0";
+
+                }else{
+                    oneDigitSeconds[0] = EMPTYSTRING;
+
+                }
+                dailyQuestionButton.setText(oneDigitHours[0] + hours[0] + ":" + oneDigitMinutes[0] + minutes[0] + ":" + oneDigitSeconds[0] + seconds[0]);
+
+            }
+
+            @Override
+            public void onFinish() {
+                dailyQuestionButton.setText("Daily Question");
+                dailyQuestionButton.setEnabled(true);
+
+            }
+
+        }.start();
+
+    }
+
+    private void updateDailyQuestionTime(){
+        date = new Date();
+        LoggedUserData.loggedUserDailyQuestionTime = date.getTime();
+        HashMap<String, Object> map = populateMap();
+        FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
+
+    }
+
+    private void setDailyQuestionButton(){
+        Log.d("time",String.valueOf(date.getTime() - LoggedUserData.loggedUserDailyQuestionTime));
+        if(date.getTime() - LoggedUserData.loggedUserDailyQuestionTime < 60000){
+            dailyQuestionButton.setEnabled(false);
+
+            timer(60000 - (date.getTime() - LoggedUserData.loggedUserDailyQuestionTime));
+
+        }else{
+            dailyQuestionButton.setText("Daily Question");
+            dailyQuestionButton.setEnabled(true);
+
+        }
 
     }
 

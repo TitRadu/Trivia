@@ -16,13 +16,15 @@ public class LoggedUserData{
     public static int loggedGamesWon = 0;
     public static int loggedUserPlace = 0;
     public static int loggedUserPoints = 0;
+    public static long loggedUserDailyQuestionTime = 0;
     public static boolean loggedUserPasswordUpdateVerify;
     public static List<String> userNameList = null;
     public static List<User> ranksList = null;
     public static List<Option> optionList;
     public static long millis;
 
-    public static final String EMPTYSTRING = " ";
+    public static final String EMPTYSTRING = "";
+    public static final String SPACESTRING = " ";
     public static final int MIC = 0;
     public static final int SPEAKER = 1;
     public static final int SPORT = 2;
