@@ -7,6 +7,10 @@
     <string name="title_scoreRou">Scor</string>
     <string name="title_gameEn">Game</string>
     <string name="title_gameRou">Joc</string>
+    <string name="helpMenuItemProfileEn">Help</string>
+    <string name="helpMenuItemProfileRou">Ajutor</string>
+    <string name="signOutMenuItemProfileEn">Sign out</string>
+    <string name="signOutMenuItemProfileRou">Deconectare</string>
     <string name="helpTextCumSeJoacaRou">\n
 În momentul în care apeși butonul Începe, se va afișa un meniu pentru alegerea categoriilor. După ce se apasă butonul Joacă, ai timp 30 de secunde sa răspunzi
 la întrebare. După fiecare întrebare la care s-a răspuns sau în cazul în care expiră timpul, va apărea un meniu intermediar în care vei putea vedea punctajul total acumulat în jocul curent și punctajul
@@ -83,8 +87,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="pointsTextViewProfileRou">Puncte:</string>
     <string name="editButtonProfileEn">Edit profile</string>
     <string name="editButtonProfileRou">Actualizare profil</string>
-    <string name="signOutButtonProfileEn">Sign out</string>
-    <string name="signOutButtonProfileRou">Deconectează-te</string>
+    <string name="autoLogOutToastProfileEn">It passed 3 days after last logging! Reintroduce data!</string>
+    <string name="autoLogOutToastProfileRou">Au trecut 3 zile de la ultima logare! Reintroduceti datele!</string>
 
     <string name="placeTextViewRankEn">Place</string>
     <string name="placeTextViewRankRou">Loc</string>
@@ -93,14 +97,27 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="userNameTextViewRankEn">Username:</string>
     <string name="userNameTextViewRankRou">Utilizator:</string>
 
-    <string name="startButtonMenuEn">Start</string>
-    <string name="startButtonMenuRou">Începe</string>
+    <string name="classicButtonMenuEn">Classic</string>
+    <string name="classicButtonMenuRou">Clasic</string>
     <string name="microphoneSwitchMenuPlayEn">Microphone</string>
     <string name="microphoneSwitchMenuPlayRou">Microfon</string>
-    <string name="helpButtonMenuEn">Help</string>
-    <string name="helpButtonMenuRou">Ajutor</string>
+    <string name="loudSpeakerSwitchMenuEn">Loudspeaker</string>
+    <string name="loudSpeakerSwitchMenuRou">Difuzor</string>
+    <string name="dailyQuestionButtonMenuEn">Daily question</string>
+    <string name="dailyQuestionButtonMenuRou">Intrebarea zilnica</string>
+    <string name="infoTextViewMenuEn">Vrei sa raspunzi la intrebarea zilnica?</string>
+    <string name="infoTextViewMenuRou">Do you want to answer the daily question?</string>
     <string name="exitButtonMenuHelpEn">Exit</string>
     <string name="exitButtonMenuHelpRou">Ieșire</string>
+
+    <string name="howToPlayTextViewHelpEn">How to play?</string>
+    <string name="howToPlayTextViewHelpRou">Cum se joacă?</string>
+    <string name="howToScoreTextViewHelpEn">How to score?</string>
+    <string name="howToScoreTextViewHelpRou">Cum se punctează?</string>
+    <string name="superPowerRemainingEn"> Remaining</string>
+    <string name="superPowerRemainingRou"> Rămase</string>
+    <string name="superPowerRightAnwerEn">"Right Answers \n "</string>
+    <string name="superPowerRightAnwerRou">"Răspunsuri corecte \n "</string>
 
     <string name="userNameTextViewEditEn">New username</string>
     <string name="userNameTextViewEditRou">Nume nou</string>
@@ -138,8 +155,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="oneCategoryToastSettingsEn">Please select minimum one category!</string>
     <string name="oneCategoryToastSettingsRou">Selectează minim o categorie!</string>
 
-    <string name="nextButtonPlayEn">Next</string>
-    <string name="nextButtonPlayRou">Continuă</string>
+    <string name="nextButtonMenuPlayEn">Next</string>
+    <string name="nextButtonMenuPlayRou">Continuă</string>
     <string name="totalScoreTextViewPlayEn">Score:\n</string>
     <string name="totalScoreTextViewPlayRou">Scor:\n</string>
     <string name="questionTextViewPlayEn">Question:\n</string>
@@ -157,12 +174,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="timeExpiredTextPlayEn">Time expired!</string>
     <string name="timeExpiredTextPlayRou">Timpul a expirat!</string>
 
-    <string name="howToPlayTextViewHelpEn">How to play?</string>
-    <string name="howToPlayTextViewHelpRou">Cum se joacă?</string>
-    <string name="howToScoreTextViewHelpEn">How to score?</string>
-    <string name="howToScoreTextViewHelpRou">Cum se punctează?</string>
-    <string name="superPowerRemainingEn"> Remaining</string>
-    <string name="superPowerRemainingRou"> Rămase</string>
-    <string name="superPowerRightAnwerEn">"Right Answers \n "</string>
-    <string name="superPowerRightAnwerRou">"Răspunsuri corecte \n "</string>
+    <string name="navigationDrawerOpen">"Open navigation drawer!"</string>
+    <string name="navigationDrawerClose">"Close navigation drawer\n "</string>
+
+
 </resources>

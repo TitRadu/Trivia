@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group>
+
+    <item android:id="@+id/navigation_help"
+        android:icon="@drawable/ic_baseline_help_24"
+        android:title="Help">
+
+    </item>
+
+    <item android:id="@+id/navigation_sign_out"
+        android:icon="@drawable/ic_baseline_sign_out_24"
+        android:title="Sign out">
+
+    </item>
+    </group>
+</menu>

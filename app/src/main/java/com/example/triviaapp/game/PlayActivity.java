@@ -246,7 +246,7 @@ public class PlayActivity extends AppCompatActivity {
         aSwitch.setText(R.string.microphoneSwitchMenuPlayEn);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayEn);
         questionTextViewString = getString(R.string.questionTextViewPlayEn);
-        nextQuestionButton.setText(R.string.nextButtonPlayEn);
+        nextQuestionButton.setText(R.string.nextButtonMenuPlayEn);
         tryAgainButton.setText(R.string.tryAgainButtonPlayEn);
         questionScoreView.setText(R.string.questionScoreTextViewPlayEn);
         totalScoreNextView.setText(R.string.totalScoreNextTextViewPlayEn);
@@ -263,7 +263,7 @@ public class PlayActivity extends AppCompatActivity {
         aSwitch.setText(R.string.microphoneSwitchMenuPlayRou);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayRou);
         questionTextViewString = getString(R.string.questionTextViewPlayRou);
-        nextQuestionButton.setText(R.string.nextButtonPlayRou);
+        nextQuestionButton.setText(R.string.nextButtonMenuPlayRou);
         tryAgainButton.setText(R.string.tryAgainButtonPlayRou);
         questionScoreView.setText(R.string.questionScoreTextViewPlayRou);
         totalScoreNextView.setText(R.string.totalScoreNextTextViewPlayRou);

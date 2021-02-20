@@ -82,15 +82,6 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/dailyQuestionButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/custom_botton_design_corners"
-        android:layout_margin="20dp"
-        android:textColor="#000000"
-        android:text="Daily Question" />
-
-    <Button
         android:id="@+id/btn_edit_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,13 +90,4 @@
         android:textColor="#000000"
         android:text="Edit" />
 
-        <Button
-            android:id="@+id/btn_sign_out_profile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:background="@drawable/custom_botton_design_corners"
-            android:layout_margin="20dp"
-            android:textColor="#000000"
-            android:text="Sign Out" />
 </LinearLayout>

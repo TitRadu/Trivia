@@ -42,16 +42,11 @@ import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 public class HomeFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
-    Button editActivityButton, signOutButton;
+    Button editActivityButton;
     TextView userNameView, emailView, pointsView, placeView;
     String emailTextViewString, placeTextViewString, pointsTextViewString;
+    String autoLogOutToast;
     Date date;
-
-    private Button dailyQuestionButton;
-    private AlertDialog.Builder dialogBuilder;
-    private AlertDialog dialog;
-    private ImageView xImageViewPopUp;
-    private Button continueButtonPopUp;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,13 +65,24 @@ public class HomeFragment extends Fragment {
     private void initialize(){
         firebaseAuth = FirebaseAuth.getInstance();
         date = new Date();
+        switch (LoggedUserData.language){
+            case "english":
+                autoLogOutToast = getString(R.string.autoLogOutToastProfileEn);
+                break;
+            case "romanian":
+                autoLogOutToast = getString(R.string.autoLogOutToastProfileRou);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
+        }
+
 
     }
 
     private void verifyTime(){
         if(date.getTime() -  LoggedUserData.millis >= 300000)
         {
-            Toast.makeText(getContext(), "Au trecut 5 minute! Reintroduceti datele",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), autoLogOutToast,Toast.LENGTH_SHORT).show();
             LoggedUserData.millis = date.getTime();
             SharedPreferences prefs = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
@@ -94,11 +100,8 @@ public class HomeFragment extends Fragment {
         emailView = root.findViewById(R.id.emailView);
         pointsView = root.findViewById(R.id.pointsView);
         placeView = root.findViewById(R.id.placeView);
-        signOutButton = root.findViewById(R.id.btn_sign_out_profile);
         userNameView = root.findViewById(R.id.userNameView);
         editActivityButton = root.findViewById(R.id.btn_edit_data);
-
-        dailyQuestionButton = root.findViewById(R.id.dailyQuestionButton);
         chooseLanguage();
 
     }
@@ -108,7 +111,6 @@ public class HomeFragment extends Fragment {
         placeTextViewString = getString(R.string.placeTextViewProfileEn);
         pointsTextViewString = getString(R.string.pointsTextViewProfileEn);
         editActivityButton.setText(R.string.editButtonProfileEn);
-        signOutButton.setText(R.string.signOutButtonProfileEn);
 
     }
 
@@ -118,7 +120,6 @@ public class HomeFragment extends Fragment {
         placeTextViewString = getString(R.string.placeTextViewProfileRou);
         pointsTextViewString = getString(R.string.pointsTextViewProfileRou);
         editActivityButton.setText(R.string.editButtonProfileRou);
-        signOutButton.setText(R.string.signOutButtonProfileRou);
 
     }
 
@@ -151,9 +152,7 @@ public class HomeFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setOnClickListeners() {
-        signOutButton.setOnClickListener((v) -> signOut());
         editActivityButton.setOnClickListener((v) -> EditDataActivity());
-        dailyQuestionButton.setOnClickListener((v) -> dailyQuestionPopUp());
 
     }
 
@@ -210,7 +209,6 @@ public class HomeFragment extends Fragment {
 
                 }
 
-                setDailyQuestionButton();
             }
 
             @Override
@@ -224,12 +222,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void signOut() {
-        LoggedUserData.loggedUserPasswordUpdateVerify = false;
-        firebaseAuth.signOut();
-        getActivity().finishAndRemoveTask();
-    }
-
     private void EditDataActivity(){
         Intent intent = new Intent(getContext(), EditDataActivity.class);
         startActivity(intent);
@@ -237,103 +229,5 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void continueToDailyQuestion(){
-        dialog.dismiss();
-        updateDailyQuestionTime();
-        LoggedUserData.dailyQuestion = true;
-        Intent intent = new Intent(getContext(), PlayActivity.class);
-        startActivity(intent);
-        getActivity().finishAndRemoveTask();
-
-    }
-
-    private void dailyQuestionPopUp(){
-        dialogBuilder = new AlertDialog.Builder(getContext());
-        View questionPopUpView = getLayoutInflater().inflate(R.layout.daily_question_pop_up, null);
-        xImageViewPopUp = questionPopUpView.findViewById(R.id.xImageViewPopUp);
-        continueButtonPopUp = questionPopUpView.findViewById(R.id.continueButtonPopUp);
-
-        dialogBuilder.setView(questionPopUpView);
-        dialogBuilder.setCancelable(false);
-        dialog = dialogBuilder.create();
-        dialog.show();
-
-        xImageViewPopUp.setOnClickListener((v) -> dialog.dismiss());
-        continueButtonPopUp.setOnClickListener((v) -> continueToDailyQuestion());
-
-    }
-
-    private void timer(long miliseconds){
-        final long[] hours = {300000 / 3600000};
-        final String[] oneDigitHours = {""};
-        final long[] minutes = {(300000 / 60000) % (60)};
-        final String[] oneDigitMinutes = {""};
-        final long[] seconds = {(300000 / 1000) % 60};
-        final String[] oneDigitSeconds = {""};
-        new CountDownTimer(miliseconds, 1) {
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                hours[0] = (millisUntilFinished/3600000);
-                minutes[0] = (millisUntilFinished/60000)%60;
-                seconds[0] = (millisUntilFinished/1000)%60;
-                if(hours[0] < 10){
-                    oneDigitHours[0] = "0";
-
-                }else{
-                    oneDigitHours[0] = EMPTYSTRING;
-
-                }
-                if(minutes[0] < 10){
-                    oneDigitMinutes[0] = "0";
-
-                }else{
-                    oneDigitMinutes[0] = EMPTYSTRING;
-
-                }
-                if(seconds[0] < 10){
-                    oneDigitSeconds[0] = "0";
-
-                }else{
-                    oneDigitSeconds[0] = EMPTYSTRING;
-
-                }
-                dailyQuestionButton.setText(oneDigitHours[0] + hours[0] + ":" + oneDigitMinutes[0] + minutes[0] + ":" + oneDigitSeconds[0] + seconds[0]);
-
-            }
-
-            @Override
-            public void onFinish() {
-                dailyQuestionButton.setText("Daily Question");
-                dailyQuestionButton.setEnabled(true);
-
-            }
-
-        }.start();
-
-    }
-
-    private void updateDailyQuestionTime(){
-        date = new Date();
-        LoggedUserData.loggedUserDailyQuestionTime = date.getTime();
-        HashMap<String, Object> map = populateMap();
-        FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
-
-    }
-
-    private void setDailyQuestionButton(){
-        Log.d("time",String.valueOf(date.getTime() - LoggedUserData.loggedUserDailyQuestionTime));
-        if(date.getTime() - LoggedUserData.loggedUserDailyQuestionTime < 60000){
-            dailyQuestionButton.setEnabled(false);
-
-            timer(60000 - (date.getTime() - LoggedUserData.loggedUserDailyQuestionTime));
-
-        }else{
-            dailyQuestionButton.setText("Daily Question");
-            dailyQuestionButton.setEnabled(true);
-
-        }
-
-    }
 
 }
