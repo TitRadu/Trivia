@@ -31,6 +31,8 @@ public class LoggedUserData{
     public static final int GEO = 3;
     public static final int MATHS = 4;
     public static final int OTHERS = 5;
+    public static final int EXMIC = 6;
+    public static final int EXSPEAKER = 7;
 
     public static String language= EMPTYSTRING;
     public static boolean dailyQuestion = false;

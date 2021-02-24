@@ -4,9 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,6 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.GameSettingsActivity;
-import com.example.triviaapp.game.HelpActivity;
 import com.example.triviaapp.game.PlayActivity;
 
 import java.util.Date;
@@ -178,6 +178,7 @@ public class NotificationsFragment extends Fragment {
         dialogBuilder.setView(questionPopUpView);
         dialogBuilder.setCancelable(false);
         dialog = dialogBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
         xImageViewPopUp.setOnClickListener((v) -> dialog.dismiss());

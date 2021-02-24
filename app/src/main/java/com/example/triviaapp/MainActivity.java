@@ -8,16 +8,22 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +42,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.example.triviaapp.LoggedUserData.MIC;
+import static com.example.triviaapp.LoggedUserData.SPEAKER;
 import static com.example.triviaapp.LoggedUserData.optionList;
 
 public class MainActivity extends AppCompatActivity {
@@ -54,16 +62,28 @@ public class MainActivity extends AppCompatActivity {
     Date date;
     SharedPreferences prefs;
 
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;;
+    private RadioGroup chooseLanguageRadioGroup;
+    private RadioButton engRadioButton, romRadioButton;
+    Switch extendedSwitchMicrophone, extendedSwitchSpeaker;
+    private Button continueButtonPopUp;
+    private Button muteButtonPopUp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initialize();
+        verifyAudioPermission();
+        if(!checkIfCompletedOptionsPopUp()){
+            chooseOptionsPopUp();
+
+        }
         initializeMicrophoneStatusAndCategoriesOptions();
         initializeViews();
         initializeUserNameList();
         initializeLoggedUser();
-        verifyAudioPermission();
 
     }
 
@@ -337,6 +357,8 @@ public class MainActivity extends AppCompatActivity {
         optionList.add(new Option("geography",true));
         optionList.add(new Option("maths",true));
         optionList.add(new Option("others",true));
+        optionList.add(new Option("exMic",true));
+        optionList.add(new Option("exSpeaker",true));
 
     }
 
@@ -361,22 +383,102 @@ public class MainActivity extends AppCompatActivity {
         }
 
         data = prefs.getString("language", "Key not found!");
-        if(data.equals("Key not found!")){
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("language","english");
-            LoggedUserData.language = "english";
-            editor.apply();
-
-        }else{
-            LoggedUserData.language = data;
-
-        }
+        LoggedUserData.language = data;
 
         data = prefs.getString("millis", "Key not found!");
         if(data.equals("Key not found!")){
             updateMillis();
 
         }
+
+    }
+
+    private void languageChooseListener(){
+        SharedPreferences.Editor editor = prefs.edit();
+        chooseLanguageRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch(checkedId){
+                case R.id.engLanguageRadioButton:
+                    setViewForEnglishLanguage();
+                    LoggedUserData.language = "english";
+                    editor.putString("language","english");
+                    editor.apply();
+                    break;
+                case R.id.romLanguageRadioButton:
+                    setViewForRomanianLanguage();
+                    LoggedUserData.language = "romanian";
+                    editor.putString("language","romanian");
+                    editor.apply();
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + checkedId);
+            }
+
+        });
+
+    }
+
+    private void verifyContinueButtonAction(){
+        if(chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.engLanguageRadioButton && chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.romLanguageRadioButton){
+            Toast.makeText(this, "Selectati o limba!", Toast.LENGTH_SHORT).show();
+            return;
+
+        }
+
+        dialog.dismiss();
+
+    }
+
+    private void interactionChooseListener() {
+        extendedSwitchMicrophone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("exMic", String.valueOf(isChecked));
+            editor.apply();
+
+        });
+        extendedSwitchSpeaker.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("exSpeaker", String.valueOf(isChecked));
+            editor.apply();
+
+        });
+
+    }
+
+    private void chooseOptionsPopUp(){
+        dialogBuilder = new AlertDialog.Builder(this);
+        View questionPopUpView = getLayoutInflater().inflate(R.layout.start_app_pop_up, null);
+        chooseLanguageRadioGroup = questionPopUpView.findViewById(R.id.chooseLanguageRadioGroup);
+        engRadioButton = questionPopUpView.findViewById(R.id.engLanguageRadioButton);
+        romRadioButton = questionPopUpView.findViewById(R.id.romLanguageRadioButton);
+        extendedSwitchMicrophone = questionPopUpView.findViewById(R.id.extendedMicrophoneSwitch);
+        extendedSwitchMicrophone.setChecked(false);
+        extendedSwitchSpeaker = questionPopUpView.findViewById(R.id.extendedSpeakerSwitch);
+        extendedSwitchSpeaker.setChecked(false);
+        continueButtonPopUp = questionPopUpView.findViewById(R.id.continueButtonPopUp);
+
+        dialogBuilder.setView(questionPopUpView);
+        dialogBuilder.setCancelable(false);
+        dialog = dialogBuilder.create();
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+
+        languageChooseListener();
+        interactionChooseListener();
+        continueButtonPopUp.setOnClickListener((v) -> verifyContinueButtonAction());
+
+    }
+
+    private boolean checkIfCompletedOptionsPopUp(){
+        String data = prefs.getString("startApp","Key not found!");;
+        boolean result;
+        if((result = data.equals("Key not found!"))){
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("startApp","nothing");
+            editor.apply();
+
+        }
+
+        return !result;
 
     }
 

@@ -15,7 +15,6 @@ import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 
 public class HelpFragment extends Fragment {
-    private Button btnexit;
     private TextView howToPlayTextView, howToPlayExplicationTextView, howToScoreTextView, howToScoreExplicationTextView;
 
     @Nullable
@@ -23,9 +22,6 @@ public class HelpFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_help,container,false);
         setViews(root);
-        btnexit.setOnClickListener(v -> {
-            getActivity().finishAndRemoveTask();
-        });
         return root;
     }
 
@@ -34,7 +30,6 @@ public class HelpFragment extends Fragment {
         howToPlayExplicationTextView = root.findViewById(R.id.howToPlayExplicationTextView);
         howToScoreTextView = root.findViewById(R.id.howToScoreTextView);
         howToScoreExplicationTextView = root.findViewById(R.id.howToScoreExplicationTextView);
-        btnexit = root.findViewById(R.id.btn_exitHelp);
         chooseLanguage();
 
     }
@@ -44,7 +39,6 @@ public class HelpFragment extends Fragment {
         howToPlayExplicationTextView.setText(R.string.helpTextCumSeJoacaEn);
         howToScoreTextView.setText(R.string.howToScoreTextViewHelpEn);
         howToScoreExplicationTextView.setText(R.string.helpTextCumSePuncteazaEn);
-        btnexit.setText(R.string.backButtonEditEn);
 
     }
 
@@ -54,7 +48,6 @@ public class HelpFragment extends Fragment {
         howToPlayExplicationTextView.setText(R.string.helpTextCumSeJoacaRou);
         howToScoreTextView.setText(R.string.howToScoreTextViewHelpRou);
         howToScoreExplicationTextView.setText(R.string.helpTextCumSePuncteazaRou);
-        btnexit.setText(R.string.backButtonEditRou);
 
     }
 

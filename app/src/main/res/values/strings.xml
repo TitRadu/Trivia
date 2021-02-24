@@ -105,8 +105,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="loudSpeakerSwitchMenuRou">Difuzor</string>
     <string name="dailyQuestionButtonMenuEn">Daily question</string>
     <string name="dailyQuestionButtonMenuRou">Intrebarea zilnica</string>
-    <string name="infoTextViewMenuEn">Vrei sa raspunzi la intrebarea zilnica?</string>
-    <string name="infoTextViewMenuRou">Do you want to answer the daily question?</string>
+    <string name="infoTextViewMenuEn">Do you want to answer the daily question?</string>
+    <string name="infoTextViewMenuRou">Vrei sa raspunzi la intrebarea zilnica?</string>
     <string name="exitButtonMenuHelpEn">Exit</string>
     <string name="exitButtonMenuHelpRou">Ieșire</string>
 
