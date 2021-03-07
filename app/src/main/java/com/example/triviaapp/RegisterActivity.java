@@ -194,6 +194,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void hasAnAccount(View view){
+        LoggedUserData.onResumeFromAnotherActivity = true;
         finishAndRemoveTask();
 
     }

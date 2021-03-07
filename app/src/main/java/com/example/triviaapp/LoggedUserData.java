@@ -37,4 +37,6 @@ public class LoggedUserData{
     public static String language= EMPTYSTRING;
     public static boolean dailyQuestion = false;
 
+    public static boolean onResumeFromAnotherActivity = false;
+
 }

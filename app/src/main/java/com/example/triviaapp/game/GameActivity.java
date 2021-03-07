@@ -224,9 +224,11 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void signOut() {
+        LoggedUserData.onResumeFromAnotherActivity = true;
         LoggedUserData.loggedUserPasswordUpdateVerify = false;
         firebaseAuth.signOut();
         finishAndRemoveTask();
+
     }
 
 }
