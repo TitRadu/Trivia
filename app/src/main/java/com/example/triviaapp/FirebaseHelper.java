@@ -8,6 +8,7 @@ public class FirebaseHelper {
     public static DatabaseReference userDatabaseReference;
     public static DatabaseReference questionDatabaseReference;
     public static DatabaseReference answerDatabaseReference;
+    public static DatabaseReference connectedRef;
 
     private FirebaseHelper(){
 
@@ -17,6 +18,7 @@ public class FirebaseHelper {
         if(firebaseHelper == null){
             firebaseHelper = new FirebaseHelper();
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
             userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
             questionDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Questions");
             answerDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Answers");
