@@ -694,7 +694,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void verifySpeechListenerStatus(int status){
+    private void verifyTextToSpeechListenerStatus(int status){
         if (status == TextToSpeech.SUCCESS) {
             setProgressListener();
             int result = textToSpeech.setLanguage(selectedLanguage);
@@ -715,7 +715,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
-            verifySpeechListenerStatus(status);
+            verifyTextToSpeechListenerStatus(status);
             setActivityStartPopUp();
             setConnectionListener();
 
@@ -1092,7 +1092,9 @@ public class MainActivity extends AppCompatActivity {
                                 speak("Connected",QUEUE_ADD);
 
                             }else{
-                                getSpeechInput(currentScreen);
+                                if(optionList.get(EXMIC).isValue()) {
+                                    getSpeechInput(currentScreen);
+                                }
 
                             }
                             break;
@@ -1112,9 +1114,6 @@ public class MainActivity extends AppCompatActivity {
                             case "Activity":
                                 if (optionList.get(EXSPEAKER).isValue()) {
                                     speak("Connection lost!",QUEUE_ADD);
-
-                                } else {
-                                    getSpeechInput(currentScreen);
 
                                 }
                                 break;

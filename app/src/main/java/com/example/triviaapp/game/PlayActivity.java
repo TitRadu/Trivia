@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 import static com.example.triviaapp.LoggedUserData.MIC;
 import static com.example.triviaapp.LoggedUserData.SPACESTRING;
@@ -59,13 +60,13 @@ public class PlayActivity extends AppCompatActivity {
     String userAnswer, correctAnswer, voiceInput = null;
     Button  nextQuestionButton, tryAgainButton, btn_superpower, btn_RightAnswer;
     SubmitButton btnA,btnB, btnC, btnD, selectedThroughVoiceOption;
-    TextView question, questionCounter, timerView, totalScoreView, questionScoreView, totalScoreNextView,questionScoreViewScore,totalScoreNextViewPoints;
-    Switch aSwitch;
+    TextView question, questionCounterTextView, timerView, totalScoreView, questionScoreView, totalScoreNextView,questionScoreViewScore,totalScoreNextViewPoints;
+    Switch microphoneSwitch;
     ProgressBar progressBar;
     MaterialCardView materialCardView;
-    int answerCounter;
-    boolean answerCheck;
-    boolean touchDisabled;
+    int questionCounter;
+    boolean userAnswerIsCorrect;
+    boolean answerWasSet;
     List<Question> questions;
     List<Answer> answers;
     Question currentQuestion;
@@ -82,7 +83,7 @@ public class PlayActivity extends AppCompatActivity {
     String invalidInputToast;
     String youAnsweredText, timeExpiredText;
     String remainings,rights;
-    Locale selectedLanguage;
+    Locale appLanguage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,8 +96,8 @@ public class PlayActivity extends AppCompatActivity {
             }
             timer();
         }
-        listenerStatusMicrophone();
-        listener();
+        setListenerForMicrophoneSwitch();
+        setBonusButtonsListener();
     }
 
     @Override
@@ -110,28 +111,32 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void textToSpeechListener(){
+    private void setTextToSpeechListener(){
         textToSpeech = new TextToSpeech(this, status -> {
-            if(status == TextToSpeech.SUCCESS){
-                setProgressListener();
-                int result = textToSpeech.setLanguage(selectedLanguage);
-                textToSpeech.setPitch(1);
-                textToSpeech.setSpeechRate(0.75f);
-                speak();
-
-
-                if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
-                   Toast.makeText(getBaseContext(), "Language not supported!",Toast.LENGTH_SHORT).show();
-
-                }
-
-            }else{
-                Toast.makeText(getBaseContext(), "Initialization failed!",Toast.LENGTH_SHORT).show();
-
-            }
+            verifyTextToSpeechListenerStatus(status);
+            speak(obtainQuestionSpeech(),QUEUE_ADD);
 
         });
 
+    }
+
+    private void verifyTextToSpeechListenerStatus(int status) {
+        if(status == TextToSpeech.SUCCESS){
+            setProgressListener();
+            int result = textToSpeech.setLanguage(appLanguage);
+            textToSpeech.setPitch(1);
+            textToSpeech.setSpeechRate(0.75f);
+
+
+            if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
+               Toast.makeText(getBaseContext(), "Language not supported!",Toast.LENGTH_SHORT).show();
+
+            }
+
+        }else{
+            Toast.makeText(getBaseContext(), "Initialization failed!",Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     private void setProgressListener(){
@@ -164,18 +169,22 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void speak(){
+    private void speak(String text, int queueMode){
+        textToSpeech.speak(text,queueMode,null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+
+    }
+
+    private String obtainQuestionSpeech() {
         String text = currentQuestion.getQuestion();
         text = text + "\n" + btnA.getText();
         text = text + "\n" + btnB.getText();
         text = text + "\n" + btnC.getText();
         text = text + "\n" + btnD.getText();
-        textToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
-
+        return text;
     }
 
     @SuppressLint("SetTextI18n")
-    private void listener(){
+    private void setBonusButtonsListener(){
         btn_superpower.setOnClickListener(v -> {
             LoggedUserData.loggedSuperPowerFiftyFifty--;
             setAnswers(answers,true);
@@ -199,6 +208,15 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
+    private void setButtonsProprieties() {
+        setEnabledForAnswersButtons(false);
+        setVisibilityForBonusButtons();
+        if(!dailyQuestion) {
+            setEnabledFalseForBonusButtons();
+
+        }
+    }
+
     public void setViews(){
         btn_RightAnswer = findViewById(R.id.btn_superPowerRightAnswer);
         btn_superpower = findViewById(R.id.btn_superPower);
@@ -209,19 +227,20 @@ public class PlayActivity extends AppCompatActivity {
         btnB = findViewById(R.id.varB);
         btnC = findViewById(R.id.varC);
         btnD = findViewById(R.id.varD);
+        setButtonsProprieties();
         question = findViewById(R.id.question);
-        questionCounter = findViewById(R.id.questionCounter);
+        questionCounterTextView = findViewById(R.id.questionCounter);
         timerView = findViewById(R.id.timerView);
         totalScoreView = findViewById(R.id.totalScoreView);
-        answerCounter = 1;
-        touchDisabled = false;
+        questionCounter = 1;
+        answerWasSet = false;
         selectedThroughVoiceOption = null;
         questions = new ArrayList<>();
         answers = new ArrayList<>();
         firstLineButtonsLayout = findViewById(R.id.firstLineButtonsLayout);
         infoLayout = findViewById(R.id.infoLayout);
         if(LoggedUserData.dailyQuestion){
-            questionCounter.setVisibility(View.INVISIBLE);
+            questionCounterTextView.setVisibility(View.INVISIBLE);
             totalScoreView.setVisibility(View.INVISIBLE);
 
         }
@@ -231,19 +250,19 @@ public class PlayActivity extends AppCompatActivity {
         totalScoreNextView = findViewById(R.id.totalScoreNextView);
         progressBar = findViewById(R.id.progress_bar);
         materialCardView = findViewById(R.id.materialCardView);
-        aSwitch = findViewById(R.id.sw_microphonePlay);
-        aSwitch.setChecked(optionList.get(MIC).isValue());
+        microphoneSwitch = findViewById(R.id.sw_microphonePlay);
+        microphoneSwitch.setChecked(optionList.get(MIC).isValue());
         chooseLanguage();
         if(optionList.get(MIC).isValue()) {
             speechInitialize();
         }
+
         setTextViewWithQuestionAndAnswers(false);
-        setSuperpowerView();
 
     }
 
     private void setViewForEnglishLanguage(){
-        aSwitch.setText(R.string.microphoneSwitchMenuPlayEn);
+        microphoneSwitch.setText(R.string.microphoneSwitchMenuPlayEn);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayEn);
         questionTextViewString = getString(R.string.questionTextViewPlayEn);
         nextQuestionButton.setText(R.string.nextButtonMenuPlayEn);
@@ -253,14 +272,14 @@ public class PlayActivity extends AppCompatActivity {
         invalidInputToast = getString(R.string.invalidInputToastPlayEn);
         youAnsweredText = getString(R.string.youAnsweredTextPlayEn);
         timeExpiredText = getString(R.string.timeExpiredTextPlayEn);
-        selectedLanguage = Locale.ENGLISH;
+        appLanguage = Locale.ENGLISH;
         remainings = getString(R.string.superPowerRemainingEn);
         rights = getString(R.string.superPowerRightAnwerEn);
 
     }
 
     private void setViewForRomanianLanguage(){
-        aSwitch.setText(R.string.microphoneSwitchMenuPlayRou);
+        microphoneSwitch.setText(R.string.microphoneSwitchMenuPlayRou);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayRou);
         questionTextViewString = getString(R.string.questionTextViewPlayRou);
         nextQuestionButton.setText(R.string.nextButtonMenuPlayRou);
@@ -270,9 +289,16 @@ public class PlayActivity extends AppCompatActivity {
         invalidInputToast = getString(R.string.invalidInputToastPlayRou);
         youAnsweredText = getString(R.string.youAnsweredTextPlayRou);
         timeExpiredText = getString(R.string.timeExpiredTextPlayRou);
-        selectedLanguage = Locale.getDefault();
+        appLanguage = Locale.getDefault();
         remainings = getString(R.string.superPowerRemainingRou);
         rights = getString(R.string.superPowerRightAnwerRou);
+    }
+
+    private void setTextForViewsWithComplexText() {
+        totalScoreView.setText(totalScoreTextViewString + "   " + totalPoints);
+        questionCounterTextView.setText(questionTextViewString + "   " + questionCounter + " / 10");
+        btn_superpower.setText("50 - 50 \n "+ LoggedUserData.loggedSuperPowerFiftyFifty+" "+ remainings);
+        btn_RightAnswer.setText(rights+LoggedUserData.loggedSuperPowerCorrectAnswer+" "+ remainings);
     }
 
     private void chooseLanguage(){
@@ -286,25 +312,22 @@ public class PlayActivity extends AppCompatActivity {
             default:
                 throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
         }
-        totalScoreView.setText(totalScoreTextViewString + "   " + totalPoints);
-        questionCounter.setText(questionTextViewString + "   " + answerCounter + " / 10");
+        setTextForViewsWithComplexText();
 
     }
 
-
-    @SuppressLint("SetTextI18n")
-    private void setSuperpowerView(){
+    private void setVisibilityForBonusButtons() {
         if(LoggedUserData.dailyQuestion){
             btn_superpower.setVisibility(View.GONE);
             btn_RightAnswer.setVisibility(View.GONE);
-            return;
+
         }
 
-        btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty+" "+ remainings);
-        btn_RightAnswer.setText(rights+LoggedUserData.loggedSuperPowerCorrectAnswer+" "+ remainings);
+    }
+
+    private void setEnabledForBonusButtons(){
         if(LoggedUserData.loggedSuperPowerFiftyFifty>0){
             btn_superpower.setEnabled(true);
-            btn_superpower.setVisibility(View.VISIBLE);
 
         }else{
             btn_superpower.setEnabled(false);
@@ -312,14 +335,12 @@ public class PlayActivity extends AppCompatActivity {
         }
         if(LoggedUserData.loggedSuperPowerCorrectAnswer>0){
             btn_RightAnswer.setEnabled(true);
-            btn_RightAnswer.setVisibility(View.VISIBLE);
 
         }else{
             btn_RightAnswer.setEnabled(false);
             btn_RightAnswer.setTextColor(Color.GRAY);
         }
     }
-
 
     private void updateProgressBar(){
         progressBar.setProgress(progressBarPercent);
@@ -328,7 +349,7 @@ public class PlayActivity extends AppCompatActivity {
     private void speechInitialize(){
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, selectedLanguage);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, appLanguage);
 
     }
 
@@ -426,7 +447,8 @@ public class PlayActivity extends AppCompatActivity {
             public void onCallbackAnswers(List<Answer> answers) {
                 setAnswers(answers,isFifty);
                 if(optionList.get(SPEAKER).isValue()) {
-                    textToSpeechListener();
+                    setTextToSpeechListener();
+
                 }
 
             }
@@ -766,31 +788,21 @@ public class PlayActivity extends AppCompatActivity {
 
 
     public void clicked(View view) {
-        if(optionList.get(SPEAKER).isValue() && textToSpeech.isSpeaking()){
-            return;
-
+        setEnabledForAnswersButtons(false);
+        setEnabledFalseForBonusButtons();
+        if(optionList.get(MIC).isValue()) {
+            speechRecognizer.destroy();
         }
+        answerWasSet = true;
 
-        if(touchDisabled){
-            return;
-        }else{
-            touchDisabled = true;
-            if(optionList.get(MIC).isValue()) {
-                speechRecognizer.destroy();
-            }
-        }
-        if(optionList.get(SPEAKER).isValue()){
-            textToSpeech.stop();
-
-        }
         ((SubmitButton) view).startAnimation();
         getUserAnswer(view);
         if(userAnswer.equals(correctAnswer)){
             setExtraTimeForMicrophone();
             calculatePoints();
-            answerCheck = true;
-            answerCounter++;
-            if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
+            userAnswerIsCorrect = true;
+            questionCounter++;
+            if(questionCounter == TOTAL_QUESTION_TO_WIN_GAME){
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints*2;
                 ++LoggedUserData.loggedSuperPowerFiftyFifty;
                 ++LoggedUserData.loggedGamesWon;
@@ -803,7 +815,7 @@ public class PlayActivity extends AppCompatActivity {
             ((SubmitButton) view).setAnimationColor(Color.RED);
             LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
             sendToDatabase();
-            answerCheck = false;
+            userAnswerIsCorrect = false;
 
         }
         delay(3000);
@@ -874,7 +886,7 @@ public class PlayActivity extends AppCompatActivity {
         Random rand = new Random();
         int r = rand.nextInt(2);
 
-        if(answerCheck) {
+        if(userAnswerIsCorrect) {
             if (r == 0) {
                 questionScoreView.setText("You won a fifty-fifty!");
                 loggedSuperPowerFiftyFifty++;
@@ -899,8 +911,8 @@ public class PlayActivity extends AppCompatActivity {
             if(LoggedUserData.dailyQuestion){
                 generateRandomPrizeForDailyQuestion();
             }
-            hideQuestionSetup();
-            setTextAfterAnswerQuestion();
+            updateUIAfterAnswerToTheQuestion();
+            setTextAfterAnswerToTheQuestion();
             if(optionList.get(MIC).isValue()) {
                 getSpeechInput();
 
@@ -910,13 +922,17 @@ public class PlayActivity extends AppCompatActivity {
 
     }
     private void timer(){
+        setEnabledForAnswersButtons(true);
+        if(!dailyQuestion){
+            setEnabledForBonusButtons();
+        }
         final long prev[]= new long[1];
         prev[0]=0;
         new CountDownTimer(30000, 1) {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                if(touchDisabled){
+                if(answerWasSet){
                     question.setText(youAnsweredText);
                     cancel();
                     return;
@@ -942,9 +958,9 @@ public class PlayActivity extends AppCompatActivity {
                 question.setText(timeExpiredText);
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
                 sendToDatabase();
-                answerCheck = false;
-                setTextAfterAnswerQuestion();
-                hideQuestionSetup();
+                userAnswerIsCorrect = false;
+                setTextAfterAnswerToTheQuestion();
+                updateUIAfterAnswerToTheQuestion();
 
             }
 
@@ -953,7 +969,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private boolean isGameFinished(){
-        if((answerCounter == 11 || !answerCheck) || (answerCounter == 2 && LoggedUserData.dailyQuestion)){
+        if((questionCounter == 11 || !userAnswerIsCorrect) || (questionCounter == 2 && LoggedUserData.dailyQuestion)){
             LoggedUserData.dailyQuestion = false;
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
@@ -964,19 +980,21 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void hideQuestionSetup(){
+    private void updateUIAfterAnswerToTheQuestion(){
         infoLayout.setVisibility(View.GONE);
         materialCardView.setVisibility(View.GONE);
         firstLineButtonsLayout.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.VISIBLE);
-        if((answerCounter == TOTAL_QUESTION_TO_WIN_GAME || !answerCheck) && !LoggedUserData.dailyQuestion) {
+        if((questionCounter == TOTAL_QUESTION_TO_WIN_GAME || !userAnswerIsCorrect) && !LoggedUserData.dailyQuestion) {
             tryAgainButton.setVisibility(View.VISIBLE);
 
         }
-        aSwitch.setVisibility(View.VISIBLE);
+        microphoneSwitch.setVisibility(View.VISIBLE);
         questionScoreView.setVisibility(View.VISIBLE);
 
         if(!LoggedUserData.dailyQuestion) {
+            btn_superpower.setVisibility(View.GONE);
+            btn_RightAnswer.setVisibility(View.GONE);
             questionScoreViewScore.setVisibility(View.VISIBLE);
             totalScoreNextView.setVisibility(View.VISIBLE);
             totalScoreNextViewPoints.setVisibility(View.VISIBLE);
@@ -985,9 +1003,9 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setTextAfterAnswerQuestion(){
+    private void setTextAfterAnswerToTheQuestion(){
         questionScoreViewScore.setText(String.valueOf(time));
-        if(answerCounter == TOTAL_QUESTION_TO_WIN_GAME){
+        if(questionCounter == TOTAL_QUESTION_TO_WIN_GAME){
             totalScoreNextViewPoints.setText(totalPoints + " X 2");
 
         }
@@ -998,8 +1016,8 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void listenerStatusMicrophone(){
-        aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+    private void setListenerForMicrophoneSwitch(){
+        microphoneSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             optionList.get(MIC).setValue(isChecked);
             SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
             if(!isChecked){
@@ -1015,8 +1033,8 @@ public class PlayActivity extends AppCompatActivity {
         });
     }
 
-    private void showQuestionSetup(){
-        aSwitch.setVisibility(View.GONE);
+    private void updateUIForTheNextQuestion(){
+        microphoneSwitch.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.GONE);
         tryAgainButton.setVisibility(View.GONE);
         questionScoreView.setVisibility(View.GONE);
@@ -1029,7 +1047,12 @@ public class PlayActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         questionScoreViewScore.setVisibility(View.GONE);
         totalScoreNextViewPoints.setVisibility(View.GONE);
-        setSuperpowerView();
+        if(!dailyQuestion) {
+            btn_superpower.setVisibility(View.VISIBLE);
+            btn_RightAnswer.setVisibility(View.VISIBLE);
+
+        }
+
     }
 
     public void nextQuestionSetup(View view){
@@ -1040,16 +1063,16 @@ public class PlayActivity extends AppCompatActivity {
             return;
 
         }
-        showQuestionSetup();
+        updateUIForTheNextQuestion();
         btnA.resetButton();
         btnB.resetButton();
         btnC.resetButton();
         btnD.resetButton();
         time = 0;
-        questionCounter.setText(questionTextViewString + "   " + answerCounter + " / 10");
+        questionCounterTextView.setText(questionTextViewString + "   " + questionCounter + " / 10");
         setQuestion(questions);
         setAnswers(answers,false);
-        touchDisabled = false;
+        answerWasSet = false;
         voiceInput = null;
         selectedThroughVoiceOption = null;
         if(!optionList.get(SPEAKER).isValue()){
@@ -1059,7 +1082,7 @@ public class PlayActivity extends AppCompatActivity {
             timer();
 
          }else{
-            speak();
+            speak(obtainQuestionSpeech(), QUEUE_ADD);
 
          }
 
@@ -1069,6 +1092,20 @@ public class PlayActivity extends AppCompatActivity {
         Intent intent = new Intent(this, GameSettingsActivity.class);
         startActivity(intent);
         finishAndRemoveTask();
+
+    }
+
+    private void setEnabledForAnswersButtons(boolean status){
+        btnA.setEnabled(status);
+        btnB.setEnabled(status);
+        btnC.setEnabled(status);
+        btnD.setEnabled(status);
+
+    }
+
+    private void setEnabledFalseForBonusButtons(){
+        btn_superpower.setEnabled(false);
+        btn_RightAnswer.setEnabled(false);
 
     }
 
