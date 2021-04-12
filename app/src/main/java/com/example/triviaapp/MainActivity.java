@@ -56,6 +56,8 @@ import static com.example.triviaapp.LoggedUserData.EXMIC;
 import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.LoggedUserData.MIC;
 import static com.example.triviaapp.LoggedUserData.SPEAKER;
+import static com.example.triviaapp.LoggedUserData.connectionStatus;
+import static com.example.triviaapp.LoggedUserData.currentActivity;
 import static com.example.triviaapp.LoggedUserData.language;
 import static com.example.triviaapp.LoggedUserData.loggedSuperPowerCorrectAnswer;
 import static com.example.triviaapp.LoggedUserData.loggedSuperPowerFiftyFifty;
@@ -95,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
     SpeechRecognizer speechRecognizer;
     List<String> emailList;
     String currentScreen = null;
-    boolean connectionStatus = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        currentActivity = this;
         if (onResumeFromAnotherActivity) {
             //speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
             chooseLanguage();
@@ -823,6 +825,7 @@ public class MainActivity extends AppCompatActivity {
                             speak("Connection failed", QUEUE_ADD);
 
                         }
+
                     }
 
                 }
@@ -1077,52 +1080,14 @@ public class MainActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                boolean connected = snapshot.getValue(Boolean.class);
-                if (connected) {
-                    connectionStatus = true;
-                    Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
-                    speechRecognizer.destroy();
-                    switch (currentScreen) {
-                        case "Nothing":
-                        case "PopUp":
-                            speak("Connected", QUEUE_ADD);
-                            break;
-                        case "Activity":
-                            if(optionList.get(EXSPEAKER).isValue()){
-                                speak("Connected",QUEUE_ADD);
-
-                            }else{
-                                if(optionList.get(EXMIC).isValue()) {
-                                    getSpeechInput(currentScreen);
-                                }
-
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-
-                } else {
-                    if(!optionList.get(EXMIC).isValue()) {
-                        connectionStatus = false;
-                        Toast.makeText(getApplicationContext(),"Connection lost!",Toast.LENGTH_SHORT).show();
-                        switch (currentScreen) {
-                            case "Nothing":
-                            case "PopUp":
-                                speak("Connection lost!", QUEUE_ADD);
-                                break;
-                            case "Activity":
-                                if (optionList.get(EXSPEAKER).isValue()) {
-                                    speak("Connection lost!",QUEUE_ADD);
-
-                                }
-                                break;
-                            default:
-                                break;
-                        }
+                if(currentActivity instanceof MainActivity) {
+                    boolean connected = snapshot.getValue(Boolean.class);
+                    if (connected) {
+                        connected();
+                    } else {
+                        lossConnection();
 
                     }
-
                 }
 
             }
@@ -1134,6 +1099,56 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
+    }
+
+    private void connected(){
+        connectionStatus = true;
+        Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
+        speechRecognizer.destroy();
+        switch (currentScreen) {
+            case "Nothing":
+            case "PopUp":
+                speak("Connected", QUEUE_ADD);
+                break;
+            case "Activity":
+                if(optionList.get(EXSPEAKER).isValue()){
+                    speak("Connected",QUEUE_ADD);
+
+                }else{
+                    if(optionList.get(EXMIC).isValue()) {
+                        getSpeechInput(currentScreen);
+                    }
+
+                }
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
+    private void lossConnection(){
+        if(!optionList.get(EXMIC).isValue()) {
+            connectionStatus = false;
+            Toast.makeText(getApplicationContext(),"Connection lost!",Toast.LENGTH_SHORT).show();
+            switch (currentScreen) {
+                case "Nothing":
+                case "PopUp":
+                    speak("Connection lost!", QUEUE_ADD);
+                    break;
+                case "Activity":
+                    if (optionList.get(EXSPEAKER).isValue()) {
+                        speak("Connection lost!",QUEUE_ADD);
+
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+        }
 
     }
 

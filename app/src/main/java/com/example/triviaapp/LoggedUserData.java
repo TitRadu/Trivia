@@ -1,5 +1,6 @@
 package com.example.triviaapp;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.triviaapp.rank.User;
@@ -38,5 +39,9 @@ public class LoggedUserData{
     public static boolean dailyQuestion = false;
 
     public static boolean onResumeFromAnotherActivity = false;
+
+    public static boolean connectionStatus = false;
+
+    public static AppCompatActivity currentActivity;
 
 }

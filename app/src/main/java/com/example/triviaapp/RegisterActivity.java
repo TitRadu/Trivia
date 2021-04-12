@@ -2,11 +2,16 @@ package com.example.triviaapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,13 +20,23 @@ import android.widget.Toast;
 
 import com.example.triviaapp.game.GameActivity;
 import com.example.triviaapp.rank.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
+
+import static android.speech.tts.TextToSpeech.QUEUE_ADD;
+import static com.example.triviaapp.FirebaseHelper.connectedRef;
+import static com.example.triviaapp.LoggedUserData.EXMIC;
+import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.LoggedUserData.connectionStatus;
+import static com.example.triviaapp.LoggedUserData.currentActivity;
+import static com.example.triviaapp.LoggedUserData.optionList;
 
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
@@ -35,6 +50,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     Date date;
     SharedPreferences prefs;
+
+    private TextToSpeech textToSpeech;
+    Locale selectedLanguage;
+
+    String voiceInput = null;
+    Intent speechIntent = null;
+    SpeechRecognizer speechRecognizer;
+
+    private boolean connectionListenerStatus = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +76,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void initialize(){
+    private void initialize() {
+        currentActivity = this;
+        setTextToSpeechListener();
         prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
+        speechInitialize();
 
     }
 
-    private void initializeViews(){
+    private void initializeViews() {
         userNameInput = findViewById(R.id.userNameRegInput);
         emailInput = findViewById(R.id.emailRegInput);
         passwordInput = findViewById(R.id.passwordRegInput);
@@ -69,7 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void setViewForEnglishLanguage(){
+    private void setViewForEnglishLanguage() {
         userNameInput.setHint(R.string.userNameHintRegEn);
         passwordInput.setHint(R.string.passwordHintLogRegEditEn);
         createAccountButton.setText(R.string.createButtonLogRegEn);
@@ -84,8 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-
-    private void setViewForRomanianLanguage(){
+    private void setViewForRomanianLanguage() {
         userNameInput.setHint(R.string.userNameHintRegRou);
         passwordInput.setHint(R.string.passwordHintLogRegEditRou);
         createAccountButton.setText(R.string.createButtonLogRegRou);
@@ -100,13 +126,15 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void chooseLanguage(){
-        switch (LoggedUserData.language){
+    private void chooseLanguage() {
+        switch (LoggedUserData.language) {
             case "english":
                 setViewForEnglishLanguage();
+                selectedLanguage = Locale.ENGLISH;
                 break;
             case "romanian":
                 setViewForRomanianLanguage();
+                selectedLanguage = Locale.ENGLISH;
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
@@ -114,36 +142,52 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void updateMillis(){
+    private void updateMillis() {
         date = new Date();
         LoggedUserData.millis = date.getTime();
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("millis",String.valueOf(LoggedUserData.millis));
+        editor.putString("millis", String.valueOf(LoggedUserData.millis));
         editor.apply();
 
     }
 
-    private boolean inputCheck(String userName, String email, String password){
-        if(email.isEmpty()){
-            Toast.makeText(this,emptyEmailToast,Toast.LENGTH_SHORT).show();
+    private boolean inputCheck(String userName, String email, String password) {
+        if (email.isEmpty()) {
+            Toast.makeText(this, emptyEmailToast, Toast.LENGTH_SHORT).show();
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Introduce an email!", QUEUE_ADD);
+
+            }
             return false;
 
         }
 
-        if(userName.isEmpty()){
-            Toast.makeText(this,emptyUserNameToast,Toast.LENGTH_SHORT).show();
+        if (userName.isEmpty()) {
+            Toast.makeText(this, emptyUserNameToast, Toast.LENGTH_SHORT).show();
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Introduce an username!", QUEUE_ADD);
+
+            }
             return false;
 
         }
 
-        if(password.isEmpty()){
-            Toast.makeText(this,emptyPasswordToast,Toast.LENGTH_SHORT).show();
+        if (password.isEmpty()) {
+            Toast.makeText(this, emptyPasswordToast, Toast.LENGTH_SHORT).show();
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Introduce a password!", QUEUE_ADD);
+
+            }
             return false;
 
         }
 
-        if(password.length() < 6){
-            Toast.makeText(this,shortPasswordToast,Toast.LENGTH_SHORT).show();
+        if (password.length() < 6) {
+            Toast.makeText(this, shortPasswordToast, Toast.LENGTH_SHORT).show();
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Password must contain minimum 6 characters!", QUEUE_ADD);
+
+            }
             return false;
 
         }
@@ -151,51 +195,458 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    public void createAccount(View view){
+    public void createAccount(View view) {
+        speechRecognizer.destroy();
         final String userName = userNameInput.getText().toString();
         final String email = emailInput.getText().toString();
         final String password = passwordInput.getText().toString();
 
-        if(!inputCheck(userName,email,password)){
+        if (!inputCheck(userName, email, password)) {
             return;
 
         }
 
-        if(LoggedUserData.userNameList.contains(userName)){
+        if (LoggedUserData.userNameList.contains(userName)) {
             Toast.makeText(getBaseContext(), existUserNameToast, Toast.LENGTH_SHORT).show();
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Username exists!", QUEUE_ADD);
+
+            } else {
+                if (optionList.get(EXMIC).isValue()) {
+                    getSpeechInput();
+                }
+
+            }
             return;
 
         }
 
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            User registeredUser = new User(email,0, password, 0, 0,0, userName,0);
-                            firebaseHelper.userDatabaseReference.child(UUID.randomUUID().toString()).setValue(registeredUser);
-                            Toast.makeText(getBaseContext(), successCreateToast, Toast.LENGTH_SHORT).show();
-                            LoggedUserData.loggedUserPassword = password;
-                            LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                            updateMillis();
-                            Intent intent = new Intent(getApplicationContext(), GameActivity.class);
-                            startActivity(intent);
-                            finishAndRemoveTask();
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        User registeredUser = new User(email, 0, password, 0, 0, 0, userName, 0);
+                        firebaseHelper.userDatabaseReference.child(UUID.randomUUID().toString()).setValue(registeredUser);
+                        Toast.makeText(getBaseContext(), successCreateToast, Toast.LENGTH_SHORT).show();
+                        LoggedUserData.loggedUserPassword = password;
+                        LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                        updateMillis();
+                        Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+                        startActivity(intent);
+                        finishAndRemoveTask();
+
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(getBaseContext(), existEmailToast, Toast.LENGTH_SHORT).show();
+                        if (optionList.get(EXSPEAKER).isValue()) {
+                            speak("Mail exists!", QUEUE_ADD);
 
                         } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(getBaseContext(), existEmailToast, Toast.LENGTH_SHORT).show();
+                            if (optionList.get(EXMIC).isValue()) {
+                                getSpeechInput();
+                            }
 
                         }
+
                     }
+
                 });
 
     }
 
-    public void hasAnAccount(View view){
+    public void hasAnAccount(View view) {
+        speechRecognizer.destroy();
         LoggedUserData.onResumeFromAnotherActivity = true;
         finishAndRemoveTask();
+
+    }
+
+    private void destroySpeaker() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech = null;
+
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        destroySpeaker();
+        super.onDestroy();
+
+    }
+
+    private void verifyTextToSpeechListenerStatus(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            setProgressListener();
+            int result = textToSpeech.setLanguage(selectedLanguage);
+            textToSpeech.setPitch(1);
+            textToSpeech.setSpeechRate(0.75f);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Toast.makeText(getBaseContext(), "Language not supported!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        } else {
+            Toast.makeText(getBaseContext(), "Initialization failed!", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+    private void setTextToSpeechListener() {
+        textToSpeech = new TextToSpeech(this, status -> {
+            verifyTextToSpeechListenerStatus(status);
+            speak("Welcome to Register Activity!", QUEUE_ADD);
+            setConnectionListener();
+
+        });
+
+    }
+
+    private void setProgressListener() {
+        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+
+
+            }
+
+            @Override
+            public void onDone(String utteranceId) {
+                speechRecognizer.destroy();
+                Runnable runnable = () -> {
+                    if (optionList.get(EXMIC).isValue()) {
+                        getSpeechInput();
+
+                    }
+                };
+
+                runOnUiThread(runnable);
+
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+
+            }
+
+            @Override
+            public void onStop(String utteranceId, boolean interrupted) {
+
+            }
+
+        });
+
+    }
+
+    private void speak(String text, int queueMode) {
+        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+
+    }
+
+    private void speechInitialize() {
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, selectedLanguage);
+
+    }
+
+    private void getSpeechInput() {
+        speechRecognizer.startListening(speechIntent);
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle params) {
+
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+            }
+
+            @Override
+            public void onRmsChanged(float rmsdB) {
+
+            }
+
+            @Override
+            public void onBufferReceived(byte[] buffer) {
+
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+            }
+
+            @Override
+            public void onError(int error) {
+                Log.d("Error", String.valueOf(error));
+                if (error == SpeechRecognizer.ERROR_NO_MATCH) {
+                    getSpeechInput();
+
+                }
+                if (error == SpeechRecognizer.ERROR_NETWORK) {
+                    speechRecognizer.destroy();
+                    if (connectionStatus) {
+                        connectionStatus = false;
+                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
+                        if (optionList.get(EXSPEAKER).isValue()) {
+                            speak("Connection failed", QUEUE_ADD);
+
+                        }
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onResults(Bundle results) {
+                ArrayList<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                voiceInput = result.get(0);
+                Log.d("input", result.get(0));
+                switch (LoggedUserData.language) {
+                    case "english":
+                    case "romanian":
+                        speechInputEn(voiceInput);
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
+                }
+
+            }
+
+            @Override
+            public void onPartialResults(Bundle partialResults) {
+
+            }
+
+            @Override
+            public void onEvent(int eventType, Bundle params) {
+
+            }
+
+        });
+
+    }
+
+    private void invalidVoiceInput() {
+        Toast.makeText(this, "Invalid command!", Toast.LENGTH_SHORT).show();
+        if (optionList.get(EXSPEAKER).isValue()) {
+            speak("Invalid command!", QUEUE_ADD);
+
+        } else {
+            if (optionList.get(EXMIC).isValue()) {
+                getSpeechInput();
+
+            }
+
+        }
+
+    }
+
+    String getPlatformFromVoiceInput(String email) {
+        String platform = null;
+        if (email.endsWith("yahoo")) {
+            platform = "yahoo";
+
+        }
+        if (email.endsWith("gmail")) {
+            platform = "gmail";
+
+        }
+
+        return platform;
+
+    }
+
+    private boolean checkSetEmailCommand(String voiceInput) {
+        String platform;
+        boolean rule;
+
+        rule = voiceInput.startsWith("set email ");
+        if (rule) {
+            String email = voiceInput.substring(9);
+            email = email.replaceAll("\\s+", "");
+            if ((platform = getPlatformFromVoiceInput(email)) == null) {
+                invalidVoiceInput();
+                return false;
+            }
+            email = email.replaceAll(platform, "@" + platform + ".com");
+            emailInput.setText(email);
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Mail was set to " + email + "!", QUEUE_ADD);
+                return true;
+
+            }
+            if (optionList.get(EXMIC).isValue()) {
+                getSpeechInput();
+
+            }
+
+        } else {
+            return false;
+
+        }
+        return true;
+
+    }
+
+    private boolean checkSetPasswordCommand(String voiceInput) {
+        boolean rule;
+        rule = voiceInput.startsWith("set password ");
+        if (rule) {
+            String password = voiceInput.substring(13);
+            password = password.replaceAll("\\s+", "");
+            passwordInput.setText(password);
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Password was set!", QUEUE_ADD);
+                return true;
+
+            }
+            if (optionList.get(EXMIC).isValue()) {
+                getSpeechInput();
+
+            }
+
+
+        } else {
+            return false;
+
+        }
+        return true;
+
+    }
+
+    private boolean checkSetUserNameCommand(String voiceInput){
+        short length = 0;
+        boolean rule = false;
+        if(voiceInput.startsWith("set user name ")){
+            rule = true;
+            length = 14;
+
+        }
+        if(voiceInput.startsWith("set username ")){
+            rule = true;
+            length = 13;
+
+        }
+
+        if(rule){
+            String userName = voiceInput.substring(length);
+            userName = userName.replaceAll("\\s+", "");
+            userNameInput.setText(userName);
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Username was set to " + userName + "!", QUEUE_ADD);
+                return true;
+
+            }
+            if (optionList.get(EXMIC).isValue()) {
+                getSpeechInput();
+
+            }
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    private void speechInputEn(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+
+        if (checkSetEmailCommand(voiceInput)) {
+            return;
+
+        }
+        if(checkSetUserNameCommand(voiceInput)){
+            return;
+
+        }
+
+        if (checkSetPasswordCommand(voiceInput)) {
+            return;
+
+        }
+        switch (voiceInput) {
+            case "create account":
+                createAccountButton.performClick();
+                return;
+            case "back":
+                alreadyHaveAccountTextView.performClick();
+                return;
+            case "describe":
+            case "described":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak("Welcome to Register Activity!", QUEUE_ADD);
+
+                }
+                return;
+            default:
+                invalidVoiceInput();
+
+        }
+
+    }
+
+    private void setConnectionListener() {
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(connectionListenerStatus && currentActivity instanceof RegisterActivity) {
+                    boolean connected = snapshot.getValue(Boolean.class);
+                    if (connected) {
+                        connected();
+                    } else {
+                        lossConnection();
+
+                    }
+                }
+                connectionListenerStatus = true;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(), "Connection listener cancelled!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+    }
+
+    private void connected(){
+        connectionStatus = true;
+        Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
+        speechRecognizer.destroy();
+        if(optionList.get(EXSPEAKER).isValue()){
+            speak("Connected",QUEUE_ADD);
+
+        }else{
+            if(optionList.get(EXMIC).isValue()) {
+                getSpeechInput();
+
+            }
+
+        }
+
+    }
+
+    private void lossConnection(){
+        if(!optionList.get(EXMIC).isValue()) {
+            connectionStatus = false;
+            Toast.makeText(getApplicationContext(),"Connection lost!",Toast.LENGTH_SHORT).show();
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Connection lost!",QUEUE_ADD);
+
+            }
+
+        }
 
     }
 
