@@ -147,6 +147,7 @@ public class HomeFragment extends Fragment {
         map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
         map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
+        map.put("luckModeTime", LoggedUserData.loggedUserLuckModeTime);
         return map;
     }
 
@@ -177,6 +178,7 @@ public class HomeFragment extends Fragment {
                         LoggedUserData.loggedSuperPowerCorrectAnswer = user.getSuperpowerCorrectAnswer();
                         LoggedUserData.loggedGamesWon = user.getGamesWon();
                         LoggedUserData.loggedUserDailyQuestionTime = user.getDailyQuestionTime();
+                        LoggedUserData.loggedUserLuckModeTime = user.getLuckModeTime();
                         Log.e("superpower",LoggedUserData.loggedSuperPowerCorrectAnswer+"");
 
                         if(!LoggedUserData.loggedUserPasswordUpdateVerify)

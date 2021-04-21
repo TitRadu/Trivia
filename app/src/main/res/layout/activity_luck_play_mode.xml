@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".game.LuckPlayModeActivity">
+
+    <TextView
+        android:id="@+id/countTextView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:text="1"
+        android:gravity="center"
+        android:background="@drawable/circle"
+        android:textColor="@color/black"
+        android:textSize="30sp">
+
+    </TextView>
+
+    <LinearLayout
+        android:id="@+id/buttonsLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/firstOptionButton"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:background="@drawable/lucky_buttons_design_corners"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="30sp"
+                android:onClick="setOptionButtonsListener">
+
+            </Button>
+
+            <Button
+                android:id="@+id/secondOptionButton"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:background="@drawable/lucky_buttons_design_corners"
+                android:text="2"
+                android:textColor="@color/black"
+                android:textSize="30sp"
+                android:onClick="setOptionButtonsListener">
+
+            </Button>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/thirdOptionButton"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:background="@drawable/lucky_buttons_design_corners_inverted"
+                android:text="3"
+                android:textColor="@color/black"
+                android:textSize="30sp"
+                android:onClick="setOptionButtonsListener">
+
+            </Button>
+
+            <Button
+                android:id="@+id/fourthOptionButton"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:background="@drawable/lucky_buttons_design_corners_inverted"
+                android:text="4"
+                android:textColor="@color/black"
+                android:textSize="30sp"
+                android:onClick="setOptionButtonsListener">
+
+            </Button>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:gravity="center">
+    <TextView
+        android:id="@+id/fiftyCountTextTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fifty-Fifty"
+        android:textColor="@color/black"
+        android:textSize="20sp">
+
+    </TextView>
+
+        <TextView
+            android:id="@+id/fiftyCountValueTextView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="0"
+            android:gravity="center"
+            android:background="@drawable/circle"
+            android:textColor="@color/black"
+            android:textSize="25sp">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:gravity="center">
+
+    <TextView
+        android:id="@+id/rightCountTextTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Right Answers"
+        android:textColor="@color/black"
+        android:textSize="20sp">
+
+    </TextView>
+
+        <TextView
+            android:id="@+id/rightCountValueTextView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:text="0"
+            android:gravity="center"
+            android:background="@drawable/circle"
+            android:textColor="@color/black"
+            android:textSize="25sp">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/collectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/custom_botton_design_corners"
+        android:text="Collect"
+        android:textColor="@color/black"
+        android:textSize="20sp">
+
+    </Button>
+
+
+</RelativeLayout>

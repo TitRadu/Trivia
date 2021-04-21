@@ -23,6 +23,7 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.GameSettingsActivity;
+import com.example.triviaapp.game.LuckPlayModeActivity;
 import com.example.triviaapp.game.PlayActivity;
 
 import java.util.Date;
@@ -35,7 +36,7 @@ import static com.example.triviaapp.LoggedUserData.SPEAKER;
 import static com.example.triviaapp.LoggedUserData.optionList;
 
 public class NotificationsFragment extends Fragment {
-    Button clasicButton, exitButton, dailyQuestionButton;
+    Button clasicButton, exitButton, dailyQuestionButton, luckModeButton;
     Date date;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
@@ -43,6 +44,7 @@ public class NotificationsFragment extends Fragment {
     private TextView infoTextViewPopUp;
     private Button continueButtonPopUp;
     String dailyQuestionButtonTextString;
+    String luckModeButtonTextString;
     String continueButtonPopUpTextString;
     String infoTextViewPopUpTextString;
 
@@ -55,6 +57,7 @@ public class NotificationsFragment extends Fragment {
         initializeViews(root);
         setOnClickListeners();
         setDailyQuestionButton();
+        setLuckModeButton();
         return root;
 
     }
@@ -62,18 +65,19 @@ public class NotificationsFragment extends Fragment {
     private HashMap<String, Object> populateMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("email", LoggedUserData.loggedUserEmail);
-        map.put("gamesWon",LoggedUserData.loggedGamesWon);
+        map.put("gamesWon", LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
-        map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
-        map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
+        map.put("superpower", LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("superpowerCorrectAnswer", LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
         map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
+        map.put("luckModeTime", LoggedUserData.loggedUserLuckModeTime);
         return map;
     }
 
 
-    private void initializeViews(View root){
+    private void initializeViews(View root) {
         date = new Date();
         clasicButton = root.findViewById(R.id.classicBtn);
         exitButton = root.findViewById(R.id.exitBtn);
@@ -82,14 +86,16 @@ public class NotificationsFragment extends Fragment {
         switchSpeaker = root.findViewById(R.id.sw_speaker);
         switchSpeaker.setChecked(optionList.get(SPEAKER).isValue());
         dailyQuestionButton = root.findViewById(R.id.dailyQuestionButton);
+        luckModeButton = root.findViewById(R.id.luckModeButton);
         chooseLanguage();
 
     }
 
-    private void setViewForEnglishLanguage(){
+    private void setViewForEnglishLanguage() {
         clasicButton.setText(R.string.classicButtonMenuEn);
         switchMicrophone.setText(R.string.microphoneSwitchMenuPlayEn);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuEn);
+        luckModeButtonTextString = getString(R.string.luckModeButtonMenuEn);
         infoTextViewPopUpTextString = getString(R.string.infoTextViewMenuEn);
         continueButtonPopUpTextString = getString(R.string.nextButtonMenuPlayEn);
         exitButton.setText(R.string.exitButtonMenuHelpEn);
@@ -97,18 +103,19 @@ public class NotificationsFragment extends Fragment {
     }
 
 
-    private void setViewForRomanianLanguage(){
+    private void setViewForRomanianLanguage() {
         clasicButton.setText(R.string.classicButtonMenuRou);
         switchMicrophone.setText(R.string.microphoneSwitchMenuPlayRou);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuRou);
+        luckModeButtonTextString = getString(R.string.luckModeButtonMenuRou);
         infoTextViewPopUpTextString = getString(R.string.infoTextViewMenuRou);
         continueButtonPopUpTextString = getString(R.string.nextButtonMenuPlayRou);
         exitButton.setText(R.string.exitButtonMenuHelpRou);
 
     }
 
-    private void chooseLanguage(){
-        switch (LoggedUserData.language){
+    private void chooseLanguage() {
+        switch (LoggedUserData.language) {
             case "english":
                 setViewForEnglishLanguage();
                 break;
@@ -121,43 +128,48 @@ public class NotificationsFragment extends Fragment {
 
     }
 
-    private void setOnClickListeners(){
-        clasicButton.setOnClickListener((v) -> {openGameSettingsActivity();});
-        exitButton.setOnClickListener((v) -> {exit();});
+    private void setOnClickListeners() {
+        clasicButton.setOnClickListener((v) -> {
+            openGameSettingsActivity();
+        });
+        exitButton.setOnClickListener((v) -> {
+            exit();
+        });
         switchMicrophone.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
             optionList.get(MIC).setValue(isChecked);
-            editor.putString(optionList.get(MIC).getName(),String.valueOf(isChecked));
+            editor.putString(optionList.get(MIC).getName(), String.valueOf(isChecked));
             editor.apply();
 
         });
         switchSpeaker.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
             optionList.get(SPEAKER).setValue(isChecked);
-            editor.putString(optionList.get(SPEAKER).getName(),String.valueOf(isChecked));
+            editor.putString(optionList.get(SPEAKER).getName(), String.valueOf(isChecked));
             editor.apply();
 
         });
         dailyQuestionButton.setOnClickListener((v) -> dailyQuestionPopUp());
+        luckModeButton.setOnClickListener((v) -> luckModeActivity());
 
     }
 
-    private void openGameSettingsActivity(){
+    private void openGameSettingsActivity() {
         Intent intent = new Intent(getContext(), GameSettingsActivity.class);
         startActivity(intent);
         getActivity().finishAndRemoveTask();
 
     }
 
-    private void exit(){
+    private void exit() {
         LoggedUserData.loggedUserPasswordUpdateVerify = false;
         getActivity().finishAndRemoveTask();
 
     }
 
-    private void continueToDailyQuestion(){
+    private void continueToDailyQuestion() {
         dialog.dismiss();
-        updateDailyQuestionTime();
+        updateGameModesTime("DailyQuestion");
         LoggedUserData.dailyQuestion = true;
         Intent intent = new Intent(getContext(), PlayActivity.class);
         startActivity(intent);
@@ -165,11 +177,11 @@ public class NotificationsFragment extends Fragment {
 
     }
 
-    private void dailyQuestionPopUp(){
+    private void dailyQuestionPopUp() {
         dialogBuilder = new AlertDialog.Builder(getContext());
-        View questionPopUpView = getLayoutInflater().inflate(R.layout.daily_question_pop_up, null);
+        View questionPopUpView = getLayoutInflater().inflate(R.layout.template_question_pop_up, null);
         xImageViewPopUp = questionPopUpView.findViewById(R.id.xImageViewPopUp);
-        infoTextViewPopUp = questionPopUpView.findViewById(R.id.infoTextViewPopUp);
+        infoTextViewPopUp = questionPopUpView.findViewById(R.id.templateInfoTextViewPopUp);
         continueButtonPopUp = questionPopUpView.findViewById(R.id.continueButtonPopUp);
 
         infoTextViewPopUp.setText(infoTextViewPopUpTextString);
@@ -186,7 +198,15 @@ public class NotificationsFragment extends Fragment {
 
     }
 
-    private void timer(long miliseconds){
+    private void luckModeActivity() {
+        updateGameModesTime("LuckMode");
+        Intent intent = new Intent(getContext(), LuckPlayModeActivity.class);
+        startActivity(intent);
+        getActivity().finishAndRemoveTask();
+
+    }
+
+    private void timer(long miliseconds, String control) {
         final long[] hours = {300000 / 3600000};
         final String[] oneDigitHours = {""};
         final long[] minutes = {(300000 / 60000) % (60)};
@@ -197,62 +217,100 @@ public class NotificationsFragment extends Fragment {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                hours[0] = (millisUntilFinished/3600000);
-                minutes[0] = (millisUntilFinished/60000)%60;
-                seconds[0] = (millisUntilFinished/1000)%60;
-                if(hours[0] < 10){
+                hours[0] = (millisUntilFinished / 3600000);
+                minutes[0] = (millisUntilFinished / 60000) % 60;
+                seconds[0] = (millisUntilFinished / 1000) % 60;
+                if (hours[0] < 10) {
                     oneDigitHours[0] = "0";
 
-                }else{
+                } else {
                     oneDigitHours[0] = EMPTYSTRING;
 
                 }
-                if(minutes[0] < 10){
+                if (minutes[0] < 10) {
                     oneDigitMinutes[0] = "0";
 
-                }else{
+                } else {
                     oneDigitMinutes[0] = EMPTYSTRING;
 
                 }
-                if(seconds[0] < 10){
+                if (seconds[0] < 10) {
                     oneDigitSeconds[0] = "0";
 
-                }else{
+                } else {
                     oneDigitSeconds[0] = EMPTYSTRING;
 
                 }
-                dailyQuestionButton.setText(oneDigitHours[0] + hours[0] + ":" + oneDigitMinutes[0] + minutes[0] + ":" + oneDigitSeconds[0] + seconds[0]);
+                switch (control) {
+                    case "DailyQuestion":
+                        dailyQuestionButton.setText(oneDigitHours[0] + hours[0] + ":" + oneDigitMinutes[0] + minutes[0] + ":" + oneDigitSeconds[0] + seconds[0]);
+                        break;
+                    case "LuckMode":
+                        luckModeButton.setText(oneDigitHours[0] + hours[0] + ":" + oneDigitMinutes[0] + minutes[0] + ":" + oneDigitSeconds[0] + seconds[0]);
+                        break;
+                }
 
             }
 
             @Override
             public void onFinish() {
-                dailyQuestionButton.setText(dailyQuestionButtonTextString);
-                dailyQuestionButton.setEnabled(true);
+                switch (control) {
+                    case "DailyQuestion":
+                        dailyQuestionButton.setText(dailyQuestionButtonTextString);
+                        dailyQuestionButton.setEnabled(true);
+                        break;
+                    case "LuckMode":
+                        luckModeButton.setText(luckModeButtonTextString);
+                        luckModeButton.setEnabled(true);
+                        break;
 
+                }
             }
 
         }.start();
 
     }
 
-    private void updateDailyQuestionTime(){
+    private void updateGameModesTime(String control) {
         date = new Date();
-        LoggedUserData.loggedUserDailyQuestionTime = date.getTime();
+        switch (control){
+            case "DailyQuestion":
+                LoggedUserData.loggedUserDailyQuestionTime = date.getTime();
+                break;
+            case "LuckMode":
+                LoggedUserData.loggedUserLuckModeTime = date.getTime();
+                break;
+
+        }
+
         HashMap<String, Object> map = populateMap();
         FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
 
     }
 
-    private void setDailyQuestionButton(){
-        if(date.getTime() - LoggedUserData.loggedUserDailyQuestionTime < 60000){
+    private void setDailyQuestionButton() {
+        if (date.getTime() - LoggedUserData.loggedUserDailyQuestionTime < 60000) {
             dailyQuestionButton.setEnabled(false);
 
-            timer(60000 - (date.getTime() - LoggedUserData.loggedUserDailyQuestionTime));
+            timer(60000 - (date.getTime() - LoggedUserData.loggedUserDailyQuestionTime),"DailyQuestion");
 
-        }else{
+        } else {
             dailyQuestionButton.setText(dailyQuestionButtonTextString);
             dailyQuestionButton.setEnabled(true);
+
+        }
+
+    }
+
+    private void setLuckModeButton() {
+        if (date.getTime() - LoggedUserData.loggedUserLuckModeTime < 60000) {
+            luckModeButton.setEnabled(false);
+
+            timer(60000 - (date.getTime() - LoggedUserData.loggedUserLuckModeTime),"LuckMode");
+
+        } else {
+            luckModeButton.setText(luckModeButtonTextString);
+            luckModeButton.setEnabled(true);
 
         }
 

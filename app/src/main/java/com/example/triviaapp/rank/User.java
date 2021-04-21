@@ -9,8 +9,9 @@ public class User{
     private int gamesWon;
     private String userName;
     private long dailyQuestionTime;
+    private long luckModeTime;
 
-    public User(String email,int gamesWon ,String password, int points, int superpower,int superpowerCorrectAnswer,String userName, long dailyQuestionTime) {
+    public User(String email,int gamesWon ,String password, int points, int superpower,int superpowerCorrectAnswer,String userName, long dailyQuestionTime, long luckModeTime) {
         this.email = email;
         this.userName = userName;
         this.password = password;
@@ -19,6 +20,7 @@ public class User{
         this.superpowerCorrectAnswer = superpowerCorrectAnswer;
         this.gamesWon = gamesWon;
         this.dailyQuestionTime = dailyQuestionTime;
+        this.luckModeTime = luckModeTime;
 
     }
 
@@ -73,6 +75,10 @@ public class User{
 
     public long getDailyQuestionTime() {
         return dailyQuestionTime;
+    }
+
+    public long getLuckModeTime() {
+        return luckModeTime;
     }
 
     public void setDailyQuestionTime(long dailyQuestionTime) {

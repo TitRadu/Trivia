@@ -18,6 +18,7 @@ public class LoggedUserData{
     public static int loggedUserPlace = 0;
     public static int loggedUserPoints = 0;
     public static long loggedUserDailyQuestionTime = 0;
+    public static long loggedUserLuckModeTime = 0;
     public static boolean loggedUserPasswordUpdateVerify;
     public static List<String> userNameList = null;
     public static List<User> ranksList = null;

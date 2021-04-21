@@ -105,6 +105,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="loudSpeakerSwitchMenuRou">Difuzor</string>
     <string name="dailyQuestionButtonMenuEn">Daily question</string>
     <string name="dailyQuestionButtonMenuRou">Intrebarea zilnica</string>
+    <string name="luckModeButtonMenuEn">Luck Mode</string>
+    <string name="luckModeButtonMenuRou">Noroc</string>
     <string name="infoTextViewMenuEn">Do you want to answer the daily question?</string>
     <string name="infoTextViewMenuRou">Vrei sa raspunzi la intrebarea zilnica?</string>
     <string name="exitButtonMenuHelpEn">Exit</string>
@@ -174,8 +176,19 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="timeExpiredTextPlayEn">Time expired!</string>
     <string name="timeExpiredTextPlayRou">Timpul a expirat!</string>
 
+    <string name="rightAnswerTextLuckEn">Right Answers</string>
+    <string name="rightAnswerTextLuckRou">Raspunsuri corecte</string>
+    <string name="collectQuestionTextLuckEn">Do you want to collect what you obtained until now?</string>
+    <string name="collectQuestionTextLuckRou">Vrei sa colectezi ce ai obtinut pana acum?</string>
+    <string name="lostPrizeQuestionTextLuckEn">You lost the prize!</string>
+    <string name="lostPrizeQuestionTextLuckRou">Ai pierdut premiul!</string>
+    <string name="collectButtonTextLuckEn">Collect</string>
+    <string name="collectButtonTextLuckRou">Colecteaza</string>
+    <string name="exitButtonTextLuckEn">Close</string>
+    <string name="exitButtonTextLuckRou">Inchide</string>
+
+
     <string name="navigationDrawerOpen">"Open navigation drawer!"</string>
     <string name="navigationDrawerClose">"Close navigation drawer\n "</string>
-
 
 </resources>

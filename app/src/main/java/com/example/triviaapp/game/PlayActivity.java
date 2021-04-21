@@ -880,6 +880,7 @@ public class PlayActivity extends AppCompatActivity {
         map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
         map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
+        map.put("luckModeTime", LoggedUserData.loggedUserLuckModeTime);
     }
 
     private void generateRandomPrizeForDailyQuestion(){

@@ -18,7 +18,7 @@
     </ImageView>
 
     <ImageView
-        android:id="@+id/questionImageViewPopUp"
+        android:id="@+id/templateImageViewPopUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/xImageViewPopUp"
@@ -28,11 +28,11 @@
     </ImageView>
 
     <TextView
-        android:id="@+id/infoTextViewPopUp"
+        android:id="@+id/templateInfoTextViewPopUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:layout_below="@id/questionImageViewPopUp"
+        android:layout_below="@id/templateImageViewPopUp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:text="Vrei sa raspunzi la intrebarea zilei?"
@@ -43,7 +43,7 @@
         android:id="@+id/continueButtonPopUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/infoTextViewPopUp"
+        android:layout_below="@id/templateInfoTextViewPopUp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
