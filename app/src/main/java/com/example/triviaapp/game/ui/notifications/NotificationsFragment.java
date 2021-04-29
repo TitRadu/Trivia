@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
+import com.example.triviaapp.game.GameActivity;
 import com.example.triviaapp.game.GameSettingsActivity;
 import com.example.triviaapp.game.LuckPlayModeActivity;
 import com.example.triviaapp.game.PlayActivity;
@@ -38,18 +39,15 @@ import static com.example.triviaapp.LoggedUserData.optionList;
 public class NotificationsFragment extends Fragment {
     Button clasicButton, exitButton, dailyQuestionButton, luckModeButton;
     Date date;
-    private AlertDialog.Builder dialogBuilder;
-    private AlertDialog dialog;
-    private ImageView xImageViewPopUp;
-    private TextView infoTextViewPopUp;
-    private Button continueButtonPopUp;
+
     String dailyQuestionButtonTextString;
     String luckModeButtonTextString;
-    String continueButtonPopUpTextString;
-    String infoTextViewPopUpTextString;
+
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     Switch switchMicrophone, switchSpeaker;
+
+    GameActivity gameActivity;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +76,7 @@ public class NotificationsFragment extends Fragment {
 
 
     private void initializeViews(View root) {
+        gameActivity = (GameActivity)getActivity();
         date = new Date();
         clasicButton = root.findViewById(R.id.classicBtn);
         exitButton = root.findViewById(R.id.exitBtn);
@@ -96,8 +95,6 @@ public class NotificationsFragment extends Fragment {
         switchMicrophone.setText(R.string.microphoneSwitchMenuPlayEn);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuEn);
         luckModeButtonTextString = getString(R.string.luckModeButtonMenuEn);
-        infoTextViewPopUpTextString = getString(R.string.infoTextViewMenuEn);
-        continueButtonPopUpTextString = getString(R.string.nextButtonMenuPlayEn);
         exitButton.setText(R.string.exitButtonMenuHelpEn);
 
     }
@@ -108,8 +105,6 @@ public class NotificationsFragment extends Fragment {
         switchMicrophone.setText(R.string.microphoneSwitchMenuPlayRou);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuRou);
         luckModeButtonTextString = getString(R.string.luckModeButtonMenuRou);
-        infoTextViewPopUpTextString = getString(R.string.infoTextViewMenuRou);
-        continueButtonPopUpTextString = getString(R.string.nextButtonMenuPlayRou);
         exitButton.setText(R.string.exitButtonMenuHelpRou);
 
     }
@@ -130,10 +125,12 @@ public class NotificationsFragment extends Fragment {
 
     private void setOnClickListeners() {
         clasicButton.setOnClickListener((v) -> {
-            openGameSettingsActivity();
+            gameActivity.openGameSettingsActivity();
+
         });
         exitButton.setOnClickListener((v) -> {
             exit();
+
         });
         switchMicrophone.setOnCheckedChangeListener((buttonView, isChecked) -> {
             SharedPreferences.Editor editor = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
@@ -149,15 +146,8 @@ public class NotificationsFragment extends Fragment {
             editor.apply();
 
         });
-        dailyQuestionButton.setOnClickListener((v) -> dailyQuestionPopUp());
-        luckModeButton.setOnClickListener((v) -> luckModeActivity());
-
-    }
-
-    private void openGameSettingsActivity() {
-        Intent intent = new Intent(getContext(), GameSettingsActivity.class);
-        startActivity(intent);
-        getActivity().finishAndRemoveTask();
+        dailyQuestionButton.setOnClickListener((v) -> gameActivity.dailyQuestionPopUp());
+        luckModeButton.setOnClickListener((v) -> gameActivity.luckModeActivity());
 
     }
 
@@ -167,44 +157,7 @@ public class NotificationsFragment extends Fragment {
 
     }
 
-    private void continueToDailyQuestion() {
-        dialog.dismiss();
-        updateGameModesTime("DailyQuestion");
-        LoggedUserData.dailyQuestion = true;
-        Intent intent = new Intent(getContext(), PlayActivity.class);
-        startActivity(intent);
-        getActivity().finishAndRemoveTask();
 
-    }
-
-    private void dailyQuestionPopUp() {
-        dialogBuilder = new AlertDialog.Builder(getContext());
-        View questionPopUpView = getLayoutInflater().inflate(R.layout.template_question_pop_up, null);
-        xImageViewPopUp = questionPopUpView.findViewById(R.id.xImageViewPopUp);
-        infoTextViewPopUp = questionPopUpView.findViewById(R.id.templateInfoTextViewPopUp);
-        continueButtonPopUp = questionPopUpView.findViewById(R.id.continueButtonPopUp);
-
-        infoTextViewPopUp.setText(infoTextViewPopUpTextString);
-        continueButtonPopUp.setText(continueButtonPopUpTextString);
-
-        dialogBuilder.setView(questionPopUpView);
-        dialogBuilder.setCancelable(false);
-        dialog = dialogBuilder.create();
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-
-        xImageViewPopUp.setOnClickListener((v) -> dialog.dismiss());
-        continueButtonPopUp.setOnClickListener((v) -> continueToDailyQuestion());
-
-    }
-
-    private void luckModeActivity() {
-        updateGameModesTime("LuckMode");
-        Intent intent = new Intent(getContext(), LuckPlayModeActivity.class);
-        startActivity(intent);
-        getActivity().finishAndRemoveTask();
-
-    }
 
     private void timer(long miliseconds, String control) {
         final long[] hours = {300000 / 3600000};
@@ -268,23 +221,6 @@ public class NotificationsFragment extends Fragment {
             }
 
         }.start();
-
-    }
-
-    private void updateGameModesTime(String control) {
-        date = new Date();
-        switch (control){
-            case "DailyQuestion":
-                LoggedUserData.loggedUserDailyQuestionTime = date.getTime();
-                break;
-            case "LuckMode":
-                LoggedUserData.loggedUserLuckModeTime = date.getTime();
-                break;
-
-        }
-
-        HashMap<String, Object> map = populateMap();
-        FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
 
     }
 

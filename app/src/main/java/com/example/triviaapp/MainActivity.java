@@ -115,18 +115,10 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         currentActivity = this;
         if (onResumeFromAnotherActivity) {
+            setTextToSpeechListener("Now, you are in Main Activity!");
             //speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
             chooseLanguage();
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Now, you are in Main Activity!", QUEUE_ADD);
 
-            } else {
-                if (optionList.get(EXMIC).isValue()) {
-                    getSpeechInput("Activity");
-
-                }
-
-            }
         }
 
         onResumeFromAnotherActivity = false;
@@ -235,14 +227,8 @@ public class MainActivity extends AppCompatActivity {
                 chooseOptionsPopUp();
             } else {
                 currentScreen = "Activity";
-                if (!initializeLoggedUser() && optionList.get(EXSPEAKER).isValue()) {
-                    speak("Now, you are in Main Activity!", QUEUE_ADD);
-
-                } else {
-                    if (optionList.get(EXMIC).isValue()) {
-                        getSpeechInput("Activity");
-
-                    }
+                if (!initializeLoggedUser()) {
+                    checkOptions("Now, you are in Main Activity!", "Activity");
 
                 }
 
@@ -255,20 +241,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean inputCheck(String email, String password) {
         if (email.isEmpty()) {
             Toast.makeText(this, emptyMailToast, Toast.LENGTH_SHORT).show();
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Introduce an email!", QUEUE_ADD);
-
-            }
+            checkOptions("Introduce an email!", "Activity");
             return false;
 
         }
 
         if (password.isEmpty()) {
             Toast.makeText(this, emptyPasswordToast, Toast.LENGTH_SHORT).show();
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Introduce a password!",QUEUE_ADD);
-
-            }
+            checkOptions("Introduce a password!", "Activity");
             return false;
 
         }
@@ -287,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void registerActivity(View view) {
         speechRecognizer.destroy();
+        destroySpeaker();
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
         clearInputs();
@@ -308,13 +289,6 @@ public class MainActivity extends AppCompatActivity {
         final String password = passwordInput.getText().toString();
 
         if (!inputCheck(email, password)) {
-            if (!optionList.get(EXSPEAKER).isValue()) {
-                if (optionList.get(EXMIC).isValue()) {
-                    getSpeechInput("Activity");
-
-                }
-
-            }
             return;
 
         }
@@ -333,24 +307,19 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getBaseContext(), wrongDataToast, Toast.LENGTH_SHORT).show();
-                            if (optionList.get(EXSPEAKER).isValue()) {
-                                speak(wrongDataToast, QUEUE_ADD);
-
-                            } else {
-                                if (optionList.get(EXMIC).isValue()) {
-                                    getSpeechInput("Activity");
-                                }
-
-                            }
+                            checkOptions(wrongDataToast, "Activity");
 
                         }
 
                     }
+
                 });
 
     }
 
     private void updateUI() {
+        destroySpeaker();
+        currentActivity = new GameActivity();
         LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
@@ -402,15 +371,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (email.isEmpty()) {
             Toast.makeText(this, emptyMailToast, Toast.LENGTH_SHORT).show();
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak(emptyMailToast, QUEUE_ADD);
-
-            } else {
-                if (optionList.get(EXMIC).isValue()) {
-                    getSpeechInput("Activity");
-                }
-
-            }
+            checkOptions(emptyMailToast, "Activity");
             return;
 
         }
@@ -420,29 +381,11 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), successSendMailToast, Toast.LENGTH_SHORT).show();
-                    if (optionList.get(EXSPEAKER).isValue()) {
-                        speak(successSendMailToast, QUEUE_ADD);
-
-                    } else {
-                        if (optionList.get(EXMIC).isValue()) {
-                            getSpeechInput("Activity");
-
-                        }
-
-                    }
+                    checkOptions(successSendMailToast, "Activity");
 
                 } else {
                     Toast.makeText(getApplicationContext(), wrongMailToast, Toast.LENGTH_SHORT).show();
-                    if (optionList.get(EXSPEAKER).isValue()) {
-                        speak(wrongMailToast, QUEUE_ADD);
-
-                    } else {
-                        if (optionList.get(EXMIC).isValue()) {
-                            getSpeechInput("Activity");
-
-                        }
-
-                    }
+                    checkOptions(wrongMailToast, "Activity");
 
                 }
 
@@ -476,16 +419,7 @@ public class MainActivity extends AppCompatActivity {
                 chooseOptionsPopUp();
             } else {
                 currentScreen = "Activity";
-                if (optionList.get(EXSPEAKER).isValue()) {
-                    speak("Now, you are in Main Activity!", QUEUE_ADD);
-
-                } else {
-                    if (optionList.get(EXMIC).isValue()) {
-                        getSpeechInput("Activity");
-
-                    }
-
-                }
+                checkOptions("Now, you are in Main Activity!", "Activity");
 
             }
 
@@ -588,15 +522,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         dialog.dismiss();
         currentScreen = "Activity";
-        if (optionList.get(EXSPEAKER).isValue()) {
-            speak("Now, you are in Main Activity!",QUEUE_ADD);
-
-        } else {
-            if (optionList.get(EXMIC).isValue()) {
-                getSpeechInput("Activity");
-            }
-
-        }
+        checkOptions("Now, you are in Main Activity!", "Activity");
 
     }
 
@@ -622,7 +548,7 @@ public class MainActivity extends AppCompatActivity {
                 speak("Speaker option was selected!", QUEUE_ADD);
 
             } else {
-                speak("Speaker option was deselected!",QUEUE_ADD);
+                speak("Speaker option was deselected!", QUEUE_ADD);
 
             }
             SharedPreferences.Editor editor = prefs.edit();
@@ -696,7 +622,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void verifyTextToSpeechListenerStatus(int status){
+    private void verifyTextToSpeechListenerStatus(int status) {
         if (status == TextToSpeech.SUCCESS) {
             setProgressListener();
             int result = textToSpeech.setLanguage(selectedLanguage);
@@ -719,6 +645,16 @@ public class MainActivity extends AppCompatActivity {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
             setActivityStartPopUp();
+            setConnectionListener();
+
+        });
+
+    }
+
+    private void setTextToSpeechListener(String feedback) {
+        textToSpeech = new TextToSpeech(this, status -> {
+            verifyTextToSpeechListenerStatus(status);
+            checkOptions("Now, you are in Main Activity!", "Activity");
             setConnectionListener();
 
         });
@@ -818,7 +754,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (error == SpeechRecognizer.ERROR_NETWORK) {
                     speechRecognizer.destroy();
-                    if(connectionStatus) {
+                    if (connectionStatus) {
                         connectionStatus = false;
                         Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
                         if (optionList.get(EXSPEAKER).isValue()) {
@@ -916,16 +852,7 @@ public class MainActivity extends AppCompatActivity {
                 speak("Invalid command!", QUEUE_ADD);
                 break;
             case "Activity":
-                if (optionList.get(EXSPEAKER).isValue()) {
-                    speak("Invalid command!", QUEUE_ADD);
-
-                } else {
-                    if (optionList.get(EXMIC).isValue()) {
-                        getSpeechInput(currentScreen);
-
-                    }
-
-                }
+                checkOptions("Invalid command!", currentScreen);
                 break;
 
         }
@@ -953,23 +880,14 @@ public class MainActivity extends AppCompatActivity {
 
         rule = voiceInput.startsWith("set email ");
         if (rule) {
-            String email = voiceInput.substring(9);
-            email = email.replaceAll("\\s+", "");
+            String email = usefulDataExtract(voiceInput, 10);
             if ((platform = getPlatformFromVoiceInput(email)) == null) {
                 invalidVoiceInput("Activity");
                 return false;
             }
             email = email.replaceAll(platform, "@" + platform + ".com");
             emailInput.setText(email);
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Mail was set to " + email + "!", QUEUE_ADD);
-                return true;
-
-            }
-            if (optionList.get(EXMIC).isValue()) {
-                getSpeechInput("Activity");
-
-            }
+            checkOptions("Mail was set to " + email + "!", "Activity");
 
         } else {
             return false;
@@ -983,19 +901,9 @@ public class MainActivity extends AppCompatActivity {
         boolean rule;
         rule = voiceInput.startsWith("set password ");
         if (rule) {
-            String password = voiceInput.substring(13);
-            password = password.replaceAll("\\s+", "");
+            String password = usefulDataExtract(voiceInput, 13);
             passwordInput.setText(password);
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Password was set!", QUEUE_ADD);
-                return true;
-
-            }
-            if (optionList.get(EXMIC).isValue()) {
-                getSpeechInput("Activity");
-
-            }
-
+            checkOptions("Password was set!", "Activity");
 
         } else {
             return false;
@@ -1009,20 +917,19 @@ public class MainActivity extends AppCompatActivity {
         String platform;
         short length = 0;
         boolean rule = false;
-        if(voiceInput.startsWith("send mail ")){
+        if (voiceInput.startsWith("send mail ")) {
             rule = true;
             length = 10;
 
         }
-        if(voiceInput.startsWith("sendmail ")){
+        if (voiceInput.startsWith("sendmail ")) {
             rule = true;
             length = 9;
 
         }
 
         if (rule) {
-            String email = voiceInput.substring(length);
-            email = email.replaceAll("\\s+", "");
+            String email = usefulDataExtract(voiceInput, length);
             if ((platform = getPlatformFromVoiceInput(email)) == null) {
                 invalidVoiceInput("Activity");
                 return false;
@@ -1036,6 +943,14 @@ public class MainActivity extends AppCompatActivity {
 
         }
         return true;
+
+    }
+
+    private String usefulDataExtract(String voiceInput, int length) {
+        String usefulData = voiceInput.substring(length);
+        usefulData = usefulData.replaceAll("\\s+", "");
+        return usefulData;
+
 
     }
 
@@ -1080,7 +995,8 @@ public class MainActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(currentActivity instanceof MainActivity) {
+                if (textToSpeech != null) {
+                    Log.d("Main","connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();
@@ -1102,9 +1018,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void connected(){
+    private void connected() {
         connectionStatus = true;
-        Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         switch (currentScreen) {
             case "Nothing":
@@ -1112,27 +1028,19 @@ public class MainActivity extends AppCompatActivity {
                 speak("Connected", QUEUE_ADD);
                 break;
             case "Activity":
-                if(optionList.get(EXSPEAKER).isValue()){
-                    speak("Connected",QUEUE_ADD);
-
-                }else{
-                    if(optionList.get(EXMIC).isValue()) {
-                        getSpeechInput(currentScreen);
-                    }
-
-                }
+                checkOptions("Connected", currentScreen);
                 break;
             default:
                 break;
-        }
 
+        }
 
     }
 
-    private void lossConnection(){
-        if(!optionList.get(EXMIC).isValue()) {
+    private void lossConnection() {
+        if (!optionList.get(EXMIC).isValue()) {
             connectionStatus = false;
-            Toast.makeText(getApplicationContext(),"Connection lost!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Connection lost!", Toast.LENGTH_SHORT).show();
             switch (currentScreen) {
                 case "Nothing":
                 case "PopUp":
@@ -1140,12 +1048,26 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case "Activity":
                     if (optionList.get(EXSPEAKER).isValue()) {
-                        speak("Connection lost!",QUEUE_ADD);
+                        speak("Connection lost!", QUEUE_ADD);
 
                     }
                     break;
                 default:
                     break;
+            }
+
+        }
+
+    }
+
+    private void checkOptions(String feedback, String screen) {
+        if (optionList.get(EXSPEAKER).isValue()) {
+            speak(feedback, QUEUE_ADD);
+
+        } else {
+            if (optionList.get(EXMIC).isValue()) {
+                getSpeechInput(screen);
+
             }
 
         }

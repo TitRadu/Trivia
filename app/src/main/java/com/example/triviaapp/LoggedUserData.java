@@ -1,5 +1,7 @@
 package com.example.triviaapp;
 
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 
@@ -44,5 +46,7 @@ public class LoggedUserData{
     public static boolean connectionStatus = false;
 
     public static AppCompatActivity currentActivity;
+
+    //public static View root;
 
 }

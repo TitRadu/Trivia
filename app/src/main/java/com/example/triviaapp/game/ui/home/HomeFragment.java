@@ -22,6 +22,7 @@ import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.EditDataActivity;
+import com.example.triviaapp.game.GameActivity;
 import com.example.triviaapp.game.PlayActivity;
 import com.example.triviaapp.rank.User;
 import com.example.triviaapp.rank.RankSorter;
@@ -48,6 +49,8 @@ public class HomeFragment extends Fragment {
     String autoLogOutToast;
     Date date;
 
+    GameActivity gameActivity;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -63,6 +66,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initialize(){
+        gameActivity = (GameActivity)getActivity();
         firebaseAuth = FirebaseAuth.getInstance();
         date = new Date();
         switch (LoggedUserData.language){
@@ -153,7 +157,7 @@ public class HomeFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     private void setOnClickListeners() {
-        editActivityButton.setOnClickListener((v) -> EditDataActivity());
+        editActivityButton.setOnClickListener((v) -> gameActivity.editDataActivity());
 
     }
 
@@ -223,13 +227,5 @@ public class HomeFragment extends Fragment {
         });
 
     }
-
-    private void EditDataActivity(){
-        Intent intent = new Intent(getContext(), EditDataActivity.class);
-        startActivity(intent);
-        getActivity().finishAndRemoveTask();
-
-    }
-
 
 }
