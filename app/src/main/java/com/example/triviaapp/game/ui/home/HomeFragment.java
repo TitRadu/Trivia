@@ -86,6 +86,7 @@ public class HomeFragment extends Fragment {
     private void verifyTime(){
         if(date.getTime() -  LoggedUserData.millis >= 300000)
         {
+            LoggedUserData.onResumeFromAnotherActivity = true;
             Toast.makeText(getContext(), autoLogOutToast,Toast.LENGTH_SHORT).show();
             LoggedUserData.millis = date.getTime();
             SharedPreferences prefs = getContext().getSharedPreferences("preferences.txt", MODE_PRIVATE);

@@ -155,7 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (email.isEmpty()) {
             Toast.makeText(this, emptyEmailToast, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Introduce an email!", QUEUE_ADD);
+                checkOptions("Introduce an email!");
 
             }
             return false;
@@ -165,7 +165,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (userName.isEmpty()) {
             Toast.makeText(this, emptyUserNameToast, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Introduce an username!", QUEUE_ADD);
+                checkOptions("Introduce an username!");
 
             }
             return false;
@@ -175,7 +175,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (password.isEmpty()) {
             Toast.makeText(this, emptyPasswordToast, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Introduce a password!", QUEUE_ADD);
+                checkOptions("Introduce a password!");
 
             }
             return false;
@@ -185,7 +185,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (password.length() < 6) {
             Toast.makeText(this, shortPasswordToast, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Password must contain minimum 6 characters!", QUEUE_ADD);
+                checkOptions("Password must contain minimum 6 characters!");
 
             }
             return false;
@@ -208,15 +208,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (LoggedUserData.userNameList.contains(userName)) {
             Toast.makeText(getBaseContext(), existUserNameToast, Toast.LENGTH_SHORT).show();
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Username exists!", QUEUE_ADD);
-
-            } else {
-                if (optionList.get(EXMIC).isValue()) {
-                    getSpeechInput();
-                }
-
-            }
+            checkOptions("Username exists!");
             return;
 
         }
@@ -299,7 +291,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            speak("Welcome to Register Activity!", QUEUE_ADD);
+            checkOptions("Welcome to Register Activity!");
             setConnectionListener();
 
         });
@@ -436,16 +428,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void invalidVoiceInput() {
         Toast.makeText(this, "Invalid command!", Toast.LENGTH_SHORT).show();
-        if (optionList.get(EXSPEAKER).isValue()) {
-            speak("Invalid command!", QUEUE_ADD);
-
-        } else {
-            if (optionList.get(EXMIC).isValue()) {
-                getSpeechInput();
-
-            }
-
-        }
+        checkOptions("Invalid command!");
 
     }
 
@@ -470,29 +453,18 @@ public class RegisterActivity extends AppCompatActivity {
 
         rule = voiceInput.startsWith("set email ");
         if (rule) {
-            String email = voiceInput.substring(9);
-            email = email.replaceAll("\\s+", "");
+            String email = usefulDataExtract(voiceInput, 9);
             if ((platform = getPlatformFromVoiceInput(email)) == null) {
                 invalidVoiceInput();
                 return false;
             }
             email = email.replaceAll(platform, "@" + platform + ".com");
             emailInput.setText(email);
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Mail was set to " + email + "!", QUEUE_ADD);
-                return true;
-
-            }
-            if (optionList.get(EXMIC).isValue()) {
-                getSpeechInput();
-
-            }
-
-        } else {
-            return false;
+            checkOptions("Mail was set to " + email + "!");
+            return true;
 
         }
-        return true;
+        return false;
 
     }
 
@@ -500,25 +472,12 @@ public class RegisterActivity extends AppCompatActivity {
         boolean rule;
         rule = voiceInput.startsWith("set password ");
         if (rule) {
-            String password = voiceInput.substring(13);
-            password = password.replaceAll("\\s+", "");
+            String password = usefulDataExtract(voiceInput, 13);
             passwordInput.setText(password);
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Password was set!", QUEUE_ADD);
-                return true;
-
-            }
-            if (optionList.get(EXMIC).isValue()) {
-                getSpeechInput();
-
-            }
-
-
-        } else {
-            return false;
-
+            checkOptions("Password was set!");
+            return true;
         }
-        return true;
+        return false;
 
     }
 
@@ -537,23 +496,21 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if(rule){
-            String userName = voiceInput.substring(length);
-            userName = userName.replaceAll("\\s+", "");
+            String userName = usefulDataExtract(voiceInput, length);
             userNameInput.setText(userName);
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Username was set to " + userName + "!", QUEUE_ADD);
-                return true;
-
-            }
-            if (optionList.get(EXMIC).isValue()) {
-                getSpeechInput();
-
-            }
+            checkOptions("Username was set to " + userName + "!");
             return true;
 
         }
-
         return false;
+
+    }
+
+    private String usefulDataExtract(String voiceInput, int length) {
+        String usefulData = voiceInput.substring(length);
+        usefulData = usefulData.replaceAll("\\s", "");
+        return usefulData;
+
 
     }
 
@@ -624,16 +581,7 @@ public class RegisterActivity extends AppCompatActivity {
         connectionStatus = true;
         Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
-        if(optionList.get(EXSPEAKER).isValue()){
-            speak("Connected",QUEUE_ADD);
-
-        }else{
-            if(optionList.get(EXMIC).isValue()) {
-                getSpeechInput();
-
-            }
-
-        }
+        checkOptions("Connected");
 
     }
 
@@ -649,5 +597,20 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
     }
+
+    private void checkOptions(String feedback) {
+        if (optionList.get(EXSPEAKER).isValue()) {
+            speak(feedback, QUEUE_ADD);
+
+        } else {
+            if (optionList.get(EXMIC).isValue()) {
+                getSpeechInput();
+
+            }
+
+        }
+
+    }
+
 
 }

@@ -655,7 +655,6 @@ public class MainActivity extends AppCompatActivity {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
             checkOptions("Now, you are in Main Activity!", "Activity");
-            setConnectionListener();
 
         });
 

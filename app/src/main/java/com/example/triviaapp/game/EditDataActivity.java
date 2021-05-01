@@ -731,7 +731,7 @@ public class EditDataActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (connectionListenerStatus && currentActivity instanceof EditDataActivity) {
+                if (connectionListenerStatus && currentActivity instanceof EditDataActivity && textToSpeech != null) {
                     Log.d("EditData","connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
