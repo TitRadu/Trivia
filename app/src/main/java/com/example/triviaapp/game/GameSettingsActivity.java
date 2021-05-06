@@ -1,5 +1,6 @@
 package com.example.triviaapp.game;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,10 +19,15 @@ import android.widget.Toast;
 
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static android.speech.tts.TextToSpeech.QUEUE_ADD;
+import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.LoggedUserData.*;
 
 public class GameSettingsActivity extends AppCompatActivity {
@@ -38,13 +46,25 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     boolean currentState;
 
+    private TextToSpeech textToSpeech;
+    private boolean connectionListenerStatus = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_settings);
+        initialize();
         initializeViews();
         switchesListeners();
+
+    }
+
+    private void initialize() {
+        currentActivity = this;
+        speechInitialize();
+        setTextToSpeechListener();
 
     }
 
@@ -59,9 +79,6 @@ public class GameSettingsActivity extends AppCompatActivity {
         othersCategorySwitch.setChecked(optionList.get(OTHERS).isValue());
         playButton = findViewById(R.id.playBtn);
         chooseLanguage();
-        if(optionList.get(MIC).isValue()) {
-            speechInitialize();
-        }
 
     }
 
@@ -113,27 +130,43 @@ public class GameSettingsActivity extends AppCompatActivity {
     private void switchesListeners(){
         sportCategorySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             switchListenerTemplate(SPORT, isChecked);
+            audioFeedbackForSwitchChanges(sportCategorySwitch);
 
         });
 
         geographyCategorySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             switchListenerTemplate(GEO, isChecked);
+            audioFeedbackForSwitchChanges(geographyCategorySwitch);
 
         });
 
         mathsCategorySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             switchListenerTemplate(MATHS, isChecked);
+            audioFeedbackForSwitchChanges(mathsCategorySwitch);
 
         });
 
         othersCategorySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             switchListenerTemplate(OTHERS, isChecked);
+            audioFeedbackForSwitchChanges(othersCategorySwitch);
 
         });
 
     }
 
+    private void audioFeedbackForSwitchChanges(Switch s){
+        currentState = s.isChecked();
+        if(currentState) {
+            checkOptions(s.getText() + " category selected!");
+        }else{
+            checkOptions(s.getText() + " category deselected!");
+
+        }
+
+    }
+
     public void openPlayActivity(View view){
+        speechRecognizer.destroy();
         if(!optionList.get(SPORT).isValue() && !optionList.get(GEO).isValue() && !optionList.get(MATHS).isValue() && !optionList.get(OTHERS).isValue()){
             Toast.makeText(getBaseContext(),oneCategoryToast,Toast.LENGTH_SHORT).show();
             if(optionList.get(MIC).isValue()) {
@@ -149,16 +182,109 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     }
 
+    private void destroySpeaker() {
+        if (textToSpeech != null) {
+            textToSpeech.stop();
+            textToSpeech = null;
+
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        destroySpeaker();
+        super.onDestroy();
+
+    }
+
+    private void verifyTextToSpeechListenerStatus(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            setProgressListener();
+            int result = textToSpeech.setLanguage(Locale.ENGLISH);
+            textToSpeech.setPitch(1);
+            textToSpeech.setSpeechRate(0.75f);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Toast.makeText(getBaseContext(), "Language not supported!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        } else {
+            Toast.makeText(getBaseContext(), "Initialization failed!", Toast.LENGTH_SHORT).show();
+
+        }
+
+    }
+
+
+    private void setTextToSpeechListener() {
+        textToSpeech = new TextToSpeech(this, status -> {
+            verifyTextToSpeechListenerStatus(status);
+            checkOptions("Welcome to Game Settings!");
+            setConnectionListener();
+
+        });
+
+    }
+
+    private void setProgressListener() {
+        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+
+
+            }
+
+            @Override
+            public void onDone(String utteranceId) {
+                speechRecognizer.destroy();
+                Runnable runnable = () -> {
+                    if (optionList.get(EXMIC).isValue() || optionList.get(MIC).isValue()) {
+                        getSpeechInput();
+
+                    }
+
+                };
+
+                runOnUiThread(runnable);
+
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+
+            }
+
+            @Override
+            public void onStop(String utteranceId, boolean interrupted) {
+
+            }
+
+        });
+
+    }
+
+    private void speak(String text, int queueMode) {
+        if (textToSpeech == null) {
+            Log.d("GameSettings", "NULL SPEAK OBJECT");
+
+        }
+            textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+
+    }
+
+
+
     private void speechInitialize(){
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, selectedLanguage);
-        getSpeechInput();
 
     }
 
     private void getSpeechInput() {
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechRecognizer.startListening(speechIntent);
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
@@ -194,13 +320,27 @@ public class GameSettingsActivity extends AppCompatActivity {
 
                 }
 
+                if (error == SpeechRecognizer.ERROR_NETWORK) {
+                    speechRecognizer.destroy();
+                    if (connectionStatus) {
+                        connectionStatus = false;
+                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
+                        if (optionList.get(EXSPEAKER).isValue()) {
+                            speak("Connection failed", QUEUE_ADD);
+
+                        }
+
+                    }
+
+                }
+
             }
 
             @Override
             public void onResults(Bundle results) {
                 ArrayList<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 String response = result.get(0);
-                Log.d("speech",response);
+                Log.d("GameSettings",response);
                 switch (LoggedUserData.language){
                     case "english":
                         afterSpeechInputEn(response);
@@ -229,11 +369,10 @@ public class GameSettingsActivity extends AppCompatActivity {
     }
 
     private void changeSwitchOption(Switch s){
+        speechRecognizer.destroy();
         currentState = s.isChecked();
         currentState = !currentState;
         s.setChecked(currentState);
-        speechRecognizer.destroy();
-        getSpeechInput();
 
     }
 
@@ -258,11 +397,12 @@ public class GameSettingsActivity extends AppCompatActivity {
             case "Play":
             case "play":
                 playButton.performClick();
-                speechRecognizer.destroy();
                 break;
-            default:Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
-                speechRecognizer.destroy();
-                getSpeechInput();
+            case "Status":
+            case "status":
+                optionsStatus();
+                break;
+            default:invalidVoiceInput();
 
         }
 
@@ -288,12 +428,116 @@ public class GameSettingsActivity extends AppCompatActivity {
                 break;
             case "Joacă":
             case "joacă":
-                speechRecognizer.destroy();
                 playButton.performClick();
                 break;
-            default:Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
-                speechRecognizer.destroy();
+            case "Status":
+            case "status":
+                optionsStatus();
+                break;
+            default:invalidVoiceInput();
+
+        }
+
+    }
+
+    private void optionsStatus(){
+        String sportSwitchStatus = setOptionText(sportCategorySwitch);
+        String geographySwitchStatus = setOptionText(geographyCategorySwitch);
+        String mathsSwitchStatus = setOptionText(mathsCategorySwitch);
+        String othersSwitchStatus = setOptionText(othersCategorySwitch);
+
+        if(optionList.get(EXSPEAKER).isValue()){
+            speak("Sport Switch:" + sportSwitchStatus, QUEUE_ADD);
+            speak("Geography Switch:" + geographySwitchStatus, QUEUE_ADD);
+            speak("Maths Switch:" + mathsSwitchStatus, QUEUE_ADD);
+            speak("Others Switch:" + othersSwitchStatus, QUEUE_ADD);
+
+        }else {
+            if (optionList.get(EXMIC).isValue()) {
                 getSpeechInput();
+
+            }
+
+        }
+
+    }
+
+    private String setOptionText(Switch s){
+        if(s.isChecked()){
+            return "On";
+
+        }
+
+        return "Off";
+
+    }
+
+    private void setConnectionListener() {
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (connectionListenerStatus && currentActivity instanceof GameActivity) {
+                    Log.d("Luck", "connectionListener");
+                    boolean connected = snapshot.getValue(Boolean.class);
+                    if (connected) {
+                        connected();
+
+                    } else {
+                        lossConnection();
+
+                    }
+                }
+                connectionListenerStatus = true;
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(), "Connection listener cancelled!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+    }
+
+    private void connected() {
+        connectionStatus = true;
+        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        speechRecognizer.destroy();
+        checkOptions("Connected");
+
+    }
+
+    private void lossConnection() {
+        if (!optionList.get(EXMIC).isValue()) {
+            connectionStatus = false;
+            Toast.makeText(getApplicationContext(), "Connection lost!", Toast.LENGTH_SHORT).show();
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Connection lost!", QUEUE_ADD);
+
+            }
+
+        }
+
+    }
+
+
+    private void invalidVoiceInput() {
+        Toast.makeText(this, invalidInputToast, Toast.LENGTH_SHORT).show();
+        checkOptions("Invalid command!");
+
+    }
+
+    private void checkOptions(String feedback) {
+        if (optionList.get(EXSPEAKER).isValue()) {
+            speak(feedback, QUEUE_ADD);
+
+        } else {
+            if (optionList.get(EXMIC).isValue() || optionList.get(MIC).isValue()) {
+                getSpeechInput();
+
+            }
 
         }
 

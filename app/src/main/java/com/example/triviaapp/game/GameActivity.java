@@ -408,7 +408,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
 
     private void speak(String text, int queueMode) {
         if(textToSpeech == null){
-            Log.d("NULL","NULL");
+            Log.d("Game","NULL SPEAK OBJECT");
 
         }
         textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
@@ -554,7 +554,8 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             case "edit":
                 editDataActivity();
                 return;
-            case "clasic mode":
+            case "Classic mode":
+            case "classic mode":
                 openGameSettingsActivity();
                 return;
             case "daily question":
@@ -594,6 +595,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     public void openGameSettingsActivity() {
+        speechRecognizer.destroy();
         Intent intent = new Intent(this, GameSettingsActivity.class);
         startActivity(intent);
         finishAndRemoveTask();
