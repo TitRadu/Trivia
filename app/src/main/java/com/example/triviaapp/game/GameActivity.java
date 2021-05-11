@@ -561,7 +561,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             case "daily question":
                 dailyQuestionPopUp();
                 return;
-            case "luck mode":
+            case "lucky mode":
                 luckModeActivity();
                 return;
             default:invalidVoiceInput("Base");

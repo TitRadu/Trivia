@@ -45,7 +45,10 @@ import java.util.Locale;
 import java.util.Random;
 
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
+import static android.speech.tts.TextToSpeech.QUEUE_FLUSH;
 import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
+import static com.example.triviaapp.LoggedUserData.EXMIC;
+import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.LoggedUserData.MIC;
 import static com.example.triviaapp.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.LoggedUserData.SPEAKER;
@@ -58,9 +61,9 @@ public class PlayActivity extends AppCompatActivity {
 
     public static final int TOTAL_QUESTION_TO_WIN_GAME = 11;
     String userAnswer, correctAnswer, voiceInput = null;
-    Button  nextQuestionButton, tryAgainButton, btn_superpower, btn_RightAnswer;
-    SubmitButton btnA,btnB, btnC, btnD, selectedThroughVoiceOption;
-    TextView question, questionCounterTextView, timerView, totalScoreView, questionScoreView, totalScoreNextView,questionScoreViewScore,totalScoreNextViewPoints;
+    Button nextQuestionButton, tryAgainButton, btn_superpower, btn_RightAnswer;
+    SubmitButton btnA, btnB, btnC, btnD, selectedThroughVoiceOption;
+    TextView question, questionCounterTextView, timerView, totalScoreView, questionScoreView, totalScoreNextView, questionScoreViewScore, totalScoreNextViewPoints;
     Switch microphoneSwitch;
     ProgressBar progressBar;
     MaterialCardView materialCardView;
@@ -73,7 +76,7 @@ public class PlayActivity extends AppCompatActivity {
     HashMap<String, Object> map = new HashMap<>();
     int totalPoints = 0;
     int time = 0;
-    int progressBarPercent=0;
+    int progressBarPercent = 0;
     Intent speechIntent = null;
     SpeechRecognizer speechRecognizer;
     LinearLayout firstLineButtonsLayout, infoLayout;
@@ -82,27 +85,27 @@ public class PlayActivity extends AppCompatActivity {
     String totalScoreTextViewString, questionTextViewString;
     String invalidInputToast;
     String youAnsweredText, timeExpiredText;
-    String remainings,rights;
+    String remainings, rights;
     Locale appLanguage;
+
+    String speakerControl;
+
+    List<Answer> currentAnswers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+        speechInitialize();
         setViews();
-        if(!optionList.get(SPEAKER).isValue()){
-            if(optionList.get(MIC).isValue()) {
-                getSpeechInput();
-            }
-            timer();
-        }
         setListenerForMicrophoneSwitch();
         setBonusButtonsListener();
+
     }
 
     @Override
     protected void onDestroy() {
-        if(textToSpeech != null){
+        if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
 
@@ -111,50 +114,72 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setTextToSpeechListener(){
+    private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            speak(obtainQuestionSpeech(),QUEUE_ADD);
+            speak(obtainQuestionSpeech(), QUEUE_ADD);
 
         });
 
     }
 
     private void verifyTextToSpeechListenerStatus(int status) {
-        if(status == TextToSpeech.SUCCESS){
+        if (status == TextToSpeech.SUCCESS) {
             setProgressListener();
             int result = textToSpeech.setLanguage(appLanguage);
             textToSpeech.setPitch(1);
             textToSpeech.setSpeechRate(0.75f);
 
 
-            if(result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED){
-               Toast.makeText(getBaseContext(), "Language not supported!",Toast.LENGTH_SHORT).show();
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Toast.makeText(getBaseContext(), "Language not supported!", Toast.LENGTH_SHORT).show();
 
             }
 
-        }else{
-            Toast.makeText(getBaseContext(), "Initialization failed!",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getBaseContext(), "Initialization failed!", Toast.LENGTH_SHORT).show();
 
         }
+
     }
 
-    private void setProgressListener(){
+    private void setProgressListener() {
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
             public void onStart(String utteranceId) {
+                speechRecognizer.destroy();
 
             }
 
             @Override
             public void onDone(String utteranceId) {
                 Runnable runnable = () -> {
-                    if(optionList.get(SPEAKER).isValue()){
-                        if(optionList.get(MIC).isValue()) {
-                            getSpeechInput();
+                    if (optionList.get(SPEAKER).isValue() || optionList.get(EXSPEAKER).isValue()) {
+
+                        if (speakerControl.equals("Nothing")) {
+                            if (optionList.get(MIC).isValue() || optionList.get(EXMIC).isValue()) {
+                                Log.d("MIC", "NOTHING");
+                                getSpeechInput();
+                            }
+
                         }
-                        timer();
+                        if (speakerControl.equals("Question")) {
+                            timer();
+                            if (optionList.get(MIC).isValue() || optionList.get(EXMIC).isValue()) {
+                                Log.d("MIC", "QUESTION");
+                                getSpeechInput();
+                            }
+                            speakerControl = "Nothing";
+
+                        }
+                        if (speakerControl.equals("Delay")) {
+                            delay(3000);
+                            speakerControl = "Nothing";
+
+                        }
+
                     }
+
                 };
 
                 runOnUiThread(runnable);
@@ -165,59 +190,78 @@ public class PlayActivity extends AppCompatActivity {
             public void onError(String utteranceId) {
 
             }
+
         });
 
     }
 
-    private void speak(String text, int queueMode){
-        textToSpeech.speak(text,queueMode,null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+    private void speak(String text, int queueMode) {
+        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
 
     }
 
     private String obtainQuestionSpeech() {
         String text = currentQuestion.getQuestion();
-        text = text + "\n" + btnA.getText();
-        text = text + "\n" + btnB.getText();
-        text = text + "\n" + btnC.getText();
-        text = text + "\n" + btnD.getText();
+        text = text + ". " + btnA.getText();
+        text = text + ". " + btnB.getText();
+        text = text + ". " + btnC.getText();
+        text = text + ". " + btnD.getText();
         return text;
     }
 
     @SuppressLint("SetTextI18n")
-    private void setBonusButtonsListener(){
+    private void setBonusButtonsListener() {
         btn_superpower.setOnClickListener(v -> {
+            speechRecognizer.destroy();
             LoggedUserData.loggedSuperPowerFiftyFifty--;
-            setAnswers(answers,true);
+            setAnswersAfterFiftyFifty();
             btn_superpower.setEnabled(false);
-            btn_superpower.setText("50 - 50 \n "+LoggedUserData.loggedSuperPowerFiftyFifty + " " + remainings);
+            btn_superpower.setText("50 - 50 \n " + LoggedUserData.loggedSuperPowerFiftyFifty + " " + remainings);
         });
         btn_RightAnswer.setOnClickListener(v -> {
+            speechRecognizer.destroy();
             LoggedUserData.loggedSuperPowerCorrectAnswer--;
             clickCorrectAnswer();
             btn_RightAnswer.setEnabled(false);
-            btn_RightAnswer.setText(rights+LoggedUserData.loggedSuperPowerCorrectAnswer + " " + remainings);
+            btn_RightAnswer.setText(rights + LoggedUserData.loggedSuperPowerCorrectAnswer + " " + remainings);
         });
     }
 
     private void clickCorrectAnswer() {
-        switch (correctAnswer){
-            case "A":clicked(btnA);break;
-            case "B":clicked(btnB);break;
-            case "C":clicked(btnC);break;
-            case "D":clicked(btnD);break;
+        switch (correctAnswer) {
+            case "A":
+                clicked(btnA);
+                break;
+            case "B":
+                clicked(btnB);
+                break;
+            case "C":
+                clicked(btnC);
+                break;
+            case "D":
+                clicked(btnD);
+                break;
         }
     }
 
-    private void setButtonsProprieties() {
+    private void setViewsProprieties() {
+        setVisibilityForViews();
         setEnabledForAnswersButtons(false);
         setVisibilityForBonusButtons();
-        if(!dailyQuestion) {
-            setEnabledFalseForBonusButtons();
+        setEnabledFalseForBonusButtons();
 
-        }
     }
 
-    public void setViews(){
+    private void setVisibilityForViews() {
+        if (LoggedUserData.dailyQuestion) {
+            questionCounterTextView.setVisibility(View.INVISIBLE);
+            totalScoreView.setVisibility(View.INVISIBLE);
+
+        }
+
+    }
+
+    public void setViews() {
         btn_RightAnswer = findViewById(R.id.btn_superPowerRightAnswer);
         btn_superpower = findViewById(R.id.btn_superPower);
         questionScoreViewScore = findViewById(R.id.questionScoreViewPoints);
@@ -227,7 +271,6 @@ public class PlayActivity extends AppCompatActivity {
         btnB = findViewById(R.id.varB);
         btnC = findViewById(R.id.varC);
         btnD = findViewById(R.id.varD);
-        setButtonsProprieties();
         question = findViewById(R.id.question);
         questionCounterTextView = findViewById(R.id.questionCounter);
         timerView = findViewById(R.id.timerView);
@@ -239,11 +282,6 @@ public class PlayActivity extends AppCompatActivity {
         answers = new ArrayList<>();
         firstLineButtonsLayout = findViewById(R.id.firstLineButtonsLayout);
         infoLayout = findViewById(R.id.infoLayout);
-        if(LoggedUserData.dailyQuestion){
-            questionCounterTextView.setVisibility(View.INVISIBLE);
-            totalScoreView.setVisibility(View.INVISIBLE);
-
-        }
         nextQuestionButton = findViewById(R.id.nextQuestionButton);
         tryAgainButton = findViewById(R.id.tryAgainButton);
         questionScoreView = findViewById(R.id.questionScoreView);
@@ -252,16 +290,14 @@ public class PlayActivity extends AppCompatActivity {
         materialCardView = findViewById(R.id.materialCardView);
         microphoneSwitch = findViewById(R.id.sw_microphonePlay);
         microphoneSwitch.setChecked(optionList.get(MIC).isValue());
+        speakerControl = "Nothing";
+        setViewsProprieties();
         chooseLanguage();
-        if(optionList.get(MIC).isValue()) {
-            speechInitialize();
-        }
-
         setTextViewWithQuestionAndAnswers(false);
 
     }
 
-    private void setViewForEnglishLanguage(){
+    private void setViewForEnglishLanguage() {
         microphoneSwitch.setText(R.string.microphoneSwitchMenuPlayEn);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayEn);
         questionTextViewString = getString(R.string.questionTextViewPlayEn);
@@ -278,7 +314,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setViewForRomanianLanguage(){
+    private void setViewForRomanianLanguage() {
         microphoneSwitch.setText(R.string.microphoneSwitchMenuPlayRou);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayRou);
         questionTextViewString = getString(R.string.questionTextViewPlayRou);
@@ -297,12 +333,12 @@ public class PlayActivity extends AppCompatActivity {
     private void setTextForViewsWithComplexText() {
         totalScoreView.setText(totalScoreTextViewString + "   " + totalPoints);
         questionCounterTextView.setText(questionTextViewString + "   " + questionCounter + " / 10");
-        btn_superpower.setText("50 - 50 \n "+ LoggedUserData.loggedSuperPowerFiftyFifty+" "+ remainings);
-        btn_RightAnswer.setText(rights+LoggedUserData.loggedSuperPowerCorrectAnswer+" "+ remainings);
+        btn_superpower.setText("50 - 50 \n " + LoggedUserData.loggedSuperPowerFiftyFifty + " " + remainings);
+        btn_RightAnswer.setText(rights + LoggedUserData.loggedSuperPowerCorrectAnswer + " " + remainings);
     }
 
-    private void chooseLanguage(){
-        switch (LoggedUserData.language){
+    private void chooseLanguage() {
+        switch (LoggedUserData.language) {
             case "english":
                 setViewForEnglishLanguage();
                 break;
@@ -317,7 +353,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void setVisibilityForBonusButtons() {
-        if(LoggedUserData.dailyQuestion){
+        if (LoggedUserData.dailyQuestion) {
             btn_superpower.setVisibility(View.GONE);
             btn_RightAnswer.setVisibility(View.GONE);
 
@@ -325,54 +361,56 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setEnabledForBonusButtons(){
-        if(LoggedUserData.loggedSuperPowerFiftyFifty>0){
+    private void setEnabledForBonusButtons() {
+        if (LoggedUserData.loggedSuperPowerFiftyFifty > 0) {
             btn_superpower.setEnabled(true);
 
-        }else{
+        } else {
             btn_superpower.setEnabled(false);
             btn_superpower.setTextColor(Color.GRAY);
         }
-        if(LoggedUserData.loggedSuperPowerCorrectAnswer>0){
+        if (LoggedUserData.loggedSuperPowerCorrectAnswer > 0) {
             btn_RightAnswer.setEnabled(true);
 
-        }else{
+        } else {
             btn_RightAnswer.setEnabled(false);
             btn_RightAnswer.setTextColor(Color.GRAY);
         }
     }
 
-    private void updateProgressBar(){
+    private void updateProgressBar() {
         progressBar.setProgress(progressBarPercent);
     }
 
-    private void speechInitialize(){
+    private void speechInitialize() {
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
-        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, appLanguage);
 
     }
 
-    private String getLanguage(String param){
-        if(LoggedUserData.language.equals("english")){
+    private String getLanguage(String param) {
+        if (LoggedUserData.language.equals("english")) {
             return param.concat("En");
-        }else{
+        } else {
             return param;
         }
     }
-    private void readQuestionData(final  FirebaseCallback firebaseCallback){
+
+    private void readQuestionData(final FirebaseCallback firebaseCallback) {
         FirebaseHelper.questionDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String nodeQuestion = getLanguage("question");
-                if(questions.isEmpty()) {
-                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                if (questions.isEmpty()) {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         Question question = new Question(Integer.parseInt(dataSnapshot1.getKey()),
                                 dataSnapshot1.child(nodeQuestion).getValue(String.class),
                                 dataSnapshot1.child("category").getValue(String.class));
 
-                        for(Option o : optionList)
-                            if(o.isValue() && o.getName().equals(question.getCategory()) || LoggedUserData.dailyQuestion) {
+                        for (Option o : optionList)
+                            if (o.isValue() && o.getName().equals(question.getCategory()) || LoggedUserData.dailyQuestion) {
                                 questions.add(question);
                                 break;
 
@@ -384,6 +422,7 @@ public class PlayActivity extends AppCompatActivity {
                 }
 
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -393,13 +432,13 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void readAnswersData(final  FirebaseCallback firebaseCallback){
+    private void readAnswersData(final FirebaseCallback firebaseCallback) {
         FirebaseHelper.answerDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String answerNode=getLanguage("answer");
-                if(answers.isEmpty()) {
-                    for(DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                String answerNode = getLanguage("answer");
+                if (answers.isEmpty()) {
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         Answer a = new Answer
                                 (Integer.parseInt(dataSnapshot1.getKey()),
                                         dataSnapshot.child(String.valueOf(dataSnapshot1.getKey())).child(answerNode).getValue(String.class),
@@ -414,6 +453,7 @@ public class PlayActivity extends AppCompatActivity {
                 }
 
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -423,7 +463,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    public void setTextViewWithQuestionAndAnswers(boolean isFifty){
+    public void setTextViewWithQuestionAndAnswers(boolean isFifty) {
         readQuestionData(new FirebaseCallback() {
             @Override
             public void onCallbackQuestions(List<Question> questions) {
@@ -445,9 +485,17 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
-                setAnswers(answers,isFifty);
-                if(optionList.get(SPEAKER).isValue()) {
+                setAnswers(answers, isFifty);
+                if (optionList.get(SPEAKER).isValue() || optionList.get(EXSPEAKER).isValue()) {
+                    speakerControl = "Question";
                     setTextToSpeechListener();
+
+                }else{
+                    if(optionList.get(MIC).isValue() || optionList.get(EXMIC).isValue()) {
+                        getSpeechInput();
+
+                    }
+                 timer();
 
                 }
 
@@ -470,24 +518,23 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setAnswers(List<Answer> answers,boolean fifty) {
+    private void setAnswers(List<Answer> answers, boolean fifty) {
         setButtonsVisible();
-        List<Answer> currentAnswers = new ArrayList<>();
+        currentAnswers = new ArrayList<>();
         Random rand = new Random();
         List<Integer> randomCurrentAnswersList = new ArrayList<>();
-        List<Integer> randomEliminateList=new ArrayList<>();
         int r;
 
-        while(randomCurrentAnswersList.size() < 4){
+        while (randomCurrentAnswersList.size() < 4) {
             r = rand.nextInt(4);
-            if(!randomCurrentAnswersList.contains(r)){
+            if (!randomCurrentAnswersList.contains(r)) {
                 randomCurrentAnswersList.add(r);
 
             }
 
         }
 
-        if(answers.size() % 4 == 0 &&  answers.size()!=0) {
+        if (answers.size() % 4 == 0 && answers.size() != 0) {
             for (Answer answer : answers) {
                 if (answer.getQuestionId() == currentQuestion.getQuestionID()) {
                     currentAnswers.add(answer);
@@ -496,44 +543,123 @@ public class PlayActivity extends AppCompatActivity {
 
             }
 
-            btnA.setText("A: "+currentAnswers.get(randomCurrentAnswersList.get(0)).getAnswer());
-            btnB.setText("B: "+currentAnswers.get(randomCurrentAnswersList.get(1)).getAnswer());
-            btnC.setText("C: "+currentAnswers.get(randomCurrentAnswersList.get(2)).getAnswer());
-            btnD.setText("D: "+currentAnswers.get(randomCurrentAnswersList.get(3)).getAnswer());
+            btnA.setText("A: " + currentAnswers.get(randomCurrentAnswersList.get(0)).getAnswer());
+            btnB.setText("B: " + currentAnswers.get(randomCurrentAnswersList.get(1)).getAnswer());
+            btnC.setText("C: " + currentAnswers.get(randomCurrentAnswersList.get(2)).getAnswer());
+            btnD.setText("D: " + currentAnswers.get(randomCurrentAnswersList.get(3)).getAnswer());
 
-            int correct = setCorrectAnswer(
-                    currentAnswers.get(randomCurrentAnswersList.get(0)).isCorrect(),
-                    currentAnswers.get(randomCurrentAnswersList.get(1)).isCorrect(),
-                    currentAnswers.get(randomCurrentAnswersList.get(2)).isCorrect(),
-                    currentAnswers.get(randomCurrentAnswersList.get(3)).isCorrect()
-            );
-            if(fifty){
-                generateRandomAnswerForEliminate(rand, randomEliminateList, correct);
-                set2WrongAnswerAsInvisible(randomEliminateList);
-            }
 
         }
+
+        setCorrectAnswer(
+                currentAnswers.get(randomCurrentAnswersList.get(0)).isCorrect(),
+                currentAnswers.get(randomCurrentAnswersList.get(1)).isCorrect(),
+                currentAnswers.get(randomCurrentAnswersList.get(2)).isCorrect(),
+                currentAnswers.get(randomCurrentAnswersList.get(3)).isCorrect()
+        );
+
+    }
+
+    private void setAnswersAfterFiftyFifty() {
+        List<Integer> randomEliminateList = new ArrayList<>();
+
+        int correct = -1;
+        switch (correctAnswer) {
+            case "A":
+                correct = 0;
+                break;
+            case "B":
+                correct = 1;
+                break;
+            case "C":
+                correct = 2;
+                break;
+            case "D":
+                correct = 3;
+                break;
+
+        }
+        generateRandomAnswerForEliminate(randomEliminateList, correct);
+        set2WrongAnswerAsInvisible(randomEliminateList);
+        remainingAnswersFeedback(randomEliminateList);
+
     }
 
     private void set2WrongAnswerAsInvisible(List<Integer> randomEliminateList) {
-        for(Integer i: randomEliminateList){
-            switch (i){
-                case 0:btnA.setVisibility(View.INVISIBLE);break;
-                case 1:btnB.setVisibility(View.INVISIBLE);break;
-                case 2:btnC.setVisibility(View.INVISIBLE);break;
-                case 3:btnD.setVisibility(View.INVISIBLE);break;
+        for (Integer i : randomEliminateList) {
+            switch (i) {
+                case 0:
+                    btnA.setVisibility(View.INVISIBLE);
+                    break;
+                case 1:
+                    btnB.setVisibility(View.INVISIBLE);
+                    break;
+                case 2:
+                    btnC.setVisibility(View.INVISIBLE);
+                    break;
+                case 3:
+                    btnD.setVisibility(View.INVISIBLE);
+                    break;
             }
         }
     }
 
-    private void generateRandomAnswerForEliminate(Random rand, List<Integer> randomEliminateList, int correct) {
+    private void generateRandomAnswerForEliminate(List<Integer> randomEliminateList, int correct) {
+        Random rand = new Random();
         int r;
-        while(randomEliminateList.size()!=2) {
+        while (randomEliminateList.size() != 2) {
             r = rand.nextInt(4);
             if (r != correct && !randomEliminateList.contains(r)) {
                 randomEliminateList.add(r);
             }
         }
+    }
+
+    private void remainingAnswersFeedback(List<Integer> randomEliminateList) {
+        StringBuilder text = new StringBuilder();
+
+        for (int i = 0; i <= 3; i++) {
+            if (!randomEliminateList.contains(i)) {
+                switch (i) {
+                    case 0:
+                        if (text.length() == 0) {
+                            text.append(btnA.getText());
+                        } else {
+                            text.append(". ").append(btnA.getText());
+
+                        }
+                        break;
+                    case 1:
+                        if (text.length() == 0) {
+                            text.append(btnB.getText());
+                        } else {
+                            text.append(". ").append(btnB.getText());
+
+                        }
+                        break;
+                    case 2:
+                        if (text.length() == 0) {
+                            text.append(btnC.getText());
+                        } else {
+                            text.append(". ").append(btnC.getText());
+
+                        }
+                        break;
+                    case 3:
+                        if (text.length() == 0) {
+                            text.append(btnD.getText());
+                        } else {
+                            text.append(". ").append(btnD.getText());
+
+                        }
+                        break;
+                }
+
+            }
+
+        }
+        checkOptions(text.toString());
+
     }
 
     private void setButtonsVisible() {
@@ -544,29 +670,27 @@ public class PlayActivity extends AppCompatActivity {
     }
 
 
-    private int setCorrectAnswer(boolean first,boolean second,boolean third,boolean fourth){
-        if(first){
+    void setCorrectAnswer(boolean first, boolean second, boolean third, boolean fourth) {
+        if (first) {
             correctAnswer = "A";
-            return 0;
+
         }
-        if(second){
+        if (second) {
             correctAnswer = "B";
-            return 1;
+
         }
-        if(third){
+        if (third) {
             correctAnswer = "C";
-            return 2;
+
         }
-        if(fourth){
+        if (fourth) {
             correctAnswer = "D";
 
         }
-        return 3;
+
     }
 
     private void getSpeechInput() {
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-
         speechRecognizer.startListening(speechIntent);
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
@@ -595,7 +719,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onError(int error) {
-                if(error == SpeechRecognizer.ERROR_NO_MATCH) {
+                if (error == SpeechRecognizer.ERROR_NO_MATCH) {
                     speechRecognizer.destroy();
                     getSpeechInput();
 
@@ -607,10 +731,10 @@ public class PlayActivity extends AppCompatActivity {
             public void onResults(Bundle results) {
                 ArrayList<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 voiceInput = result.get(0);
-                Log.d("input",result.get(0));
-                if(nextQuestionButton.getVisibility() == View.GONE) {
+                Log.d("input", result.get(0));
+                if (nextQuestionButton.getVisibility() == View.GONE) {
 
-                    switch (LoggedUserData.language){
+                    switch (LoggedUserData.language) {
                         case "english":
                             afterQuestionSpeechInputEn(voiceInput);
                             break;
@@ -621,8 +745,8 @@ public class PlayActivity extends AppCompatActivity {
                             throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
                     }
 
-                }else{
-                    switch (LoggedUserData.language){
+                } else {
+                    switch (LoggedUserData.language) {
                         case "english":
                             afterNextSpeechInputEn(voiceInput);
                             break;
@@ -651,98 +775,126 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void afterQuestionSpeechInputEn(String voiceInput){
+    private void afterQuestionSpeechInputEn(String voiceInput) {
         switch (voiceInput) {
             case "A":
             case "a":
-                selectedThroughVoiceOption=btnA;
+                selectedThroughVoiceOption = btnA;
                 break;
             case "B":
             case "b":
-                selectedThroughVoiceOption=btnB;
+                selectedThroughVoiceOption = btnB;
                 break;
             case "C":
             case "c":
-                selectedThroughVoiceOption=btnC;
+                selectedThroughVoiceOption = btnC;
                 break;
             case "D":
             case "d":
-                selectedThroughVoiceOption=btnD;
+                selectedThroughVoiceOption = btnD;
                 break;
             case "Fifty fifty":
             case "fifty fifty":
-                if(loggedSuperPowerFiftyFifty > 0){
-                    btn_superpower.performClick();
+                if (!dailyQuestion) {
+                    if (loggedSuperPowerFiftyFifty > 0) {
+                        btn_superpower.performClick();
+
+                    }
+
+                } else {
+                    invalidVoiceInput();
+
                 }
-                speechRecognizer.destroy();
-                getSpeechInput();
                 return;
             case "Right answer":
             case "right answer":
-                case "right Answer":
-                if(loggedSuperPowerCorrectAnswer > 0){
-                    btn_RightAnswer.performClick();
+            case "right Answer":
+                if (!dailyQuestion) {
+                    if (loggedSuperPowerCorrectAnswer > 0) {
+                        btn_RightAnswer.performClick();
+
+                    }
+
+                } else {
+                    invalidVoiceInput();
+
                 }
-                speechRecognizer.destroy();
-                getSpeechInput();
                 return;
             default:
-                Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();
-                getSpeechInput();
+                invalidVoiceInput();
                 return;
 
         }
-        clicked(selectedThroughVoiceOption);
+        if (selectedThroughVoiceOption.getVisibility() == View.VISIBLE) {
+            clicked(selectedThroughVoiceOption);
+        } else {
+            invalidVoiceInput();
+
+        }
 
     }
 
 
-    private void afterQuestionSpeechInputRou(String voiceInput){
+    private void afterQuestionSpeechInputRou(String voiceInput) {
         switch (voiceInput) {
             case "A":
             case "a":
-                selectedThroughVoiceOption=btnA;
+                selectedThroughVoiceOption = btnA;
                 break;
             case "B":
             case "b":
-                selectedThroughVoiceOption=btnB;
+                selectedThroughVoiceOption = btnB;
                 break;
             case "C":
             case "c":
-                selectedThroughVoiceOption=btnC;
+                selectedThroughVoiceOption = btnC;
                 break;
             case "D":
             case "d":
-                selectedThroughVoiceOption=btnD;
+                selectedThroughVoiceOption = btnD;
                 break;
             case "50 50":
-                if(loggedSuperPowerFiftyFifty > 0){
-                    btn_superpower.performClick();
+                if (!dailyQuestion) {
+                    if (loggedSuperPowerFiftyFifty > 0) {
+                        btn_superpower.performClick();
+
+                    }
+
+                } else {
+                    invalidVoiceInput();
+
                 }
-                speechRecognizer.destroy();
-                getSpeechInput();
                 return;
             case "Răspuns corect":
             case "răspuns corect":
-                if(loggedSuperPowerCorrectAnswer > 0){
-                    btn_RightAnswer.performClick();
+                if (!dailyQuestion) {
+                    if (loggedSuperPowerCorrectAnswer > 0) {
+                        btn_RightAnswer.performClick();
+
+                    }
+
+                } else {
+                    invalidVoiceInput();
+
                 }
-                speechRecognizer.destroy();
-                getSpeechInput();
                 return;
             default:
-                Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();
-                getSpeechInput();
+                invalidVoiceInput();
                 return;
 
         }
-        clicked(selectedThroughVoiceOption);
+        if (selectedThroughVoiceOption.getVisibility() == View.VISIBLE) {
+            clicked(selectedThroughVoiceOption);
+        } else {
+            invalidVoiceInput();
+
+        }
 
     }
 
-    private void afterNextSpeechInputEn(String voiceInput){
+    private void afterNextSpeechInputEn(String voiceInput) {
         switch (voiceInput) {
             case "Next":
             case "next":
@@ -750,21 +902,47 @@ public class PlayActivity extends AppCompatActivity {
                 break;
             case "Try again":
             case "try again":
-                if(tryAgainButton.getVisibility() == View.VISIBLE){
+                if (tryAgainButton.getVisibility() == View.VISIBLE) {
                     tryAgainButton.callOnClick();
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                break;
+            case "Score":
+            case "score":
+                if (dailyQuestion) {
+                    invalidVoiceInput();
                     return;
 
                 }
+                String scoreText;
+                scoreText = questionScoreView.getText().toString() + questionScoreViewScore.getText().toString();
+                scoreText = scoreText + ". " + totalScoreNextView.getText().toString() + totalPoints;
+
+                checkOptions(scoreText);
+                break;
+            case "Prize":
+            case "prize":
+                if (!dailyQuestion) {
+                    invalidVoiceInput();
+                    return;
+                }
+                String prizeText;
+                prizeText = questionScoreView.getText().toString();
+
+                checkOptions(prizeText);
+                break;
             default:
-                Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();
-                getSpeechInput();
+                invalidVoiceInput();
 
         }
 
     }
 
-    private void afterNextSpeechInputRou(String voiceInput){
+    private void afterNextSpeechInputRou(String voiceInput) {
         switch (voiceInput) {
             case "Continuă":
             case "continuă":
@@ -772,15 +950,47 @@ public class PlayActivity extends AppCompatActivity {
                 break;
             case "Încearcă din nou":
             case "încearcă din nou":
-                if(tryAgainButton.getVisibility() == View.VISIBLE){
+                if (tryAgainButton.getVisibility() == View.VISIBLE) {
                     tryAgainButton.callOnClick();
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                break;
+            case "Scor":
+            case "scor":
+                if (dailyQuestion) {
+                    invalidVoiceInput();
                     return;
 
                 }
+                String scoreText;
+                scoreText = questionScoreView.getText().toString() + questionScoreViewScore.getText().toString();
+                if(questionCounter == TOTAL_QUESTION_TO_WIN_GAME) {
+                    scoreText = scoreText + ". " + totalScoreNextView.getText().toString() + totalPoints + " X 2";
+
+                }else{
+                    scoreText = scoreText + ". " + totalScoreNextView.getText().toString() + totalPoints;
+
+                }
+
+                checkOptions(scoreText);
+                break;
+            case "Premiu":
+            case "premiu":
+                if (!dailyQuestion) {
+                    invalidVoiceInput();
+                    return;
+                }
+                String prizeText;
+                prizeText = questionScoreView.getText().toString();
+
+                checkOptions(prizeText);
+                break;
             default:
-                Toast.makeText(this,invalidInputToast, Toast.LENGTH_SHORT).show();
                 speechRecognizer.destroy();
-                getSpeechInput();
+                invalidVoiceInput();
 
         }
 
@@ -790,27 +1000,24 @@ public class PlayActivity extends AppCompatActivity {
     public void clicked(View view) {
         setEnabledForAnswersButtons(false);
         setEnabledFalseForBonusButtons();
-        if(optionList.get(MIC).isValue()) {
-            speechRecognizer.destroy();
-        }
+        speechRecognizer.destroy();
         answerWasSet = true;
 
         ((SubmitButton) view).startAnimation();
         getUserAnswer(view);
-        if(userAnswer.equals(correctAnswer)){
+        if (userAnswer.equals(correctAnswer)) {
             setExtraTimeForMicrophone();
             calculatePoints();
             userAnswerIsCorrect = true;
             questionCounter++;
-            if(questionCounter == TOTAL_QUESTION_TO_WIN_GAME){
-                LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints*2;
+            if (questionCounter == TOTAL_QUESTION_TO_WIN_GAME) {
+                LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints * 2;
                 ++LoggedUserData.loggedSuperPowerFiftyFifty;
                 ++LoggedUserData.loggedGamesWon;
                 increaseRightAnswerSuperpower();
                 sendToDatabase();
             }
-        }
-        else{
+        } else {
             ((SubmitButton) view).setBtn_LineColor(Color.RED);
             ((SubmitButton) view).setAnimationColor(Color.RED);
             LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
@@ -818,11 +1025,22 @@ public class PlayActivity extends AppCompatActivity {
             userAnswerIsCorrect = false;
 
         }
-        delay(3000);
+        if (!optionList.get(EXSPEAKER).isValue()) {
+            delay(3000);
+
+        } else {
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speakerControl = "Delay";
+                speak("You answered!", QUEUE_ADD);
+
+            }
+
+        }
+
     }
 
     private void increaseRightAnswerSuperpower() {
-        if(LoggedUserData.loggedGamesWon%2==0){
+        if (LoggedUserData.loggedGamesWon % 2 == 0) {
             ++LoggedUserData.loggedSuperPowerCorrectAnswer;
         }
     }
@@ -837,16 +1055,16 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void setExtraTimeForMicrophone() {
-        if(voiceInput == null){
+        if (voiceInput == null) {
             time = 0;
 
-        }else{
+        } else {
             time = 2;
         }
     }
 
     private void getUserAnswer(View view) {
-        switch(view.getId()){
+        switch (view.getId()) {
             case R.id.varA:
                 userAnswer = "A";
                 break;
@@ -873,33 +1091,39 @@ public class PlayActivity extends AppCompatActivity {
     private void populateMapWithUserData() {
         map = new HashMap<>();
         map.put("email", LoggedUserData.loggedUserEmail);
-        map.put("gamesWon",LoggedUserData.loggedGamesWon);
+        map.put("gamesWon", LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
-        map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
-        map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
+        map.put("superpower", LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("superpowerCorrectAnswer", LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
         map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
         map.put("luckModeTime", LoggedUserData.loggedUserLuckModeTime);
     }
 
-    private void generateRandomPrizeForDailyQuestion(){
+    private void generateRandomPrizeForDailyQuestion() {
         Random rand = new Random();
         int r = rand.nextInt(2);
 
-        if(userAnswerIsCorrect) {
+        if (userAnswerIsCorrect) {
             if (r == 0) {
                 questionScoreView.setText("You won a fifty-fifty!");
+                speechRecognizer.destroy();
+                checkOptions("You won a fifty-fifty!");
                 loggedSuperPowerFiftyFifty++;
 
             } else {
                 questionScoreView.setText("You won a right answer!");
+                speechRecognizer.destroy();
+                checkOptions("You won a right answer!");
                 loggedSuperPowerCorrectAnswer++;
 
             }
             sendToDatabase();
-        }else{
+        } else {
             questionScoreView.setText("You answer wrong!");
+            speechRecognizer.destroy();
+            checkOptions("You answer wrong!");
 
         }
 
@@ -909,45 +1133,73 @@ public class PlayActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             progressBarPercent = 0;
             progressBar.setProgress(progressBarPercent);
-            if(LoggedUserData.dailyQuestion){
+            if (LoggedUserData.dailyQuestion) {
                 generateRandomPrizeForDailyQuestion();
             }
             updateUIAfterAnswerToTheQuestion();
             setTextAfterAnswerToTheQuestion();
-            if(optionList.get(MIC).isValue()) {
-                getSpeechInput();
+            if (!dailyQuestion) {
+                String text;
+                if(userAnswerIsCorrect){
+                    if(questionCounter == TOTAL_QUESTION_TO_WIN_GAME){
+                        text = "You won a game!";
+                        if (LoggedUserData.loggedGamesWon % 2 == 0) {
+                            text = text + " Bonus: right answer!";
+                        }
+
+                    }else {
+
+                        text = "You answered correct!";
+                    }
+
+                }
+                else{
+                    text = "You answered wrong!";
+
+                }
+
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(text, QUEUE_ADD);
+
+                } else {
+                    if (optionList.get(MIC).isValue() || optionList.get(EXMIC).isValue()) {
+                        getSpeechInput();
+
+                    }
+
+                }
 
             }
-
         }, delay);
 
     }
-    private void timer(){
+
+    private void timer() {
         setEnabledForAnswersButtons(true);
-        if(!dailyQuestion){
+        if (!dailyQuestion) {
             setEnabledForBonusButtons();
         }
-        final long prev[]= new long[1];
-        prev[0]=0;
+        final long prev[] = new long[1];
+        prev[0] = 0;
         new CountDownTimer(30000, 1) {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                if(answerWasSet){
+                if (answerWasSet) {
                     question.setText(youAnsweredText);
                     cancel();
                     return;
 
                 }
-                if(millisUntilFinished / 1000 % 3 ==0 && millisUntilFinished / 1000 != prev[0]){
+                if (millisUntilFinished / 1000 % 3 == 0 && millisUntilFinished / 1000 != prev[0]) {
                     prev[0] = millisUntilFinished / 1000;
-                    progressBarPercent+=10;
+                    progressBarPercent += 10;
                     updateProgressBar();
                 }
-                if(millisUntilFinished >= 10000){
+                if (millisUntilFinished >= 10000) {
                     timerView.setText(String.valueOf(millisUntilFinished / 1000));
 
-                }else{
+                } else {
                     timerView.setText(SPACESTRING + millisUntilFinished / 1000);
 
                 }
@@ -957,6 +1209,8 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 question.setText(timeExpiredText);
+                speechRecognizer.destroy();
+                checkOptions(timeExpiredText + ". Game menu!");
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
                 sendToDatabase();
                 userAnswerIsCorrect = false;
@@ -969,8 +1223,8 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private boolean isGameFinished(){
-        if((questionCounter == 11 || !userAnswerIsCorrect) || (questionCounter == 2 && LoggedUserData.dailyQuestion)){
+    private boolean isGameFinished() {
+        if ((questionCounter == 11 || !userAnswerIsCorrect) || (questionCounter == 2 && LoggedUserData.dailyQuestion)) {
             LoggedUserData.dailyQuestion = false;
             Intent intent = new Intent(this, GameActivity.class);
             startActivity(intent);
@@ -981,19 +1235,19 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void updateUIAfterAnswerToTheQuestion(){
+    private void updateUIAfterAnswerToTheQuestion() {
         infoLayout.setVisibility(View.GONE);
         materialCardView.setVisibility(View.GONE);
         firstLineButtonsLayout.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.VISIBLE);
-        if((questionCounter == TOTAL_QUESTION_TO_WIN_GAME || !userAnswerIsCorrect) && !LoggedUserData.dailyQuestion) {
+        if ((questionCounter == TOTAL_QUESTION_TO_WIN_GAME || !userAnswerIsCorrect) && !LoggedUserData.dailyQuestion) {
             tryAgainButton.setVisibility(View.VISIBLE);
 
         }
         microphoneSwitch.setVisibility(View.VISIBLE);
         questionScoreView.setVisibility(View.VISIBLE);
 
-        if(!LoggedUserData.dailyQuestion) {
+        if (!LoggedUserData.dailyQuestion) {
             btn_superpower.setVisibility(View.GONE);
             btn_RightAnswer.setVisibility(View.GONE);
             questionScoreViewScore.setVisibility(View.VISIBLE);
@@ -1004,37 +1258,36 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setTextAfterAnswerToTheQuestion(){
+    private void setTextAfterAnswerToTheQuestion() {
         questionScoreViewScore.setText(String.valueOf(time));
-        if(questionCounter == TOTAL_QUESTION_TO_WIN_GAME){
+        if (questionCounter == TOTAL_QUESTION_TO_WIN_GAME) {
             totalScoreNextViewPoints.setText(totalPoints + " X 2");
 
-        }
-        else{
+        } else {
             totalScoreNextViewPoints.setText(String.valueOf(totalPoints));
 
         }
 
     }
 
-    private void setListenerForMicrophoneSwitch(){
+    private void setListenerForMicrophoneSwitch() {
         microphoneSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             optionList.get(MIC).setValue(isChecked);
             SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
-            if(!isChecked){
+            if (!isChecked) {
                 speechRecognizer.destroy();
-            }else{
-                if(speechIntent == null){
+            } else {
+                if (speechIntent == null) {
                     speechInitialize();
                 }
                 getSpeechInput();
             }
-            editor.putString("mic",String.valueOf(isChecked));
+            editor.putString("mic", String.valueOf(isChecked));
             editor.apply();
         });
     }
 
-    private void updateUIForTheNextQuestion(){
+    private void updateUIForTheNextQuestion() {
         microphoneSwitch.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.GONE);
         tryAgainButton.setVisibility(View.GONE);
@@ -1048,7 +1301,7 @@ public class PlayActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         questionScoreViewScore.setVisibility(View.GONE);
         totalScoreNextViewPoints.setVisibility(View.GONE);
-        if(!dailyQuestion) {
+        if (!dailyQuestion) {
             btn_superpower.setVisibility(View.VISIBLE);
             btn_RightAnswer.setVisibility(View.VISIBLE);
 
@@ -1056,11 +1309,10 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    public void nextQuestionSetup(View view){
-        if(optionList.get(MIC).isValue()) {
-            speechRecognizer.destroy();
-        }
-        if(isGameFinished()){
+    public void nextQuestionSetup(View view) {
+        speechRecognizer.destroy();
+
+        if (isGameFinished()) {
             return;
 
         }
@@ -1072,31 +1324,32 @@ public class PlayActivity extends AppCompatActivity {
         time = 0;
         questionCounterTextView.setText(questionTextViewString + "   " + questionCounter + " / 10");
         setQuestion(questions);
-        setAnswers(answers,false);
+        setAnswers(answers, false);
         answerWasSet = false;
         voiceInput = null;
         selectedThroughVoiceOption = null;
-        if(!optionList.get(SPEAKER).isValue()){
-            if(optionList.get(MIC).isValue()) {
+        if (!optionList.get(SPEAKER).isValue() && !optionList.get(EXSPEAKER).isValue()) {
+            if (optionList.get(MIC).isValue() || optionList.get(EXMIC).isValue()) {
                 getSpeechInput();
             }
             timer();
 
-         }else{
-            speak(obtainQuestionSpeech(), QUEUE_ADD);
+        } else {
+            speakerControl = "Question";
+            speak(obtainQuestionSpeech(), QUEUE_FLUSH);
 
-         }
+        }
 
     }
 
-    public void tryAgain(View view){
+    public void tryAgain(View view) {
         Intent intent = new Intent(this, GameSettingsActivity.class);
         startActivity(intent);
         finishAndRemoveTask();
 
     }
 
-    private void setEnabledForAnswersButtons(boolean status){
+    private void setEnabledForAnswersButtons(boolean status) {
         btnA.setEnabled(status);
         btnB.setEnabled(status);
         btnC.setEnabled(status);
@@ -1104,9 +1357,29 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setEnabledFalseForBonusButtons(){
+    private void setEnabledFalseForBonusButtons() {
         btn_superpower.setEnabled(false);
         btn_RightAnswer.setEnabled(false);
+
+    }
+
+    private void checkOptions(String feedback) {
+        if (optionList.get(EXSPEAKER).isValue()) {
+            speak(feedback, QUEUE_ADD);
+
+        } else {
+            if (optionList.get(EXMIC).isValue()) {
+                getSpeechInput();
+
+            }
+
+        }
+
+    }
+
+    private void invalidVoiceInput() {
+        Toast.makeText(this, "Invalid command!", Toast.LENGTH_SHORT).show();
+        checkOptions("Invalid command!");
 
     }
 
