@@ -536,6 +536,9 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private void speechInputEn(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
         switch (voiceInput) {
+            case "place":
+                placeAudioFeedback();
+                break;
             case "profile":
                 onNavigationItemSelected(profile);
                 break;
@@ -584,6 +587,12 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
 
         }
         getSpeechInput("PopUp");
+
+    }
+
+    private void placeAudioFeedback(){
+        String text = "Your place is " + LoggedUserData.loggedUserPlace + " with " + LoggedUserData.loggedUserPoints + " points.";
+        checkOptions(text,"Base");
 
     }
 

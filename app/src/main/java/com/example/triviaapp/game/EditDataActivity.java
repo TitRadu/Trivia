@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,8 @@ import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.LoggedUserData.EXMIC;
 import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.LoggedUserData.MIC;
+import static com.example.triviaapp.LoggedUserData.SPEAKER;
 import static com.example.triviaapp.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.LoggedUserData.currentActivity;
 import static com.example.triviaapp.LoggedUserData.optionList;
@@ -51,8 +54,9 @@ public class EditDataActivity extends AppCompatActivity {
     EditText newUserNameEditView, oldPasswordEditView, newPasswordEditView, passwordDeleteView;
     RadioGroup chooseLanguageRadioGroup;
     RadioButton engRadioButton, romRadioButton;
+    Switch exMicSwitch, exSpeakerSwitch;
     Button editButton, backButton, deleteButton, confirmDeleteButton;
-    TextView newUserNameTextView, oldPasswordTextView, newPasswordTextView, chooseLanguageTextView;
+    TextView newUserNameTextView, oldPasswordTextView, newPasswordTextView, chooseLanguageTextView, exOptionsTextView;
     String existUserNameToast, successUserNameToast, wrongPasswordToast, shortPasswordToast, successPasswordToast, emptyPasswordToast, successDeleteToast;
 
     private TextToSpeech textToSpeech;
@@ -71,6 +75,7 @@ public class EditDataActivity extends AppCompatActivity {
         initialize();
         initializeViews();
         initializeRadioGroup();
+        setExOptionSwitchListeners();
         languageChangeListener();
 
     }
@@ -91,11 +96,16 @@ public class EditDataActivity extends AppCompatActivity {
         chooseLanguageRadioGroup = findViewById(R.id.chooseLanguageRadioGroup);
         engRadioButton = findViewById(R.id.engLanguageRadioButton);
         romRadioButton = findViewById(R.id.romLanguageRadioButton);
+        exMicSwitch = findViewById(R.id.exMicOptionSwitch);
+        exMicSwitch.setChecked(optionList.get(EXMIC).isValue());
+        exSpeakerSwitch = findViewById(R.id.exSpeakerOptionSwitch);
+        exSpeakerSwitch.setChecked(optionList.get(EXSPEAKER).isValue());
         confirmDeleteButton = findViewById(R.id.confirmDeleteButton);
         newUserNameTextView = findViewById(R.id.newUserNameTextView);
         oldPasswordTextView = findViewById(R.id.oldPasswordTextView);
         newPasswordTextView = findViewById(R.id.newPasswordTextView);
         chooseLanguageTextView = findViewById(R.id.chooseLanguageTextView);
+        exOptionsTextView = findViewById(R.id.exOptionsTextView);
         editButton = findViewById(R.id.editButton);
         deleteButton = findViewById(R.id.deleteButton);
         backButton = findViewById(R.id.exitButton);
@@ -172,6 +182,41 @@ public class EditDataActivity extends AppCompatActivity {
             default:
                 throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
         }
+
+    }
+
+    private void setExOptionSwitchListeners(){
+        exMicSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            speechRecognizer.destroy();
+            if (isChecked) {
+                checkOptions("Microphone option was selected!");
+
+            } else {
+                checkOptions("Microphone option was deselected!");
+
+            }
+            SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+            optionList.get(EXMIC).setValue(isChecked);
+            editor.putString(optionList.get(EXMIC).getName(), String.valueOf(isChecked));
+            editor.apply();
+
+        });
+        exSpeakerSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            speechRecognizer.destroy();
+            if(!isChecked){
+                checkOptions("Speaker option was deselected!");
+
+            }
+            SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+            optionList.get(EXSPEAKER).setValue(isChecked);
+            editor.putString(optionList.get(EXSPEAKER).getName(), String.valueOf(isChecked));
+            editor.apply();
+            if (isChecked) {
+                checkOptions("Speaker option was selected!");
+
+            }
+
+        });
 
     }
 
@@ -709,6 +754,12 @@ public class EditDataActivity extends AppCompatActivity {
                     speak("Romanian language is also selected!", QUEUE_ADD);
 
                 }
+                break;
+            case "microphone":
+                exMicSwitch.performClick();
+                break;
+            case "speaker":
+                exSpeakerSwitch.performClick();
                 break;
             case "bec":
                 backButton.performClick();

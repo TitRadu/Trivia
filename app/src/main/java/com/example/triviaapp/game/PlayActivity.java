@@ -46,12 +46,15 @@ import java.util.Random;
 
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static android.speech.tts.TextToSpeech.QUEUE_FLUSH;
+import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 import static com.example.triviaapp.LoggedUserData.EXMIC;
 import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.LoggedUserData.MIC;
 import static com.example.triviaapp.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.LoggedUserData.SPEAKER;
+import static com.example.triviaapp.LoggedUserData.connectionStatus;
+import static com.example.triviaapp.LoggedUserData.currentActivity;
 import static com.example.triviaapp.LoggedUserData.dailyQuestion;
 import static com.example.triviaapp.LoggedUserData.loggedSuperPowerCorrectAnswer;
 import static com.example.triviaapp.LoggedUserData.loggedSuperPowerFiftyFifty;
@@ -92,11 +95,13 @@ public class PlayActivity extends AppCompatActivity {
 
     List<Answer> currentAnswers;
 
+    private boolean connectionListenerStatus = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-        speechInitialize();
+        initialize();
         setViews();
         setListenerForMicrophoneSwitch();
         setBonusButtonsListener();
@@ -117,6 +122,7 @@ public class PlayActivity extends AppCompatActivity {
     private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
+            setConnectionListener();
             speak(obtainQuestionSpeech(), QUEUE_ADD);
 
         });
@@ -382,7 +388,8 @@ public class PlayActivity extends AppCompatActivity {
         progressBar.setProgress(progressBarPercent);
     }
 
-    private void speechInitialize() {
+    private void initialize() {
+        currentActivity = this;
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -719,9 +726,22 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onError(int error) {
+                Log.d("Error", String.valueOf(error));
                 if (error == SpeechRecognizer.ERROR_NO_MATCH) {
-                    speechRecognizer.destroy();
                     getSpeechInput();
+
+                }
+                if (error == SpeechRecognizer.ERROR_NETWORK) {
+                    speechRecognizer.destroy();
+                    if (connectionStatus) {
+                        connectionStatus = false;
+                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
+                        if (optionList.get(EXSPEAKER).isValue()) {
+                            speak("Connection failed", QUEUE_ADD);
+
+                        }
+
+                    }
 
                 }
 
@@ -1278,7 +1298,7 @@ public class PlayActivity extends AppCompatActivity {
                 speechRecognizer.destroy();
             } else {
                 if (speechIntent == null) {
-                    speechInitialize();
+                    initialize();
                 }
                 getSpeechInput();
             }
@@ -1382,6 +1402,57 @@ public class PlayActivity extends AppCompatActivity {
         checkOptions("Invalid command!");
 
     }
+
+    private void setConnectionListener() {
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (connectionListenerStatus && currentActivity instanceof PlayActivity && textToSpeech != null) {
+                    Log.d("EditData","connectionListener");
+                    boolean connected = snapshot.getValue(Boolean.class);
+                    if (connected) {
+                        connected();
+
+                    } else {
+                        lossConnection();
+
+                    }
+                }
+                connectionListenerStatus = true;
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(), "Connection listener cancelled!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+    }
+
+    private void connected() {
+        connectionStatus = true;
+        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        speechRecognizer.destroy();
+        checkOptions("Connected");
+
+    }
+
+    private void lossConnection() {
+        if (!optionList.get(EXMIC).isValue()) {
+            connectionStatus = false;
+            Toast.makeText(getApplicationContext(), "Connection lost!", Toast.LENGTH_SHORT).show();
+            if (optionList.get(EXSPEAKER).isValue()) {
+                speak("Connection lost!", QUEUE_ADD);
+
+            }
+
+        }
+
+    }
+
 
 }
 
