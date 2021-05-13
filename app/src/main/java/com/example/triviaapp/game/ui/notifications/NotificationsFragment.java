@@ -92,7 +92,7 @@ public class NotificationsFragment extends Fragment {
 
     private void setViewForEnglishLanguage() {
         clasicButton.setText(R.string.classicButtonMenuEn);
-        switchMicrophone.setText(R.string.microphoneSwitchMenuPlayEn);
+        switchMicrophone.setText(R.string.microphoneSwitchMenuEditPlayEn);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuEn);
         luckModeButtonTextString = getString(R.string.luckModeButtonMenuEn);
         exitButton.setText(R.string.exitButtonMenuHelpEn);
@@ -102,7 +102,7 @@ public class NotificationsFragment extends Fragment {
 
     private void setViewForRomanianLanguage() {
         clasicButton.setText(R.string.classicButtonMenuRou);
-        switchMicrophone.setText(R.string.microphoneSwitchMenuPlayRou);
+        switchMicrophone.setText(R.string.microphoneSwitchMenuEditPlayRou);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuRou);
         luckModeButtonTextString = getString(R.string.luckModeButtonMenuRou);
         exitButton.setText(R.string.exitButtonMenuHelpRou);

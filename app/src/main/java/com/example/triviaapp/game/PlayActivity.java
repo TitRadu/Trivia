@@ -304,7 +304,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void setViewForEnglishLanguage() {
-        microphoneSwitch.setText(R.string.microphoneSwitchMenuPlayEn);
+        microphoneSwitch.setText(R.string.microphoneSwitchMenuEditPlayEn);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayEn);
         questionTextViewString = getString(R.string.questionTextViewPlayEn);
         nextQuestionButton.setText(R.string.nextButtonMenuPlayEn);
@@ -321,7 +321,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void setViewForRomanianLanguage() {
-        microphoneSwitch.setText(R.string.microphoneSwitchMenuPlayRou);
+        microphoneSwitch.setText(R.string.microphoneSwitchMenuEditPlayRou);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayRou);
         questionTextViewString = getString(R.string.questionTextViewPlayRou);
         nextQuestionButton.setText(R.string.nextButtonMenuPlayRou);

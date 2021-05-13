@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogEn);
         sendMailButton.setText(R.string.sendMailButtonLogEn);
         emptyMailToast = getString(R.string.emptyMailToastLogRegEn);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditEn);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEn);
         successDataToast = getString(R.string.successDataToastLogEn);
         wrongDataToast = getString(R.string.wrongDataToastLogEn);
         successSendMailToast = getString(R.string.successSendMailToastLogEn);
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogRou);
         sendMailButton.setText(R.string.sendMailButtonLogRou);
         emptyMailToast = getString(R.string.emptyMailToastLogRegRou);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditRou);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegRou);
         successDataToast = getString(R.string.successDataToastLogRou);
         wrongDataToast = getString(R.string.wrongDataToastLogRou);
         successSendMailToast = getString(R.string.successSendMailToastLogRou);

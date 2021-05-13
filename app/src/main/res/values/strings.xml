@@ -49,8 +49,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="sendMailButtonLogRou">Trimite mail</string>
     <string name="emptyMailToastLogRegEn">Introduce an email!</string>
     <string name="emptyMailToastLogRegRou">Introduceți un email!</string>
-    <string name="emptyPasswordToastLogRegEditEn">Introduce a password!</string>
-    <string name="emptyPasswordToastLogRegEditRou">Introduceți o parolă!</string>
+    <string name="emptyPasswordToastLogRegEn">Introduce a password!</string>
+    <string name="emptyPasswordToastLogRegRou">Introduceți o parolă!</string>
     <string name="successDataToastLogEn">Connected!</string>
     <string name="successDataToastLogRou">Conectat!</string>
     <string name="wrongDataToastLogEn">Email or password incorrect!</string>
@@ -70,10 +70,10 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="alreadyHaveTextViewRegRou">Aveți deja un cont?</string>
     <string name="emptyUserNameToastRegEn">Introduce an username!</string>
     <string name="emptyUserNameToastRegRou">Introduceți un nume de utilizator</string>
-    <string name="shortPasswordToastRegEditEn">Password must contain minimum 6 characters!</string>
-    <string name="shortPasswordToastRegEditRou">Parola trebuie să conțină minimum 6 caractere!</string>
-    <string name="existUserNameToastRegEditEn">User name exists!</string>
-    <string name="existUserNameToastRegEditRou">Numele de utilizator este indisponibil!</string>
+    <string name="shortPasswordToastAudioRegEditEn">Password must contain minimum 6 characters!</string>
+    <string name="shortPasswordToastAudioRegEditRou">Parola trebuie să conțină minimum 6 caractere!</string>
+    <string name="existUserNameToastAudioRegEditEn">User name exists!</string>
+    <string name="existUserNameToastAudioRegEditRou">Numele de utilizator este indisponibil!</string>
     <string name="successCreateToastRegEn">Account created successfully!</string>
     <string name="successCreateToastRegRou">Contul a fost creat cu succes!</string>
     <string name="existEmailToastRegEn">Email exists!</string>
@@ -99,10 +99,10 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
 
     <string name="classicButtonMenuEn">Classic</string>
     <string name="classicButtonMenuRou">Clasic</string>
-    <string name="microphoneSwitchMenuPlayEn">Microphone</string>
-    <string name="microphoneSwitchMenuPlayRou">Microfon</string>
-    <string name="loudSpeakerSwitchMenuEn">Loudspeaker</string>
-    <string name="loudSpeakerSwitchMenuRou">Difuzor</string>
+    <string name="microphoneSwitchMenuEditPlayEn">Microphone</string>
+    <string name="microphoneSwitchMenuEditPlayRou">Microfon</string>
+    <string name="loudSpeakerSwitchMenuEditEn">Loudspeaker</string>
+    <string name="loudSpeakerSwitchMenuEditRou">Difuzor</string>
     <string name="dailyQuestionButtonMenuEn">Daily question</string>
     <string name="dailyQuestionButtonMenuRou">Intrebarea zilnica</string>
     <string name="luckModeButtonMenuEn">Luck Mode</string>
@@ -129,6 +129,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="newPasswordTextViewEditRou">Parolă nouă</string>
     <string name="chooseLanguageTextViewEditEn">Choose language:</string>
     <string name="chooseLanguageTextViewEditRou">Selectează limba:</string>
+    <string name="exOptionsTextViewEditEn">Select options:</string>
+    <string name="exOptionsTextViewEditRou">Selectează optiunile:</string>
     <string name="editButtonEditEn">Edit</string>
     <string name="editButtonEditRou">Actualizează</string>
     <string name="backButtonEditEn">Back</string>
@@ -139,12 +141,33 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="confirmButtonEditRou">Confirmare</string>
     <string name="successUserNameToastEditEn">Username changed successfully!</string>
     <string name="successUserNameToastEditRou">Numele de utilizator a fost schimbat cu succes!</string>
-    <string name="wrongPasswordToastEditEn">Actual password is incorrect!</string>
-    <string name="wrongPasswordToastEditRou">Parola actuală este incorectă!</string>
-    <string name="successPasswordToastEditEn">Password changed successfully!</string>
-    <string name="successPasswordToastEditRou">Parola a fost schimbată cu succes!</string>
-    <string name="successDeleteToastEditEn">User account deleted!</string>
-    <string name="successDeleteToastEditRou">Contul a fost șters cu succes!</string>
+    <string name="wrongPasswordToastAudioEditEn">Actual password is incorrect!</string>
+    <string name="wrongPasswordToastAudioEditRou">Parola actuală este incorectă!</string>
+    <string name="successPasswordToastAudioEditEn">Password changed successfully!</string>
+    <string name="successPasswordToastAudioEditRou">Parola a fost schimbată cu succes!</string>
+    <string name="emptyPasswordToastEditEn">Confirm with old password!</string>
+    <string name="emptyPasswordToastEditRou">Confirmă cu parola veche!</string>
+    <string name="successDeleteToastAudioEditEn">Account deleted successfully!</string>
+    <string name="successDeleteToastAudioEditRou">Contul a fost șters cu succes!</string>
+    <string name="userNameSetAudioEditEn">Username was set to</string>
+    <string name="userNameSetAudioEditRou">Numele a fost schimbat în</string>
+    <string name="describeAudioEditEn">Welcome to settings!</string>
+    <string name="describeAudioEditRou">Bun venit în setări!</string>
+    <string name="microphoneSelectOptionAudioEditEn">Microphone option was selected!</string>
+    <string name="microphoneSelectOptionAudioEditRou">Opțiunea de microfon activată!</string>
+    <string name="microphoneDeselectOptionAudioEditEn">Microphone option was deselected!</string>
+    <string name="microphoneDeselectOptionAudioEditRou">Opțiunea de microfon dezactivată!</string>
+    <string name="speakerSelectOptionAudioEditEn">Speaker option was selected!</string>
+    <string name="speakerSelectOptionAudioEditRou">Opțiunea de difuzor activată!</string>
+    <string name="speakerDeselectOptionAudioEditEn">Speaker option was deselected!</string>
+    <string name="speakerDeselectOptionAudioEditRou">Opțiunea de difuzor dezactivată!</string>
+    <string name="englishLanguageSelectedAudioEditEn">English language was selected!</string>
+    <string name="romanianLanguageSelectedAudioEditRou">Limba română a fost selectată!</string>
+    <string name="englishAlsoSelectedAudioEditEn">English language is also selected!</string>
+    <string name="romanianAlsoSelectedAudioEditRou">Limba română este deja selectată!</string>
+    <string name="oldPasswordSetAudioEditEn">Old password was set!</string>
+    <string name="oldPasswordSetAudioEditRou">Parola veche a fost setată!</string>
+
 
     <string name="geographySwitchSettingsEn">Geography</string>
     <string name="geographySwitchSettingsRou">Geografie</string>
@@ -190,5 +213,14 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
 
     <string name="navigationDrawerOpen">"Open navigation drawer!"</string>
     <string name="navigationDrawerClose">"Close navigation drawer\n "</string>
+
+    <string name="connectionToastAudioEn">"Connected!"</string>
+    <string name="connectionToastAudioRou">"Conectat!"</string>
+    <string name="connectionLostToastAudioEn">"Connection lost!"</string>
+    <string name="connectionLostToastAudioRou">"Conexiune pierdută!"</string>
+    <string name="invalidCommandToastAudioEn">"Invalid command!"</string>
+    <string name="invalidCommandToastAudioRou">"Comandă invalidă!"</string>
+
+
 
 </resources>

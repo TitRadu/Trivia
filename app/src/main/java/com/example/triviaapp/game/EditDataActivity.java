@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
-import com.example.triviaapp.RegisterActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -43,8 +42,7 @@ import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.LoggedUserData.EXMIC;
 import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
-import static com.example.triviaapp.LoggedUserData.MIC;
-import static com.example.triviaapp.LoggedUserData.SPEAKER;
+import static com.example.triviaapp.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.LoggedUserData.currentActivity;
 import static com.example.triviaapp.LoggedUserData.optionList;
@@ -57,7 +55,9 @@ public class EditDataActivity extends AppCompatActivity {
     Switch exMicSwitch, exSpeakerSwitch;
     Button editButton, backButton, deleteButton, confirmDeleteButton;
     TextView newUserNameTextView, oldPasswordTextView, newPasswordTextView, chooseLanguageTextView, exOptionsTextView;
-    String existUserNameToast, successUserNameToast, wrongPasswordToast, shortPasswordToast, successPasswordToast, emptyPasswordToast, successDeleteToast;
+    String existUserNameToastAudio, successUserNameToast, wrongPasswordToastAudio, shortPasswordToastAudio, successPasswordToastAudio, emptyPasswordToast, successDeleteToastAudio,
+    userNameSetAudio, describeAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
+    oldPasswordSetAudio;
 
     private TextToSpeech textToSpeech;
     Locale selectedLanguage;
@@ -72,8 +72,8 @@ public class EditDataActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_data);
-        initialize();
         initializeViews();
+        initialize();
         initializeRadioGroup();
         setExOptionSwitchListeners();
         languageChangeListener();
@@ -118,18 +118,27 @@ public class EditDataActivity extends AppCompatActivity {
         oldPasswordTextView.setText(R.string.oldPasswordTextViewEditEn);
         newPasswordTextView.setText(R.string.newPasswordTextViewEditEn);
         chooseLanguageTextView.setText(R.string.chooseLanguageTextViewEditEn);
+        exOptionsTextView.setText(R.string.exOptionsTextViewEditEn);
+        exMicSwitch.setText(R.string.microphoneSwitchMenuEditPlayEn);
+        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchMenuEditEn);
         editButton.setText(R.string.editButtonEditEn);
         backButton.setText(R.string.backButtonEditEn);
         deleteButton.setText(R.string.deleteAccountButtonEditEn);
         passwordDeleteView.setHint(R.string.passwordHintLogRegEditEn);
         confirmDeleteButton.setText(R.string.confirmButtonEditEn);
-        existUserNameToast = getString(R.string.existUserNameToastRegEditEn);
+        existUserNameToastAudio = getString(R.string.existUserNameToastAudioRegEditEn);
         successUserNameToast = getString(R.string.successUserNameToastEditEn);
-        wrongPasswordToast = getString(R.string.wrongPasswordToastEditEn);
-        shortPasswordToast = getString(R.string.shortPasswordToastRegEditEn);
-        successPasswordToast = getString(R.string.successPasswordToastEditEn);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditEn);
-        successDeleteToast = getString(R.string.successDeleteToastEditEn);
+        wrongPasswordToastAudio = getString(R.string.wrongPasswordToastAudioEditEn);
+        shortPasswordToastAudio = getString(R.string.shortPasswordToastAudioRegEditEn);
+        successPasswordToastAudio = getString(R.string.successPasswordToastAudioEditEn);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastEditEn);
+        successDeleteToastAudio = getString(R.string.successDeleteToastAudioEditEn);
+        userNameSetAudio = getString(R.string.userNameSetAudioEditEn);
+        describeAudio = getString(R.string.describeAudioEditEn);
+        connectedToastAudio = getString(R.string.connectionToastAudioEn);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
+        oldPasswordSetAudio = getString(R.string.oldPasswordSetAudioEditEn);
 
     }
 
@@ -139,18 +148,31 @@ public class EditDataActivity extends AppCompatActivity {
         oldPasswordTextView.setText(R.string.oldPasswordTextViewEditRou);
         newPasswordTextView.setText(R.string.newPasswordTextViewEditRou);
         chooseLanguageTextView.setText(R.string.chooseLanguageTextViewEditRou);
+        exOptionsTextView.setText(R.string.exOptionsTextViewEditRou);
+        exMicSwitch.setText(R.string.microphoneSwitchMenuEditPlayRou);
+        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchMenuEditRou);
         editButton.setText(R.string.editButtonEditRou);
         backButton.setText(R.string.backButtonEditRou);
         deleteButton.setText(R.string.deleteAccountButtonEditRou);
         passwordDeleteView.setHint(R.string.passwordHintLogRegEditRou);
         confirmDeleteButton.setText(R.string.confirmButtonEditRou);
-        existUserNameToast = getString(R.string.existUserNameToastRegEditRou);
+        existUserNameToastAudio = getString(R.string.existUserNameToastAudioRegEditRou);
         successUserNameToast = getString(R.string.successUserNameToastEditRou);
-        wrongPasswordToast = getString(R.string.wrongPasswordToastEditRou);
-        shortPasswordToast = getString(R.string.shortPasswordToastRegEditRou);
-        successPasswordToast = getString(R.string.successPasswordToastEditRou);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEditRou);
-        successDeleteToast = getString(R.string.successDeleteToastEditRou);
+        wrongPasswordToastAudio = getString(R.string.wrongPasswordToastAudioEditRou);
+        shortPasswordToastAudio = getString(R.string.shortPasswordToastAudioRegEditRou);
+        successPasswordToastAudio = getString(R.string.successPasswordToastAudioEditRou);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastEditRou);
+        successDeleteToastAudio = getString(R.string.successDeleteToastAudioEditRou);
+        userNameSetAudio = getString(R.string.userNameSetAudioEditRou);
+        describeAudio = getString(R.string.describeAudioEditRou);
+        connectedToastAudio = getString(R.string.connectionToastAudioRou);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
+        microphoneSelectAudio = getString(R.string.microphoneSelectOptionAudioEditRou);
+        microphoneDeselectAudio = getString(R.string.microphoneDeselectOptionAudioEditRou);
+        speakerSelectAudio = getString(R.string.speakerSelectOptionAudioEditRou);
+        speakerDeselectAudio = getString(R.string.speakerDeselectOptionAudioEditRou);
+        oldPasswordSetAudio = getString(R.string.oldPasswordSetAudioEditRou);
 
     }
 
@@ -162,7 +184,7 @@ public class EditDataActivity extends AppCompatActivity {
                 break;
             case "romanian":
                 setViewForRomanianLanguage();
-                selectedLanguage = Locale.ENGLISH;
+                selectedLanguage = Locale.getDefault();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
@@ -189,10 +211,10 @@ public class EditDataActivity extends AppCompatActivity {
         exMicSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             speechRecognizer.destroy();
             if (isChecked) {
-                checkOptions("Microphone option was selected!");
+                checkOptions(microphoneSelectAudio);
 
             } else {
-                checkOptions("Microphone option was deselected!");
+                checkOptions(microphoneDeselectAudio);
 
             }
             SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
@@ -204,7 +226,7 @@ public class EditDataActivity extends AppCompatActivity {
         exSpeakerSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             speechRecognizer.destroy();
             if(!isChecked){
-                checkOptions("Speaker option was deselected!");
+                checkOptions(speakerDeselectAudio);
 
             }
             SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
@@ -212,7 +234,7 @@ public class EditDataActivity extends AppCompatActivity {
             editor.putString(optionList.get(EXSPEAKER).getName(), String.valueOf(isChecked));
             editor.apply();
             if (isChecked) {
-                checkOptions("Speaker option was selected!");
+                checkOptions(speakerSelectAudio);
 
             }
 
@@ -239,22 +261,25 @@ public class EditDataActivity extends AppCompatActivity {
         chooseLanguageRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             switch (checkedId) {
                 case R.id.engLanguageRadioButton:
+                    speechRecognizer.destroy();
                     setViewForEnglishLanguage();
-                    checkOptions("English language was selected!");
 
-                    /*selectedLanguage = Locale.ENGLISH;
+                    selectedLanguage = Locale.ENGLISH;
                     speechInitialize();
-                    setTextToSpeechListener("English language was selected!");
-                    */
-
+                    setTextToSpeechListener(getString(R.string.englishLanguageSelectedAudioEditEn));
 
                     LoggedUserData.language = "english";
                     editor.putString("language", "english");
                     editor.apply();
                     break;
                 case R.id.romLanguageRadioButton:
+                    speechRecognizer.destroy();
                     setViewForRomanianLanguage();
-                    checkOptions("Romanian language was selected!");
+
+                    selectedLanguage = Locale.getDefault();
+                    speechInitialize();
+                    setTextToSpeechListener(getString(R.string.romanianLanguageSelectedAudioEditRou));
+
                     LoggedUserData.language = "romanian";
                     editor.putString("language", "romanian");
                     editor.apply();
@@ -304,8 +329,9 @@ public class EditDataActivity extends AppCompatActivity {
         }
 
         if (LoggedUserData.userNameList.contains(newUserName)) {
-            Toast.makeText(getBaseContext(), existUserNameToast, Toast.LENGTH_SHORT).show();
-            checkOptions("Username exists!");
+            newUserNameEditView.getText().clear();
+            Toast.makeText(getBaseContext(), existUserNameToastAudio, Toast.LENGTH_SHORT).show();
+            checkOptions(existUserNameToastAudio);
             return;
 
         }
@@ -314,7 +340,7 @@ public class EditDataActivity extends AppCompatActivity {
         FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
         Toast.makeText(getBaseContext(), successUserNameToast, Toast.LENGTH_SHORT).show();
         newUserNameEditView.getText().clear();
-        checkOptions("Username was set to " + newUserName + "!");
+        checkOptions(userNameSetAudio + SPACESTRING + newUserName + "!");
 
     }
 
@@ -325,15 +351,17 @@ public class EditDataActivity extends AppCompatActivity {
         }
 
         if (!oldPassword.equals(LoggedUserData.loggedUserPassword)) {
-            Toast.makeText(getBaseContext(), wrongPasswordToast, Toast.LENGTH_SHORT).show();
-            checkOptions("Actual password is incorrect!");
+            clearPasswordInputs();
+            Toast.makeText(getBaseContext(), wrongPasswordToastAudio, Toast.LENGTH_SHORT).show();
+            checkOptions(wrongPasswordToastAudio);
             return;
 
         }
 
         if (newPassword.length() < 6) {
-            Toast.makeText(getBaseContext(), shortPasswordToast, Toast.LENGTH_SHORT).show();
-            checkOptions("Password must contain minimum 6 characters!");
+            newPasswordEditView.getText().clear();
+            Toast.makeText(getBaseContext(), shortPasswordToastAudio, Toast.LENGTH_SHORT).show();
+            checkOptions(shortPasswordToastAudio);
             return;
 
         }
@@ -351,9 +379,9 @@ public class EditDataActivity extends AppCompatActivity {
                                 LoggedUserData.loggedUserPassword = newPassword;
                                 HashMap<String, Object> map = populateMap();
                                 FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).setValue(map);
-                                Toast.makeText(getBaseContext(), successPasswordToast, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), successPasswordToastAudio, Toast.LENGTH_SHORT).show();
                                 clearPasswordInputs();
-                                checkOptions("Password was changed successfully!");
+                                checkOptions(successPasswordToastAudio);
                             } else {
                                 Toast.makeText(getBaseContext(), "Change failed!", Toast.LENGTH_SHORT).show();
 
@@ -399,14 +427,14 @@ public class EditDataActivity extends AppCompatActivity {
 
         if (password.isEmpty()) {
             Toast.makeText(getBaseContext(), emptyPasswordToast, Toast.LENGTH_SHORT).show();
-            checkOptions("Please confirm with old password!");
+            checkOptions(emptyPasswordToast);
             return;
 
         }
 
         if (!password.equals(LoggedUserData.loggedUserPassword)) {
-            Toast.makeText(getBaseContext(), wrongPasswordToast, Toast.LENGTH_SHORT).show();
-            checkOptions("Actual password is incorrect!");
+            Toast.makeText(getBaseContext(), wrongPasswordToastAudio, Toast.LENGTH_SHORT).show();
+            checkOptions(wrongPasswordToastAudio);
             return;
 
         }
@@ -421,9 +449,9 @@ public class EditDataActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                checkOptions("Account deleted successfully!");
+                                checkOptions(successDeleteToastAudio);
                                 FirebaseHelper.userDatabaseReference.child(LoggedUserData.loggedUserKey).removeValue();
-                                Toast.makeText(getBaseContext(), successDeleteToast, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(), successDeleteToastAudio, Toast.LENGTH_SHORT).show();
                                 finishAndRemoveTask();
                             } else {
                                 Toast.makeText(getBaseContext(), "Delete failed!", Toast.LENGTH_SHORT).show();
@@ -478,7 +506,7 @@ public class EditDataActivity extends AppCompatActivity {
     private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            checkOptions("Welcome to EditData Activity!");
+            checkOptions(describeAudio);
             setConnectionListener();
 
         });
@@ -581,9 +609,9 @@ public class EditDataActivity extends AppCompatActivity {
                     speechRecognizer.destroy();
                     if (connectionStatus) {
                         connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
                         if (optionList.get(EXSPEAKER).isValue()) {
-                            speak("Connection failed", QUEUE_ADD);
+                            speak(connectionLostToastAudio, QUEUE_ADD);
 
                         }
 
@@ -600,8 +628,10 @@ public class EditDataActivity extends AppCompatActivity {
                 Log.d("input", result.get(0));
                 switch (LoggedUserData.language) {
                     case "english":
-                    case "romanian":
                         speechInputEn(voiceInput);
+                        break;
+                    case "romanian":
+                        speechInputRou(voiceInput);
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
@@ -624,8 +654,8 @@ public class EditDataActivity extends AppCompatActivity {
     }
 
     private void invalidVoiceInput() {
-        Toast.makeText(this, "Invalid command!", Toast.LENGTH_SHORT).show();
-        checkOptions("Invalid command!");
+        Toast.makeText(this, invalidCommandToastAudio, Toast.LENGTH_SHORT).show();
+        checkOptions(invalidCommandToastAudio);
 
     }
 
@@ -637,7 +667,7 @@ public class EditDataActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkNewUserNameCommand(String voiceInput) {
+    private boolean checkNewUserNameCommandEn(String voiceInput) {
         short length = 0;
         boolean rule = false;
         if (voiceInput.startsWith("new user name ")) {
@@ -663,13 +693,25 @@ public class EditDataActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkSetOldPasswordCommand(String voiceInput) {
-        boolean rule;
-        rule = voiceInput.startsWith("old password ");
-        if (rule) {
+    private boolean checkNewUserNameCommandRou(String voiceInput) {
+        if (voiceInput.startsWith("nume nou ")) {
+            String userName = usefulDataExtract(voiceInput, 9);
+            newUserNameEditView.setText(userName);
+            updateUserName(userName);
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+
+    private boolean checkSetOldPasswordCommandEn(String voiceInput) {
+        if (voiceInput.startsWith("old password ")) {
             String password = usefulDataExtract(voiceInput, 13);
             oldPasswordEditView.setText(password);
-            checkOptions("Old password was set!");
+            checkOptions(oldPasswordSetAudio);
 
         } else {
             return false;
@@ -679,13 +721,25 @@ public class EditDataActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkNewPasswordCommand(String voiceInput) {
-        boolean rule;
+    private boolean checkSetOldPasswordCommandRou(String voiceInput) {
+        if (voiceInput.startsWith("parolă veche ")) {
+            String password = usefulDataExtract(voiceInput, 13);
+            oldPasswordEditView.setText(password);
+            checkOptions(oldPasswordSetAudio);
+
+        } else {
+            return false;
+
+        }
+        return true;
+
+    }
+
+    private boolean checkNewPasswordCommandEn(String voiceInput) {
         String oldPassword = oldPasswordEditView.getText().toString();
-        rule = voiceInput.startsWith("new password ");
-        if (rule) {
+        if (voiceInput.startsWith("new password ")) {
             if (oldPassword.isEmpty()) {
-                checkOptions("Old password not set!");
+                checkOptions(emptyPasswordToast);
                 return true;
 
             }
@@ -700,12 +754,43 @@ public class EditDataActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkDeletePasswordCommand(String voiceInput) {
-        boolean rule;
-        rule = voiceInput.startsWith("delete password ");
-        if (rule) {
+    private boolean checkNewPasswordCommandRou(String voiceInput) {
+        String oldPassword = oldPasswordEditView.getText().toString();
+        if (voiceInput.startsWith("parolă nouă ")) {
+            if (oldPassword.isEmpty()) {
+                checkOptions(emptyPasswordToast);
+                return true;
+
+            }
+            String newPassword = usefulDataExtract(voiceInput, 12);
+            newPasswordEditView.setText(newPassword);
+            updatePassword(oldPassword,newPassword);
+        } else {
+            return false;
+
+        }
+        return true;
+
+    }
+
+    private boolean checkDeletePasswordCommandEn(String voiceInput) {
+        if (voiceInput.startsWith("delete password ")) {
             String password = usefulDataExtract(voiceInput, 16);
             passwordDeleteView.setText(password);
+            checkOptions(oldPasswordSetAudio);
+        } else {
+            return false;
+
+        }
+        return true;
+
+    }
+
+    private boolean checkDeletePasswordCommandRou(String voiceInput) {
+        if (voiceInput.startsWith("parolă ștergere ")) {
+            String password = usefulDataExtract(voiceInput, 16);
+            passwordDeleteView.setText(password);
+            checkOptions(oldPasswordSetAudio);
         } else {
             return false;
 
@@ -717,21 +802,21 @@ public class EditDataActivity extends AppCompatActivity {
     private void speechInputEn(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
 
-        if (checkNewUserNameCommand(voiceInput)) {
+        if (checkNewUserNameCommandEn(voiceInput)) {
             return;
 
         }
-        if (checkSetOldPasswordCommand(voiceInput)) {
-            return;
-
-        }
-
-        if (checkNewPasswordCommand(voiceInput)) {
+        if (checkSetOldPasswordCommandEn(voiceInput)) {
             return;
 
         }
 
-        if (checkDeletePasswordCommand(voiceInput)) {
+        if (checkNewPasswordCommandEn(voiceInput)) {
+            return;
+
+        }
+
+        if (checkDeletePasswordCommandEn(voiceInput)) {
             return;
 
         }
@@ -742,18 +827,13 @@ public class EditDataActivity extends AppCompatActivity {
                 if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.engLanguageRadioButton) {
                     engRadioButton.performClick();
                 } else {
-                    speak("English language is also selected!", QUEUE_ADD);
+                    speak(getString(R.string.englishAlsoSelectedAudioEditEn), QUEUE_ADD);
 
                 }
                 break;
             case "romanian":
             case "Romanian":
-                if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.romLanguageRadioButton) {
-                    romRadioButton.performClick();
-                } else {
-                    speak("Romanian language is also selected!", QUEUE_ADD);
-
-                }
+                romRadioButton.performClick();
                 break;
             case "microphone":
                 exMicSwitch.performClick();
@@ -769,7 +849,66 @@ public class EditDataActivity extends AppCompatActivity {
                 return;
             case "describe":
             case "described":
-                checkOptions("Welcome to Edit Data Activity!");
+                checkOptions(describeAudio);
+                return;
+            default:
+                invalidVoiceInput();
+
+        }
+
+    }
+
+    private void speechInputRou(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+
+        if (checkNewUserNameCommandRou(voiceInput)) {
+            return;
+
+        }
+        if (checkSetOldPasswordCommandRou(voiceInput)) {
+            return;
+
+        }
+
+        if (checkNewPasswordCommandRou(voiceInput)) {
+            return;
+
+        }
+
+        if (checkDeletePasswordCommandRou(voiceInput)) {
+            return;
+
+        }
+
+        switch (voiceInput) {
+            case "engleză":
+            case "Engleză":
+                engRadioButton.performClick();
+                break;
+            case "română":
+            case "Română":
+                if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.romLanguageRadioButton) {
+                    romRadioButton.performClick();
+                } else {
+                    speak(getString(R.string.romanianAlsoSelectedAudioEditRou), QUEUE_ADD);
+
+                }
+                break;
+            case "microfon":
+                exMicSwitch.performClick();
+                break;
+            case "difuzor":
+                exSpeakerSwitch.performClick();
+                break;
+            case "înapoi":
+                backButton.performClick();
+                return;
+            case "șterge cont":
+                confirmDeleteButton.performClick();
+                return;
+            case "descrie":
+            case "descriere":
+                checkOptions(describeAudio);
                 return;
             default:
                 invalidVoiceInput();
@@ -809,18 +948,18 @@ public class EditDataActivity extends AppCompatActivity {
 
     private void connected() {
         connectionStatus = true;
-        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
-        checkOptions("Connected");
+        checkOptions(connectedToastAudio);
 
     }
 
     private void lossConnection() {
         if (!optionList.get(EXMIC).isValue()) {
             connectionStatus = false;
-            Toast.makeText(getApplicationContext(), "Connection lost!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Connection lost!", QUEUE_ADD);
+                speak(connectionLostToastAudio, QUEUE_ADD);
 
             }
 
