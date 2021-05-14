@@ -101,9 +101,9 @@ public class RegisterActivity extends AppCompatActivity {
         passwordInput.setHint(R.string.passwordHintLogRegEditEn);
         createAccountButton.setText(R.string.createButtonLogRegEn);
         alreadyHaveAccountTextView.setText(R.string.alreadyHaveTextViewRegEn);
-        emptyEmailToast = getString(R.string.emptyMailToastLogRegEn);
+        emptyEmailToast = getString(R.string.emptyMailToastAudioLogRegEn);
         emptyUserNameToast = getString(R.string.emptyUserNameToastRegEn);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEn);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastAudioLogRegEn);
         shortPasswordToast = getString(R.string.shortPasswordToastAudioRegEditEn);
         existUserNameToast = getString(R.string.existUserNameToastAudioRegEditEn);
         successCreateToast = getString(R.string.successCreateToastRegEn);
@@ -116,9 +116,9 @@ public class RegisterActivity extends AppCompatActivity {
         passwordInput.setHint(R.string.passwordHintLogRegEditRou);
         createAccountButton.setText(R.string.createButtonLogRegRou);
         alreadyHaveAccountTextView.setText(R.string.alreadyHaveTextViewRegRou);
-        emptyEmailToast = getString(R.string.emptyMailToastLogRegRou);
+        emptyEmailToast = getString(R.string.emptyMailToastAudioLogRegRou);
         emptyUserNameToast = getString(R.string.emptyUserNameToastRegRou);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegRou);
+        emptyPasswordToast = getString(R.string.emptyPasswordToastAudioLogRegRou);
         shortPasswordToast = getString(R.string.shortPasswordToastAudioRegEditRou);
         existUserNameToast = getString(R.string.existUserNameToastAudioRegEditRou);
         successCreateToast = getString(R.string.successCreateToastRegRou);

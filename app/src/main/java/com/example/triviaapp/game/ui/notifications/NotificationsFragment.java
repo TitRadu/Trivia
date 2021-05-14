@@ -1,31 +1,21 @@
 package com.example.triviaapp.game.ui.notifications;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.triviaapp.FirebaseHelper;
 import com.example.triviaapp.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.GameActivity;
-import com.example.triviaapp.game.GameSettingsActivity;
-import com.example.triviaapp.game.LuckPlayModeActivity;
-import com.example.triviaapp.game.PlayActivity;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -92,7 +82,7 @@ public class NotificationsFragment extends Fragment {
 
     private void setViewForEnglishLanguage() {
         clasicButton.setText(R.string.classicButtonMenuEn);
-        switchMicrophone.setText(R.string.microphoneSwitchMenuEditPlayEn);
+        switchMicrophone.setText(R.string.microphoneSwitchLogMenuEditPlayEn);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuEn);
         luckModeButtonTextString = getString(R.string.luckModeButtonMenuEn);
         exitButton.setText(R.string.exitButtonMenuHelpEn);
@@ -102,7 +92,7 @@ public class NotificationsFragment extends Fragment {
 
     private void setViewForRomanianLanguage() {
         clasicButton.setText(R.string.classicButtonMenuRou);
-        switchMicrophone.setText(R.string.microphoneSwitchMenuEditPlayRou);
+        switchMicrophone.setText(R.string.microphoneSwitchLogMenuEditPlayRou);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuRou);
         luckModeButtonTextString = getString(R.string.luckModeButtonMenuRou);
         exitButton.setText(R.string.exitButtonMenuHelpRou);

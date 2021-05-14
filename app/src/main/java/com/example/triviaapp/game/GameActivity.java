@@ -39,7 +39,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -174,7 +173,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         signOut.setTitle(R.string.signOutMenuItemProfileEn);
 
         infoTextViewPopUpTextString = getString(R.string.infoTextViewMenuEn);
-        continueButtonPopUpTextString = getString(R.string.nextButtonMenuPlayEn);
+        continueButtonPopUpTextString = getString(R.string.nextButtonLogMenuPlayEn);
 
     }
 
@@ -186,7 +185,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         signOut.setTitle(R.string.signOutMenuItemProfileRou);
 
         infoTextViewPopUpTextString = getString(R.string.infoTextViewMenuRou);
-        continueButtonPopUpTextString = getString(R.string.nextButtonMenuPlayRou);
+        continueButtonPopUpTextString = getString(R.string.nextButtonLogMenuPlayRou);
 
     }
 

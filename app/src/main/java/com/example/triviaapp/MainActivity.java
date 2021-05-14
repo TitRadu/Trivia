@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -24,7 +22,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -33,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.triviaapp.game.GameActivity;
-import com.example.triviaapp.game.ui.SubmitButton;
 import com.example.triviaapp.rank.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,22 +44,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Queue;
 
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.LoggedUserData.EXMIC;
 import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
-import static com.example.triviaapp.LoggedUserData.MIC;
-import static com.example.triviaapp.LoggedUserData.SPEAKER;
+import static com.example.triviaapp.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.LoggedUserData.currentActivity;
 import static com.example.triviaapp.LoggedUserData.language;
-import static com.example.triviaapp.LoggedUserData.loggedSuperPowerCorrectAnswer;
-import static com.example.triviaapp.LoggedUserData.loggedSuperPowerFiftyFifty;
 import static com.example.triviaapp.LoggedUserData.onResumeFromAnotherActivity;
 import static com.example.triviaapp.LoggedUserData.optionList;
-import static com.example.triviaapp.LoggedUserData.userNameList;
 
 public class MainActivity extends AppCompatActivity {
     public static final Integer RECORD_AUDIO = 1;
@@ -75,8 +66,10 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout forgotPasswordLayout;
 
     Button logInButton, createAccountButton, sendMailButton;
-    TextView forgotPasswordTextView;
-    String emptyMailToast, emptyPasswordToast, successDataToast, wrongDataToast, successSendMailToast, wrongMailToast, audioGrantedToast, audioDeniedToast;
+    TextView welcomePopUpTextView, chooseLanguagePopUpTextView, chooseInteractionPopUpTextView, forgotPasswordTextView;
+    String emptyMailToastAudio, emptyPasswordToastAudio, successDataToast, wrongDataToastAudio, successSendMailToastAudio, wrongMailToastAudio, audioGrantedToastAudio, audioDeniedToastAudio,
+    describePopUpAudio, describeAudio, describeAudioPermissionAudio, describeCommandsAudio,restartPresentationAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
+    selectALanguageToastAudio, mailSetAudio, passwordSetAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
 
     Date date;
     SharedPreferences prefs;
@@ -115,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         currentActivity = this;
         if (onResumeFromAnotherActivity) {
-            setTextToSpeechListener("Now, you are in Main Activity!");
+            setTextToSpeechListener(describeAudio);
             //speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
             chooseLanguage();
 
@@ -152,36 +145,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setViewForEnglishLanguage() {
+        describeCommandsAudio = getString(R.string.describeCommandsAudioLogEn);
+        describeAudioPermissionAudio = getString(R.string.describeAudioPermissionAudioLogEn);
+        describePopUpAudio = getString(R.string.describePopUpAudioLogEn);
+        describeAudio = getString(R.string.describeAudioLogEn);
         passwordInput.setHint(R.string.passwordHintLogRegEditEn);
         logInButton.setText(R.string.logInButtonLogRegEn);
         createAccountButton.setText(R.string.createButtonLogRegEn);
         forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogEn);
         sendMailButton.setText(R.string.sendMailButtonLogEn);
-        emptyMailToast = getString(R.string.emptyMailToastLogRegEn);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegEn);
+        emptyMailToastAudio = getString(R.string.emptyMailToastAudioLogRegEn);
+        emptyPasswordToastAudio = getString(R.string.emptyPasswordToastAudioLogRegEn);
         successDataToast = getString(R.string.successDataToastLogEn);
-        wrongDataToast = getString(R.string.wrongDataToastLogEn);
-        successSendMailToast = getString(R.string.successSendMailToastLogEn);
-        wrongMailToast = getString(R.string.wrongMailToastLogEn);
-        audioGrantedToast = getString(R.string.audioGrantedToastLogEn);
-        audioDeniedToast = getString(R.string.audioDeniedToastLogEn);
+        wrongDataToastAudio = getString(R.string.wrongDataToastAudioLogEn);
+        successSendMailToastAudio = getString(R.string.successSendMailToastAudioLogEn);
+        wrongMailToastAudio = getString(R.string.wrongMailToastAudioLogEn);
+        audioGrantedToastAudio = getString(R.string.audioGrantedToastAudioLogEn);
+        audioDeniedToastAudio = getString(R.string.audioDeniedToastAudioLogEn);
+        mailSetAudio = getString(R.string.mailSetAudioLogEn);
+        passwordSetAudio = getString(R.string.passwordSetAudioLogEn);
+        connectedToastAudio = getString(R.string.connectionToastAudioEn);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
 
     }
 
     private void setViewForRomanianLanguage() {
+        describeCommandsAudio = getString(R.string.describeCommandsAudioLogRou);
+        describeAudioPermissionAudio = getString(R.string.describeAudioPermissionAudioLogRou);
+        describePopUpAudio = getString(R.string.describePopUpAudioLogRou);
+        describeAudio = getString(R.string.describeAudioLogRou);
         passwordInput.setHint(R.string.passwordHintLogRegEditRou);
         logInButton.setText(R.string.logInButtonLogRegRou);
         createAccountButton.setText(R.string.createButtonLogRegRou);
         forgotPasswordTextView.setText(R.string.forgotPasswordTextViewLogRou);
         sendMailButton.setText(R.string.sendMailButtonLogRou);
-        emptyMailToast = getString(R.string.emptyMailToastLogRegRou);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastLogRegRou);
+        emptyMailToastAudio = getString(R.string.emptyMailToastAudioLogRegRou);
+        emptyPasswordToastAudio = getString(R.string.emptyPasswordToastAudioLogRegRou);
         successDataToast = getString(R.string.successDataToastLogRou);
-        wrongDataToast = getString(R.string.wrongDataToastLogRou);
-        successSendMailToast = getString(R.string.successSendMailToastLogRou);
-        wrongMailToast = getString(R.string.wrongMailToastLogRou);
-        audioGrantedToast = getString(R.string.audioGrantedToastLogRou);
-        audioDeniedToast = getString(R.string.audioDeniedToastLogRou);
+        wrongDataToastAudio = getString(R.string.wrongDataToastAudioLogRou);
+        successSendMailToastAudio = getString(R.string.successSendMailToastAudioLogRou);
+        wrongMailToastAudio = getString(R.string.wrongMailToastAudioLogRou);
+        audioGrantedToastAudio = getString(R.string.audioGrantedToastAudioLogRou);
+        audioDeniedToastAudio = getString(R.string.audioDeniedToastAudioLogRou);
+        mailSetAudio = getString(R.string.mailSetAudioLogRou);
+        passwordSetAudio = getString(R.string.passwordSetAudioLogRou);
+        connectedToastAudio = getString(R.string.connectionToastAudioRou);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
 
     }
 
@@ -193,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case "romanian":
                 setViewForRomanianLanguage();
-                selectedLanguage = Locale.ENGLISH;
+                selectedLanguage = Locale.getDefault();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
@@ -217,18 +228,18 @@ public class MainActivity extends AppCompatActivity {
     private void setActivityStartPopUp() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             currentScreen = "Nothing";
-            speak("Welcome to Trivia Audio Permission!", QUEUE_ADD);
+            speak(describeAudioPermissionAudio, QUEUE_ADD);
             checkPermission();
 
         } else {
             if (!checkIfCompletedOptionsPopUp()) {
                 currentScreen = "PopUp";
-                speak("Welcome to Trivia!", QUEUE_ADD);
+                speak(describePopUpAudio, QUEUE_ADD);
                 chooseOptionsPopUp();
             } else {
                 currentScreen = "Activity";
                 if (!initializeLoggedUser()) {
-                    checkOptions("Now, you are in Main Activity!", "Activity");
+                    checkOptions(describeAudio, "Activity");
 
                 }
 
@@ -240,15 +251,15 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean inputCheck(String email, String password) {
         if (email.isEmpty()) {
-            Toast.makeText(this, emptyMailToast, Toast.LENGTH_SHORT).show();
-            checkOptions("Introduce an email!", "Activity");
+            Toast.makeText(this, emptyMailToastAudio, Toast.LENGTH_SHORT).show();
+            checkOptions(emptyMailToastAudio, "Activity");
             return false;
 
         }
 
         if (password.isEmpty()) {
-            Toast.makeText(this, emptyPasswordToast, Toast.LENGTH_SHORT).show();
-            checkOptions("Introduce a password!", "Activity");
+            Toast.makeText(this, emptyPasswordToastAudio, Toast.LENGTH_SHORT).show();
+            checkOptions(emptyPasswordToastAudio, "Activity");
             return false;
 
         }
@@ -306,8 +317,8 @@ public class MainActivity extends AppCompatActivity {
                             clearInputs();
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(getBaseContext(), wrongDataToast, Toast.LENGTH_SHORT).show();
-                            checkOptions(wrongDataToast, "Activity");
+                            Toast.makeText(getBaseContext(), wrongDataToastAudio, Toast.LENGTH_SHORT).show();
+                            checkOptions(wrongDataToastAudio, "Activity");
 
                         }
 
@@ -370,8 +381,8 @@ public class MainActivity extends AppCompatActivity {
         String email = forgotPasswordEmailInput.getText().toString();
 
         if (email.isEmpty()) {
-            Toast.makeText(this, emptyMailToast, Toast.LENGTH_SHORT).show();
-            checkOptions(emptyMailToast, "Activity");
+            Toast.makeText(this, emptyMailToastAudio, Toast.LENGTH_SHORT).show();
+            checkOptions(emptyMailToastAudio, "Activity");
             return;
 
         }
@@ -380,12 +391,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), successSendMailToast, Toast.LENGTH_SHORT).show();
-                    checkOptions(successSendMailToast, "Activity");
+                    Toast.makeText(getApplicationContext(), successSendMailToastAudio, Toast.LENGTH_SHORT).show();
+                    checkOptions(successSendMailToastAudio, "Activity");
 
                 } else {
-                    Toast.makeText(getApplicationContext(), wrongMailToast, Toast.LENGTH_SHORT).show();
-                    checkOptions(wrongMailToast, "Activity");
+                    Toast.makeText(getApplicationContext(), wrongMailToastAudio, Toast.LENGTH_SHORT).show();
+                    checkOptions(wrongMailToastAudio, "Activity");
 
                 }
 
@@ -406,20 +417,20 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == RECORD_AUDIO && grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, audioGrantedToast, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, audioGrantedToastAudio, Toast.LENGTH_SHORT).show();
 
 
             } else {
-                Toast.makeText(this, audioDeniedToast, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, audioDeniedToastAudio, Toast.LENGTH_SHORT).show();
 
             }
             if (!checkIfCompletedOptionsPopUp()) {
                 currentScreen = "PopUp";
-                speak("Welcome to Trivia!", QUEUE_ADD);
+                speak(describePopUpAudio, QUEUE_ADD);
                 chooseOptionsPopUp();
             } else {
                 currentScreen = "Activity";
-                checkOptions("Now, you are in Main Activity!", "Activity");
+                checkOptions(describeAudio, "Activity");
 
             }
 
@@ -486,16 +497,27 @@ public class MainActivity extends AppCompatActivity {
             switch (checkedId) {
                 case R.id.engLanguageRadioButton:
                     speechRecognizer.destroy();
-                    speak("English language was selected!", QUEUE_ADD);
                     setViewForEnglishLanguage();
+                    setPopUpViewsForEnglishLanguage();
+
+                    selectedLanguage = Locale.ENGLISH;
+                    speechInitialize();
+                    setTextToSpeechListener(getString(R.string.englishLanguageSelectedAudioLogEditEn));
+
+
                     LoggedUserData.language = "english";
                     editor.putString("language", "english");
                     editor.apply();
                     break;
                 case R.id.romLanguageRadioButton:
                     speechRecognizer.destroy();
-                    speak("Romanian language was selected!", QUEUE_ADD);
                     setViewForRomanianLanguage();
+                    setPopUpViewsForRomanianLanguage();
+
+                    selectedLanguage = Locale.getDefault();
+                    speechInitialize();
+                    setTextToSpeechListener(getString(R.string.romanianLanguageSelectedAudioLogEditRou));
+
                     LoggedUserData.language = "romanian";
                     editor.putString("language", "romanian");
                     editor.apply();
@@ -512,8 +534,8 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizer.destroy();
 
         if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.engLanguageRadioButton && chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.romLanguageRadioButton) {
-            Toast.makeText(this, "Select a language!", Toast.LENGTH_SHORT).show();
-            speak("Select a language!", QUEUE_ADD);
+            Toast.makeText(this, selectALanguageToastAudio, Toast.LENGTH_SHORT).show();
+            speak(selectALanguageToastAudio, QUEUE_ADD);
             return;
 
         }
@@ -522,7 +544,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
         dialog.dismiss();
         currentScreen = "Activity";
-        checkOptions("Now, you are in Main Activity!", "Activity");
+        checkOptions(describeAudio, "Activity");
 
     }
 
@@ -530,10 +552,10 @@ public class MainActivity extends AppCompatActivity {
         extendedSwitchMicrophone.setOnCheckedChangeListener((buttonView, isChecked) -> {
             speechRecognizer.destroy();
             if (isChecked) {
-                speak("Microphone option was selected!", QUEUE_ADD);
+                speak(microphoneSelectAudio, QUEUE_ADD);
 
             } else {
-                speak("Microphone option was deselected!", QUEUE_ADD);
+                speak(microphoneDeselectAudio, QUEUE_ADD);
 
             }
             SharedPreferences.Editor editor = prefs.edit();
@@ -545,10 +567,10 @@ public class MainActivity extends AppCompatActivity {
         extendedSwitchSpeaker.setOnCheckedChangeListener((buttonView, isChecked) -> {
             speechRecognizer.destroy();
             if (isChecked) {
-                speak("Speaker option was selected!", QUEUE_ADD);
+                speak(speakerSelectAudio, QUEUE_ADD);
 
             } else {
-                speak("Speaker option was deselected!", QUEUE_ADD);
+                speak(speakerDeselectAudio, QUEUE_ADD);
 
             }
             SharedPreferences.Editor editor = prefs.edit();
@@ -572,6 +594,9 @@ public class MainActivity extends AppCompatActivity {
     private void chooseOptionsPopUp() {
         dialogBuilder = new AlertDialog.Builder(this);
         View questionPopUpView = getLayoutInflater().inflate(R.layout.start_app_pop_up, null);
+        welcomePopUpTextView = questionPopUpView.findViewById(R.id.welcomeTextView);
+        chooseLanguagePopUpTextView = questionPopUpView.findViewById(R.id.chooseLanguageTextView);
+        chooseInteractionPopUpTextView = questionPopUpView.findViewById(R.id.chooseInteractionTextView);
         chooseLanguageRadioGroup = questionPopUpView.findViewById(R.id.chooseLanguageRadioGroup);
         engRadioButton = questionPopUpView.findViewById(R.id.engLanguageRadioButton);
         romRadioButton = questionPopUpView.findViewById(R.id.romLanguageRadioButton);
@@ -595,8 +620,42 @@ public class MainActivity extends AppCompatActivity {
         muteButtonPopUp.setOnClickListener((v) -> {
             speechRecognizer.destroy();
             textToSpeech.stop();
-            speak("To restart screen presentation say describe!", QUEUE_ADD);
+            speak(restartPresentationAudio, QUEUE_ADD);
         });
+
+    }
+
+    private void setPopUpViewsForEnglishLanguage(){
+        welcomePopUpTextView.setText(R.string.welcomeTextViewLogEn);
+        chooseLanguagePopUpTextView.setText(R.string.chooseLanguageTextViewLogEditEn);
+        chooseInteractionPopUpTextView.setText(R.string.exOptionsTextViewLogEditEn);
+        extendedSwitchMicrophone.setText(R.string.microphoneSwitchLogMenuEditPlayEn);
+        extendedSwitchSpeaker.setText(R.string.loudSpeakerSwitchLogMenuEditEn);
+        muteButtonPopUp.setText(R.string.muteButtonLogEn);
+        continueButtonPopUp.setText(R.string.nextButtonLogMenuPlayEn);
+        restartPresentationAudio = getString(R.string.restartPresentationAudioLogEn);
+        microphoneSelectAudio = getString(R.string.microphoneSelectOptionAudioLogEditEn);
+        microphoneDeselectAudio = getString(R.string.microphoneDeselectOptionAudioLogEditEn);
+        speakerSelectAudio = getString(R.string.speakerSelectOptionAudioLogEditEn);
+        speakerDeselectAudio = getString(R.string.speakerDeselectOptionAudioLogEditEn);
+        selectALanguageToastAudio = getString(R.string.selectALanguageToastAudioLogEn);
+
+    }
+
+    private void setPopUpViewsForRomanianLanguage(){
+        welcomePopUpTextView.setText(R.string.welcomeTextViewLogRou);
+        chooseLanguagePopUpTextView.setText(R.string.chooseLanguageTextViewLogEditRou);
+        chooseInteractionPopUpTextView.setText(R.string.exOptionsTextViewLogEditRou);
+        extendedSwitchMicrophone.setText(R.string.microphoneSwitchLogMenuEditPlayRou);
+        extendedSwitchSpeaker.setText(R.string.loudSpeakerSwitchLogMenuEditRou);
+        muteButtonPopUp.setText(R.string.muteButtonLogRou);
+        continueButtonPopUp.setText(R.string.nextButtonLogMenuPlayRou);
+        restartPresentationAudio = getString(R.string.restartPresentationAudioLogRou);
+        microphoneSelectAudio = getString(R.string.microphoneSelectOptionAudioLogEditRou);
+        microphoneDeselectAudio = getString(R.string.microphoneDeselectOptionAudioLogEditRou);
+        speakerSelectAudio = getString(R.string.speakerSelectOptionAudioLogEditRou);
+        speakerDeselectAudio = getString(R.string.speakerDeselectOptionAudioLogEditRou);
+        selectALanguageToastAudio = getString(R.string.selectALanguageToastAudioLogRou);
 
     }
 
@@ -654,7 +713,15 @@ public class MainActivity extends AppCompatActivity {
     private void setTextToSpeechListener(String feedback) {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            checkOptions("Now, you are in Main Activity!", "Activity");
+            switch(currentScreen){
+                case "Activity":
+                    checkOptions(feedback, "Activity");
+                    break;
+                case "PopUp":
+                    speak(feedback, QUEUE_ADD);
+                    break;
+
+            }
 
         });
 
@@ -774,12 +841,19 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("input", result.get(0));
                 switch (LoggedUserData.language) {
                     case "english":
-                    case "romanian":
                         if (control.equals("PopUp")) {
                             popUpSpeechInputEn(voiceInput);
                         }
                         if (control.equals("Activity")) {
                             activitySpeechInputEn(voiceInput);
+                        }
+                        break;
+                    case "romanian":
+                        if (control.equals("PopUp")) {
+                            popUpSpeechInputRou(voiceInput);
+                        }
+                        if (control.equals("Activity")) {
+                            activitySpeechInputRou(voiceInput);
                         }
                         break;
                     default:
@@ -810,16 +884,12 @@ public class MainActivity extends AppCompatActivity {
                 if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.engLanguageRadioButton) {
                     engRadioButton.performClick();
                 } else {
-                    speak("English language is also selected!", QUEUE_ADD);
+                    speak(getString(R.string.englishAlsoSelectedAudioLogEditEn), QUEUE_ADD);
                 }
                 break;
             case "romanian":
             case "Romanian":
-                if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.romLanguageRadioButton) {
-                    romRadioButton.performClick();
-                } else {
-                    speak("Romanian language is also selected!", QUEUE_ADD);
-                }
+                romRadioButton.performClick();
                 break;
             case "microphone":
             case "Microphone":
@@ -835,7 +905,47 @@ public class MainActivity extends AppCompatActivity {
                 return;
             case "describe":
             case "described":
-                speak("Welcome to Trivia!", QUEUE_ADD);
+                speak(describePopUpAudio, QUEUE_ADD);
+                return;
+
+            default:
+                invalidVoiceInput("PopUp");
+        }
+
+    }
+
+    private void popUpSpeechInputRou(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+        switch (voiceInput) {
+            case "engleză":
+            case "Engleza":
+                engRadioButton.performClick();
+                break;
+            case "română":
+            case "Română":
+                if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.romLanguageRadioButton) {
+                    romRadioButton.performClick();
+
+                } else {
+                    speak(getString(R.string.romanianAlsoSelectedAudioLogEditRou), QUEUE_ADD);
+
+                }
+                break;
+            case "microfon":
+            case "Microfon":
+                extendedSwitchMicrophone.performClick();
+                break;
+            case "difuzor":
+            case "Difuzor":
+                extendedSwitchSpeaker.performClick();
+                break;
+            case "continuă":
+            case "Continuă":
+                continueButtonPopUp.performClick();
+                return;
+            case "descrie":
+            case "descriere":
+                speak(describePopUpAudio, QUEUE_ADD);
                 return;
 
             default:
@@ -845,13 +955,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void invalidVoiceInput(String currentScreen) {
-        Toast.makeText(this, "Invalid command!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, invalidCommandToastAudio, Toast.LENGTH_SHORT).show();
         switch (currentScreen) {
             case "PopUp":
-                speak("Invalid command!", QUEUE_ADD);
+                speak(invalidCommandToastAudio, QUEUE_ADD);
                 break;
             case "Activity":
-                checkOptions("Invalid command!", currentScreen);
+                checkOptions(invalidCommandToastAudio, currentScreen);
                 break;
 
         }
@@ -873,7 +983,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkSetEmailCommand(String voiceInput) {
+    private boolean checkSetEmailCommandEn(String voiceInput) {
         String platform;
         boolean rule;
 
@@ -886,7 +996,7 @@ public class MainActivity extends AppCompatActivity {
             }
             email = email.replaceAll(platform, "@" + platform + ".com");
             emailInput.setText(email);
-            checkOptions("Mail was set to " + email + "!", "Activity");
+            checkOptions(mailSetAudio + SPACESTRING + email + "!", "Activity");
 
         } else {
             return false;
@@ -896,13 +1006,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkSetPasswordCommand(String voiceInput) {
+    private boolean checkSetEmailCommandRou(String voiceInput) {
+        String platform;
+        boolean rule;
+
+        rule = voiceInput.startsWith("setează email ");
+        if (rule) {
+            String email = usefulDataExtract(voiceInput, 14);
+            if ((platform = getPlatformFromVoiceInput(email)) == null) {
+                invalidVoiceInput("Activity");
+                return false;
+            }
+            email = email.replaceAll(platform, "@" + platform + ".com");
+            emailInput.setText(email);
+            checkOptions(mailSetAudio + SPACESTRING + email + "!", "Activity");
+
+        } else {
+            return false;
+
+        }
+        return true;
+
+    }
+
+    private boolean checkSetPasswordCommandEn(String voiceInput) {
         boolean rule;
         rule = voiceInput.startsWith("set password ");
         if (rule) {
             String password = usefulDataExtract(voiceInput, 13);
             passwordInput.setText(password);
-            checkOptions("Password was set!", "Activity");
+            checkOptions(passwordSetAudio, "Activity");
 
         } else {
             return false;
@@ -912,7 +1045,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkSendMailCommand(String voiceInput) {
+    private boolean checkSetPasswordCommandRou(String voiceInput) {
+        boolean rule;
+        rule = voiceInput.startsWith("setează parolă ");
+        if (rule) {
+            String password = usefulDataExtract(voiceInput, 15);
+            passwordInput.setText(password);
+            checkOptions(passwordSetAudio, "Activity");
+
+        } else {
+            return false;
+
+        }
+        return true;
+
+    }
+
+    private boolean checkSendMailCommandEn(String voiceInput) {
         String platform;
         short length = 0;
         boolean rule = false;
@@ -945,6 +1094,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private boolean checkSendMailCommandRou(String voiceInput) {
+        String platform;
+
+        if (voiceInput.startsWith("trimite mail ")) {
+            String email = usefulDataExtract(voiceInput, 13);
+            if ((platform = getPlatformFromVoiceInput(email)) == null) {
+                invalidVoiceInput("Activity");
+                return false;
+            }
+            email = email.replaceAll(platform, "@" + platform + ".com");
+            forgotPasswordEmailInput.setText(email);
+            sendMailButton.performClick();
+
+        } else {
+            return false;
+
+        }
+        return true;
+
+    }
+
     private String usefulDataExtract(String voiceInput, int length) {
         String usefulData = voiceInput.substring(length);
         usefulData = usefulData.replaceAll("\\s+", "");
@@ -956,15 +1126,15 @@ public class MainActivity extends AppCompatActivity {
     private void activitySpeechInputEn(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
 
-        if (checkSetEmailCommand(voiceInput)) {
+        if (checkSetEmailCommandEn(voiceInput)) {
             return;
 
         }
-        if (checkSetPasswordCommand(voiceInput)) {
+        if (checkSetPasswordCommandEn(voiceInput)) {
             return;
 
         }
-        if (checkSendMailCommand(voiceInput)) {
+        if (checkSendMailCommandEn(voiceInput)) {
             return;
 
         }
@@ -979,7 +1149,44 @@ public class MainActivity extends AppCompatActivity {
             case "describe":
             case "described":
                 if (optionList.get(EXSPEAKER).isValue()) {
-                    speak("Activity description!", QUEUE_ADD);
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                }
+                return;
+            default:
+                invalidVoiceInput("Activity");
+
+        }
+
+    }
+
+    private void activitySpeechInputRou(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+
+        if (checkSetEmailCommandRou(voiceInput)) {
+            return;
+
+        }
+        if (checkSetPasswordCommandRou(voiceInput)) {
+            return;
+
+        }
+        if (checkSendMailCommandRou(voiceInput)) {
+            return;
+
+        }
+
+        switch (voiceInput) {
+            case "login":
+                logInButton.performClick();
+                return;
+            case "creează cont":
+                createAccountButton.performClick();
+                return;
+            case "descrie":
+            case "descriere":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
 
                 }
                 return;
@@ -1019,15 +1226,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void connected() {
         connectionStatus = true;
-        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         switch (currentScreen) {
             case "Nothing":
             case "PopUp":
-                speak("Connected", QUEUE_ADD);
+                speak(connectedToastAudio, QUEUE_ADD);
                 break;
             case "Activity":
-                checkOptions("Connected", currentScreen);
+                checkOptions(connectedToastAudio, currentScreen);
                 break;
             default:
                 break;
@@ -1039,15 +1246,15 @@ public class MainActivity extends AppCompatActivity {
     private void lossConnection() {
         if (!optionList.get(EXMIC).isValue()) {
             connectionStatus = false;
-            Toast.makeText(getApplicationContext(), "Connection lost!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
             switch (currentScreen) {
                 case "Nothing":
                 case "PopUp":
-                    speak("Connection lost!", QUEUE_ADD);
+                    speak(connectionLostToastAudio, QUEUE_ADD);
                     break;
                 case "Activity":
                     if (optionList.get(EXSPEAKER).isValue()) {
-                        speak("Connection lost!", QUEUE_ADD);
+                        speak(connectionLostToastAudio, QUEUE_ADD);
 
                     }
                     break;

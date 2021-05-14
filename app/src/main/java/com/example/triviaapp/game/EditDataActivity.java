@@ -117,10 +117,10 @@ public class EditDataActivity extends AppCompatActivity {
         newUserNameTextView.setText(R.string.userNameTextViewEditEn);
         oldPasswordTextView.setText(R.string.oldPasswordTextViewEditEn);
         newPasswordTextView.setText(R.string.newPasswordTextViewEditEn);
-        chooseLanguageTextView.setText(R.string.chooseLanguageTextViewEditEn);
-        exOptionsTextView.setText(R.string.exOptionsTextViewEditEn);
-        exMicSwitch.setText(R.string.microphoneSwitchMenuEditPlayEn);
-        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchMenuEditEn);
+        chooseLanguageTextView.setText(R.string.chooseLanguageTextViewLogEditEn);
+        exOptionsTextView.setText(R.string.exOptionsTextViewLogEditEn);
+        exMicSwitch.setText(R.string.microphoneSwitchLogMenuEditPlayEn);
+        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchLogMenuEditEn);
         editButton.setText(R.string.editButtonEditEn);
         backButton.setText(R.string.backButtonEditEn);
         deleteButton.setText(R.string.deleteAccountButtonEditEn);
@@ -138,6 +138,10 @@ public class EditDataActivity extends AppCompatActivity {
         connectedToastAudio = getString(R.string.connectionToastAudioEn);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
+        microphoneSelectAudio = getString(R.string.microphoneSelectOptionAudioLogEditEn);
+        microphoneDeselectAudio = getString(R.string.microphoneDeselectOptionAudioLogEditEn);
+        speakerSelectAudio = getString(R.string.speakerSelectOptionAudioLogEditEn);
+        speakerDeselectAudio = getString(R.string.speakerDeselectOptionAudioLogEditEn);
         oldPasswordSetAudio = getString(R.string.oldPasswordSetAudioEditEn);
 
     }
@@ -147,10 +151,10 @@ public class EditDataActivity extends AppCompatActivity {
         newUserNameTextView.setText(R.string.userNameTextViewEditRou);
         oldPasswordTextView.setText(R.string.oldPasswordTextViewEditRou);
         newPasswordTextView.setText(R.string.newPasswordTextViewEditRou);
-        chooseLanguageTextView.setText(R.string.chooseLanguageTextViewEditRou);
-        exOptionsTextView.setText(R.string.exOptionsTextViewEditRou);
-        exMicSwitch.setText(R.string.microphoneSwitchMenuEditPlayRou);
-        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchMenuEditRou);
+        chooseLanguageTextView.setText(R.string.chooseLanguageTextViewLogEditRou);
+        exOptionsTextView.setText(R.string.exOptionsTextViewLogEditRou);
+        exMicSwitch.setText(R.string.microphoneSwitchLogMenuEditPlayRou);
+        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchLogMenuEditRou);
         editButton.setText(R.string.editButtonEditRou);
         backButton.setText(R.string.backButtonEditRou);
         deleteButton.setText(R.string.deleteAccountButtonEditRou);
@@ -168,10 +172,10 @@ public class EditDataActivity extends AppCompatActivity {
         connectedToastAudio = getString(R.string.connectionToastAudioRou);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
-        microphoneSelectAudio = getString(R.string.microphoneSelectOptionAudioEditRou);
-        microphoneDeselectAudio = getString(R.string.microphoneDeselectOptionAudioEditRou);
-        speakerSelectAudio = getString(R.string.speakerSelectOptionAudioEditRou);
-        speakerDeselectAudio = getString(R.string.speakerDeselectOptionAudioEditRou);
+        microphoneSelectAudio = getString(R.string.microphoneSelectOptionAudioLogEditRou);
+        microphoneDeselectAudio = getString(R.string.microphoneDeselectOptionAudioLogEditRou);
+        speakerSelectAudio = getString(R.string.speakerSelectOptionAudioLogEditRou);
+        speakerDeselectAudio = getString(R.string.speakerDeselectOptionAudioLogEditRou);
         oldPasswordSetAudio = getString(R.string.oldPasswordSetAudioEditRou);
 
     }
@@ -266,7 +270,7 @@ public class EditDataActivity extends AppCompatActivity {
 
                     selectedLanguage = Locale.ENGLISH;
                     speechInitialize();
-                    setTextToSpeechListener(getString(R.string.englishLanguageSelectedAudioEditEn));
+                    setTextToSpeechListener(getString(R.string.englishLanguageSelectedAudioLogEditEn));
 
                     LoggedUserData.language = "english";
                     editor.putString("language", "english");
@@ -278,7 +282,7 @@ public class EditDataActivity extends AppCompatActivity {
 
                     selectedLanguage = Locale.getDefault();
                     speechInitialize();
-                    setTextToSpeechListener(getString(R.string.romanianLanguageSelectedAudioEditRou));
+                    setTextToSpeechListener(getString(R.string.romanianLanguageSelectedAudioLogEditRou));
 
                     LoggedUserData.language = "romanian";
                     editor.putString("language", "romanian");
@@ -664,10 +668,9 @@ public class EditDataActivity extends AppCompatActivity {
         usefulData = usefulData.replaceAll("\\s", "");
         return usefulData;
 
-
     }
 
-    private boolean checkNewUserNameCommandEn(String voiceInput) {
+    private String checkNewUserNameCommandEn(String voiceInput) {
         short length = 0;
         boolean rule = false;
         if (voiceInput.startsWith("new user name ")) {
@@ -682,56 +685,43 @@ public class EditDataActivity extends AppCompatActivity {
         }
 
         if (rule) {
-            String userName = usefulDataExtract(voiceInput, length);
-            newUserNameEditView.setText(userName);
-            updateUserName(userName);
-            return true;
+            return usefulDataExtract(voiceInput, length);
 
         }
 
-        return false;
+        return null;
 
     }
 
-    private boolean checkNewUserNameCommandRou(String voiceInput) {
+    private String checkNewUserNameCommandRou(String voiceInput) {
         if (voiceInput.startsWith("nume nou ")) {
             String userName = usefulDataExtract(voiceInput, 9);
-            newUserNameEditView.setText(userName);
-            updateUserName(userName);
-            return true;
+            return userName;
 
         }
 
-        return false;
+        return null;
 
     }
 
 
-    private boolean checkSetOldPasswordCommandEn(String voiceInput) {
+    private String checkSetOldPasswordCommandEn(String voiceInput) {
         if (voiceInput.startsWith("old password ")) {
-            String password = usefulDataExtract(voiceInput, 13);
-            oldPasswordEditView.setText(password);
-            checkOptions(oldPasswordSetAudio);
-
-        } else {
-            return false;
+            return usefulDataExtract(voiceInput, 13);
 
         }
-        return true;
+
+        return null;
 
     }
 
-    private boolean checkSetOldPasswordCommandRou(String voiceInput) {
+    private String checkSetOldPasswordCommandRou(String voiceInput) {
         if (voiceInput.startsWith("parolă veche ")) {
-            String password = usefulDataExtract(voiceInput, 13);
-            oldPasswordEditView.setText(password);
-            checkOptions(oldPasswordSetAudio);
+            return usefulDataExtract(voiceInput, 13);
 
-        } else {
-            return false;
 
         }
-        return true;
+        return null;
 
     }
 
@@ -773,40 +763,39 @@ public class EditDataActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkDeletePasswordCommandEn(String voiceInput) {
+    private String checkDeletePasswordCommandEn(String voiceInput) {
         if (voiceInput.startsWith("delete password ")) {
-            String password = usefulDataExtract(voiceInput, 16);
-            passwordDeleteView.setText(password);
-            checkOptions(oldPasswordSetAudio);
+            return usefulDataExtract(voiceInput, 16);
         } else {
-            return false;
+            return null;
 
         }
-        return true;
 
     }
 
-    private boolean checkDeletePasswordCommandRou(String voiceInput) {
+    private String checkDeletePasswordCommandRou(String voiceInput) {
         if (voiceInput.startsWith("parolă ștergere ")) {
-            String password = usefulDataExtract(voiceInput, 16);
-            passwordDeleteView.setText(password);
-            checkOptions(oldPasswordSetAudio);
+            return usefulDataExtract(voiceInput, 16);
+
         } else {
-            return false;
+            return null;
 
         }
-        return true;
 
     }
 
     private void speechInputEn(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
-
-        if (checkNewUserNameCommandEn(voiceInput)) {
+        String utilData;
+        if ((utilData = checkNewUserNameCommandEn(voiceInput)) != null) {
+            newUserNameEditView.setText(utilData);
+            updateUserName(utilData);
             return;
 
         }
-        if (checkSetOldPasswordCommandEn(voiceInput)) {
+        if ((utilData = checkSetOldPasswordCommandEn(voiceInput)) != null) {
+            oldPasswordEditView.setText(utilData);
+            checkOptions(oldPasswordSetAudio);
             return;
 
         }
@@ -816,7 +805,9 @@ public class EditDataActivity extends AppCompatActivity {
 
         }
 
-        if (checkDeletePasswordCommandEn(voiceInput)) {
+        if ((utilData = checkDeletePasswordCommandEn(voiceInput)) != null) {
+            passwordDeleteView.setText(utilData);
+            checkOptions(oldPasswordSetAudio);
             return;
 
         }
@@ -827,7 +818,7 @@ public class EditDataActivity extends AppCompatActivity {
                 if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.engLanguageRadioButton) {
                     engRadioButton.performClick();
                 } else {
-                    speak(getString(R.string.englishAlsoSelectedAudioEditEn), QUEUE_ADD);
+                    speak(getString(R.string.englishAlsoSelectedAudioLogEditEn), QUEUE_ADD);
 
                 }
                 break;
@@ -861,11 +852,16 @@ public class EditDataActivity extends AppCompatActivity {
     private void speechInputRou(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
 
-        if (checkNewUserNameCommandRou(voiceInput)) {
+        String utilData;
+        if ((utilData = checkNewUserNameCommandEn(voiceInput)) != null) {
+            newUserNameEditView.setText(utilData);
+            updateUserName(utilData);
             return;
 
         }
-        if (checkSetOldPasswordCommandRou(voiceInput)) {
+        if ((utilData = checkSetOldPasswordCommandEn(voiceInput)) != null) {
+            oldPasswordEditView.setText(utilData);
+            checkOptions(oldPasswordSetAudio);
             return;
 
         }
@@ -875,7 +871,9 @@ public class EditDataActivity extends AppCompatActivity {
 
         }
 
-        if (checkDeletePasswordCommandRou(voiceInput)) {
+        if ((utilData = checkDeletePasswordCommandEn(voiceInput)) != null) {
+            passwordDeleteView.setText(utilData);
+            checkOptions(oldPasswordSetAudio);
             return;
 
         }
@@ -890,7 +888,7 @@ public class EditDataActivity extends AppCompatActivity {
                 if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.romLanguageRadioButton) {
                     romRadioButton.performClick();
                 } else {
-                    speak(getString(R.string.romanianAlsoSelectedAudioEditRou), QUEUE_ADD);
+                    speak(getString(R.string.romanianAlsoSelectedAudioLogEditRou), QUEUE_ADD);
 
                 }
                 break;
