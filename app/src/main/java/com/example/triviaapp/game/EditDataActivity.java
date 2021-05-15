@@ -133,7 +133,7 @@ public class EditDataActivity extends AppCompatActivity {
         successPasswordToastAudio = getString(R.string.successPasswordToastAudioEditEn);
         emptyPasswordToast = getString(R.string.emptyPasswordToastEditEn);
         successDeleteToastAudio = getString(R.string.successDeleteToastAudioEditEn);
-        userNameSetAudio = getString(R.string.userNameSetAudioEditEn);
+        userNameSetAudio = getString(R.string.userNameSetAudioRegEditEn);
         describeAudio = getString(R.string.describeAudioEditEn);
         connectedToastAudio = getString(R.string.connectionToastAudioEn);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
@@ -167,7 +167,7 @@ public class EditDataActivity extends AppCompatActivity {
         successPasswordToastAudio = getString(R.string.successPasswordToastAudioEditRou);
         emptyPasswordToast = getString(R.string.emptyPasswordToastEditRou);
         successDeleteToastAudio = getString(R.string.successDeleteToastAudioEditRou);
-        userNameSetAudio = getString(R.string.userNameSetAudioEditRou);
+        userNameSetAudio = getString(R.string.userNameSetAudioRegEditRou);
         describeAudio = getString(R.string.describeAudioEditRou);
         connectedToastAudio = getString(R.string.connectionToastAudioRou);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);

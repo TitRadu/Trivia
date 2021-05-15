@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity {
         wrongMailToastAudio = getString(R.string.wrongMailToastAudioLogEn);
         audioGrantedToastAudio = getString(R.string.audioGrantedToastAudioLogEn);
         audioDeniedToastAudio = getString(R.string.audioDeniedToastAudioLogEn);
-        mailSetAudio = getString(R.string.mailSetAudioLogEn);
-        passwordSetAudio = getString(R.string.passwordSetAudioLogEn);
+        mailSetAudio = getString(R.string.mailSetAudioLogRegEn);
+        passwordSetAudio = getString(R.string.passwordSetAudioLogRegEn);
         connectedToastAudio = getString(R.string.connectionToastAudioEn);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
@@ -188,8 +188,8 @@ public class MainActivity extends AppCompatActivity {
         wrongMailToastAudio = getString(R.string.wrongMailToastAudioLogRou);
         audioGrantedToastAudio = getString(R.string.audioGrantedToastAudioLogRou);
         audioDeniedToastAudio = getString(R.string.audioDeniedToastAudioLogRou);
-        mailSetAudio = getString(R.string.mailSetAudioLogRou);
-        passwordSetAudio = getString(R.string.passwordSetAudioLogRou);
+        mailSetAudio = getString(R.string.mailSetAudioLogRegRou);
+        passwordSetAudio = getString(R.string.passwordSetAudioLogRegRou);
         connectedToastAudio = getString(R.string.connectionToastAudioRou);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
     private void setActivityStartPopUp() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             currentScreen = "Nothing";
-            speak(describeAudioPermissionAudio, QUEUE_ADD);
+            checkOptions(describeAudioPermissionAudio, currentScreen);
             checkPermission();
 
         } else {
@@ -1151,6 +1151,9 @@ public class MainActivity extends AppCompatActivity {
                 if (optionList.get(EXSPEAKER).isValue()) {
                     speak(describeCommandsAudio, QUEUE_ADD);
 
+                }else{
+                    invalidVoiceInput("Activity");
+
                 }
                 return;
             default:
@@ -1187,6 +1190,9 @@ public class MainActivity extends AppCompatActivity {
             case "descriere":
                 if (optionList.get(EXSPEAKER).isValue()) {
                     speak(describeAudio, QUEUE_ADD);
+
+                }else{
+                    invalidVoiceInput("Activity");
 
                 }
                 return;
@@ -1230,11 +1236,11 @@ public class MainActivity extends AppCompatActivity {
         speechRecognizer.destroy();
         switch (currentScreen) {
             case "Nothing":
+            case "Activity":
+                checkOptions(connectedToastAudio,currentScreen);
+                break;
             case "PopUp":
                 speak(connectedToastAudio, QUEUE_ADD);
-                break;
-            case "Activity":
-                checkOptions(connectedToastAudio, currentScreen);
                 break;
             default:
                 break;
@@ -1249,14 +1255,14 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
             switch (currentScreen) {
                 case "Nothing":
-                case "PopUp":
-                    speak(connectionLostToastAudio, QUEUE_ADD);
-                    break;
                 case "Activity":
                     if (optionList.get(EXSPEAKER).isValue()) {
                         speak(connectionLostToastAudio, QUEUE_ADD);
 
                     }
+                    break;
+                case "PopUp":
+                    speak(connectionLostToastAudio, QUEUE_ADD);
                     break;
                 default:
                     break;

@@ -75,11 +75,10 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="romanianAlsoSelectedAudioLogEditRou">Limba română este deja selectată!</string>
     <string name="selectALanguageToastAudioLogEn">Select a language!</string>
     <string name="selectALanguageToastAudioLogRou">Alege o limbă!</string>
-    <string name="mailSetAudioLogEn">Mail was set to</string>
-    <string name="mailSetAudioLogRou">Mail-ul a fost setat în</string>
-    <string name="passwordSetAudioLogEn">Password was set!</string>
-    <string name="passwordSetAudioLogRou">Parola a fost setată!</string>
-
+    <string name="mailSetAudioLogRegEn">Mail was set to</string>
+    <string name="mailSetAudioLogRegRou">Mail-ul a fost setat în</string>
+    <string name="passwordSetAudioLogRegEn">Password was set!</string>
+    <string name="passwordSetAudioLogRegRou">Parola a fost setată!</string>
     <string name="passwordHintLogRegEditEn">password</string>
     <string name="passwordHintLogRegEditRou">parolă</string>
     <string name="logInButtonLogRegEn">Log In</string>
@@ -121,6 +120,12 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="successCreateToastRegRou">Contul a fost creat cu succes!</string>
     <string name="existEmailToastRegEn">Email exists!</string>
     <string name="existEmailToastRegRou">Email indisponibil!</string>
+    <string name="describeAudioRegEn">Welcome to Register Activity!</string>
+    <string name="describeAudioRegRou">Bun venit în meniul de înregistrare!</string>
+    <string name="describeCommandsAudioRegEn">Commands description!</string>
+    <string name="describeCommandsRegRou">Descrierea comenzilor!</string>
+    <string name="userNameSetAudioRegEditEn">Username was set to</string>
+    <string name="userNameSetAudioRegEditRou">Numele a fost schimbat în</string>
 
     <string name="emailTextViewProfileEn">Signed as</string>
     <string name="emailTextViewProfileRou">Conectat ca</string>
@@ -184,8 +189,6 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="emptyPasswordToastEditRou">Confirmă cu parola veche!</string>
     <string name="successDeleteToastAudioEditEn">Account deleted successfully!</string>
     <string name="successDeleteToastAudioEditRou">Contul a fost șters cu succes!</string>
-    <string name="userNameSetAudioEditEn">Username was set to</string>
-    <string name="userNameSetAudioEditRou">Numele a fost schimbat în</string>
     <string name="describeAudioEditEn">Welcome to settings!</string>
     <string name="describeAudioEditRou">Bun venit în setări!</string>
     <string name="oldPasswordSetAudioEditEn">Old password was set!</string>

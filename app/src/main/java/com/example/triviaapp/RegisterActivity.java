@@ -34,6 +34,7 @@ import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.LoggedUserData.EXMIC;
 import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.LoggedUserData.currentActivity;
 import static com.example.triviaapp.LoggedUserData.optionList;
@@ -46,7 +47,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     Button createAccountButton;
     TextView alreadyHaveAccountTextView;
-    String emptyEmailToast, emptyUserNameToast, emptyPasswordToast, shortPasswordToast, existUserNameToast, successCreateToast, existEmailToast;
+    String emptyEmailToastAudio, emptyUserNameToastAudio, emptyPasswordToastAudio, shortPasswordToastAudio, existUserNameToastAudio,
+    successCreateToast, existEmailToastAudio, describeAudio, setMailAudio, setPasswordAudio, userNameSetAudio, describeCommandsAudio,
+    connectedToastAudio, lostConnectionToastAudio, invalidCommandToastAudio;
 
     Date date;
     SharedPreferences prefs;
@@ -101,13 +104,21 @@ public class RegisterActivity extends AppCompatActivity {
         passwordInput.setHint(R.string.passwordHintLogRegEditEn);
         createAccountButton.setText(R.string.createButtonLogRegEn);
         alreadyHaveAccountTextView.setText(R.string.alreadyHaveTextViewRegEn);
-        emptyEmailToast = getString(R.string.emptyMailToastAudioLogRegEn);
-        emptyUserNameToast = getString(R.string.emptyUserNameToastRegEn);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastAudioLogRegEn);
-        shortPasswordToast = getString(R.string.shortPasswordToastAudioRegEditEn);
-        existUserNameToast = getString(R.string.existUserNameToastAudioRegEditEn);
+        emptyEmailToastAudio = getString(R.string.emptyMailToastAudioLogRegEn);
+        emptyUserNameToastAudio = getString(R.string.emptyUserNameToastRegEn);
+        emptyPasswordToastAudio = getString(R.string.emptyPasswordToastAudioLogRegEn);
+        shortPasswordToastAudio = getString(R.string.shortPasswordToastAudioRegEditEn);
+        existUserNameToastAudio = getString(R.string.existUserNameToastAudioRegEditEn);
         successCreateToast = getString(R.string.successCreateToastRegEn);
-        existEmailToast = getString(R.string.existEmailToastRegEn);
+        existEmailToastAudio = getString(R.string.existEmailToastRegEn);
+        describeAudio = getString(R.string.describeAudioRegEn);
+        setMailAudio = getString(R.string.mailSetAudioLogRegEn);
+        setPasswordAudio = getString(R.string.passwordSetAudioLogRegEn);
+        userNameSetAudio = getString(R.string.userNameSetAudioRegEditEn);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioLogEn);
+        connectedToastAudio = getString(R.string.connectionToastAudioEn);
+        lostConnectionToastAudio = getString(R.string.connectionLostToastAudioEn);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
 
     }
 
@@ -116,13 +127,21 @@ public class RegisterActivity extends AppCompatActivity {
         passwordInput.setHint(R.string.passwordHintLogRegEditRou);
         createAccountButton.setText(R.string.createButtonLogRegRou);
         alreadyHaveAccountTextView.setText(R.string.alreadyHaveTextViewRegRou);
-        emptyEmailToast = getString(R.string.emptyMailToastAudioLogRegRou);
-        emptyUserNameToast = getString(R.string.emptyUserNameToastRegRou);
-        emptyPasswordToast = getString(R.string.emptyPasswordToastAudioLogRegRou);
-        shortPasswordToast = getString(R.string.shortPasswordToastAudioRegEditRou);
-        existUserNameToast = getString(R.string.existUserNameToastAudioRegEditRou);
+        emptyEmailToastAudio = getString(R.string.emptyMailToastAudioLogRegRou);
+        emptyUserNameToastAudio = getString(R.string.emptyUserNameToastRegRou);
+        emptyPasswordToastAudio = getString(R.string.emptyPasswordToastAudioLogRegRou);
+        shortPasswordToastAudio = getString(R.string.shortPasswordToastAudioRegEditRou);
+        existUserNameToastAudio = getString(R.string.existUserNameToastAudioRegEditRou);
         successCreateToast = getString(R.string.successCreateToastRegRou);
-        existEmailToast = getString(R.string.existEmailToastRegRou);
+        existEmailToastAudio = getString(R.string.existEmailToastRegRou);
+        describeAudio = getString(R.string.describeAudioRegRou);
+        setMailAudio = getString(R.string.mailSetAudioLogRegRou);
+        setPasswordAudio = getString(R.string.passwordSetAudioLogRegRou);
+        userNameSetAudio = getString(R.string.userNameSetAudioRegEditRou);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioLogRou);
+        connectedToastAudio = getString(R.string.connectionToastAudioRou);
+        lostConnectionToastAudio = getString(R.string.connectionLostToastAudioRou);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
 
     }
 
@@ -134,7 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
                 break;
             case "romanian":
                 setViewForRomanianLanguage();
-                selectedLanguage = Locale.ENGLISH;
+                selectedLanguage = Locale.getDefault();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
@@ -153,9 +172,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean inputCheck(String userName, String email, String password) {
         if (email.isEmpty()) {
-            Toast.makeText(this, emptyEmailToast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, emptyEmailToastAudio, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                checkOptions("Introduce an email!");
+                checkOptions(emptyEmailToastAudio);
 
             }
             return false;
@@ -163,9 +182,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (userName.isEmpty()) {
-            Toast.makeText(this, emptyUserNameToast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, emptyUserNameToastAudio, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                checkOptions("Introduce an username!");
+                checkOptions(emptyUserNameToastAudio);
 
             }
             return false;
@@ -173,9 +192,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (password.isEmpty()) {
-            Toast.makeText(this, emptyPasswordToast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, emptyPasswordToastAudio, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                checkOptions("Introduce a password!");
+                checkOptions(emptyPasswordToastAudio);
 
             }
             return false;
@@ -183,9 +202,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (password.length() < 6) {
-            Toast.makeText(this, shortPasswordToast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, shortPasswordToastAudio, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                checkOptions("Password must contain minimum 6 characters!");
+                checkOptions(shortPasswordToastAudio);
 
             }
             return false;
@@ -207,8 +226,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         if (LoggedUserData.userNameList.contains(userName)) {
-            Toast.makeText(getBaseContext(), existUserNameToast, Toast.LENGTH_SHORT).show();
-            checkOptions("Username exists!");
+            Toast.makeText(getBaseContext(), existUserNameToastAudio, Toast.LENGTH_SHORT).show();
+            checkOptions(existUserNameToastAudio);
             return;
 
         }
@@ -229,9 +248,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                     } else {
                         // If sign in fails, display a message to the user.
-                        Toast.makeText(getBaseContext(), existEmailToast, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), existEmailToastAudio, Toast.LENGTH_SHORT).show();
                         if (optionList.get(EXSPEAKER).isValue()) {
-                            speak("Mail exists!", QUEUE_ADD);
+                            speak(existEmailToastAudio, QUEUE_ADD);
 
                         } else {
                             if (optionList.get(EXMIC).isValue()) {
@@ -291,7 +310,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            checkOptions("Welcome to Register Activity!");
+            checkOptions(describeAudio);
             setConnectionListener();
 
         });
@@ -385,9 +404,9 @@ public class RegisterActivity extends AppCompatActivity {
                     speechRecognizer.destroy();
                     if (connectionStatus) {
                         connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), lostConnectionToastAudio, Toast.LENGTH_SHORT).show();
                         if (optionList.get(EXSPEAKER).isValue()) {
-                            speak("Connection failed", QUEUE_ADD);
+                            speak(lostConnectionToastAudio, QUEUE_ADD);
 
                         }
                     }
@@ -403,8 +422,10 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.d("input", result.get(0));
                 switch (LoggedUserData.language) {
                     case "english":
-                    case "romanian":
                         speechInputEn(voiceInput);
+                        break;
+                    case "romanian":
+                        speechInputRou(voiceInput);
                         break;
                     default:
                         throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
@@ -427,8 +448,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void invalidVoiceInput() {
-        Toast.makeText(this, "Invalid command!", Toast.LENGTH_SHORT).show();
-        checkOptions("Invalid command!");
+        Toast.makeText(this, invalidCommandToastAudio, Toast.LENGTH_SHORT).show();
+        checkOptions(invalidCommandToastAudio);
 
     }
 
@@ -447,7 +468,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkSetEmailCommand(String voiceInput) {
+    private boolean checkSetEmailCommandEn(String voiceInput) {
         String platform;
         boolean rule;
 
@@ -460,7 +481,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
             email = email.replaceAll(platform, "@" + platform + ".com");
             emailInput.setText(email);
-            checkOptions("Mail was set to " + email + "!");
+            checkOptions(setMailAudio + SPACESTRING +  email + "!");
             return true;
 
         }
@@ -468,20 +489,53 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkSetPasswordCommand(String voiceInput) {
+    private boolean checkSetEmailCommandRou(String voiceInput) {
+        String platform;
+        boolean rule;
+
+        rule = voiceInput.startsWith("setează email ");
+        if (rule) {
+            String email = usefulDataExtract(voiceInput, 14);
+            if ((platform = getPlatformFromVoiceInput(email)) == null) {
+                invalidVoiceInput();
+                return false;
+            }
+            email = email.replaceAll(platform, "@" + platform + ".com");
+            emailInput.setText(email);
+            checkOptions(setMailAudio + SPACESTRING + email + "!");
+            return true;
+
+        }
+        return false;
+
+    }
+
+    private boolean checkSetPasswordCommandEn(String voiceInput) {
         boolean rule;
         rule = voiceInput.startsWith("set password ");
         if (rule) {
             String password = usefulDataExtract(voiceInput, 13);
             passwordInput.setText(password);
-            checkOptions("Password was set!");
+            checkOptions(setPasswordAudio);
+            return true;
+        }
+        return false;
+
+    }
+    private boolean checkSetPasswordCommandRou(String voiceInput) {
+        boolean rule;
+        rule = voiceInput.startsWith("setează parolă ");
+        if (rule) {
+            String password = usefulDataExtract(voiceInput, 15);
+            passwordInput.setText(password);
+            checkOptions(setPasswordAudio);
             return true;
         }
         return false;
 
     }
 
-    private boolean checkSetUserNameCommand(String voiceInput){
+    private boolean checkSetUserNameCommandEn(String voiceInput){
         short length = 0;
         boolean rule = false;
         if(voiceInput.startsWith("set user name ")){
@@ -498,7 +552,19 @@ public class RegisterActivity extends AppCompatActivity {
         if(rule){
             String userName = usefulDataExtract(voiceInput, length);
             userNameInput.setText(userName);
-            checkOptions("Username was set to " + userName + "!");
+            checkOptions(userNameSetAudio + SPACESTRING + userName + "!");
+            return true;
+
+        }
+        return false;
+
+    }
+
+    private boolean checkSetUserNameCommandRou(String voiceInput){
+        if(voiceInput.startsWith("setează nume ")){
+            String userName = usefulDataExtract(voiceInput, 13);
+            userNameInput.setText(userName);
+            checkOptions(userNameSetAudio + SPACESTRING + userName + "!");
             return true;
 
         }
@@ -517,16 +583,16 @@ public class RegisterActivity extends AppCompatActivity {
     private void speechInputEn(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
 
-        if (checkSetEmailCommand(voiceInput)) {
+        if (checkSetEmailCommandEn(voiceInput)) {
             return;
 
         }
-        if(checkSetUserNameCommand(voiceInput)){
+        if(checkSetUserNameCommandEn(voiceInput)){
             return;
 
         }
 
-        if (checkSetPasswordCommand(voiceInput)) {
+        if (checkSetPasswordCommandEn(voiceInput)) {
             return;
 
         }
@@ -540,7 +606,50 @@ public class RegisterActivity extends AppCompatActivity {
             case "describe":
             case "described":
                 if (optionList.get(EXSPEAKER).isValue()) {
-                    speak("Welcome to Register Activity!", QUEUE_ADD);
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                }else{
+                    invalidVoiceInput();
+
+                }
+                return;
+            default:
+                invalidVoiceInput();
+
+        }
+
+    }
+
+    private void speechInputRou(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+
+        if (checkSetEmailCommandRou(voiceInput)) {
+            return;
+
+        }
+        if(checkSetUserNameCommandRou(voiceInput)){
+            return;
+
+        }
+
+        if (checkSetPasswordCommandRou(voiceInput)) {
+            return;
+
+        }
+        switch (voiceInput) {
+            case "creează cont":
+                createAccountButton.performClick();
+                return;
+            case "înapoi":
+                alreadyHaveAccountTextView.performClick();
+                return;
+            case "descrie":
+            case "descriere":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                }else{
+                    invalidVoiceInput();
 
                 }
                 return;
@@ -579,18 +688,18 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void connected(){
         connectionStatus = true;
-        Toast.makeText(getApplicationContext(),"Connected",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),connectedToastAudio,Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
-        checkOptions("Connected");
+        checkOptions(connectedToastAudio);
 
     }
 
     private void lossConnection(){
         if(!optionList.get(EXMIC).isValue()) {
             connectionStatus = false;
-            Toast.makeText(getApplicationContext(),"Connection lost!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),lostConnectionToastAudio,Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Connection lost!",QUEUE_ADD);
+                speak(lostConnectionToastAudio,QUEUE_ADD);
 
             }
 
@@ -611,6 +720,5 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
     }
-
 
 }
