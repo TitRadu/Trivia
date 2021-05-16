@@ -29,7 +29,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +38,7 @@ import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.LoggedUserData.EXMIC;
 import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.LoggedUserData.currentActivity;
 import static com.example.triviaapp.LoggedUserData.optionList;
@@ -46,10 +46,8 @@ import static com.example.triviaapp.LoggedUserData.optionList;
 public class LuckPlayModeActivity extends AppCompatActivity {
     TextView countTextView, fiftyCountTextTextView, fiftyCountValueTextView, rightCountTextTextView, rightCountValueTextView;
     Button firstOptionButton, secondOptionButton, thirdOptionButton, fourthOptionButton, collectButton, collectButtonPopUp;
-    String collectQuestionTextViewPopUpTextString;
-    String lostPrizeTextViewPopUpTextString;
-    String collectButtonPopUpTextString;
-    String lostPrizeButtonPopUpTextString;
+    String collectQuestionTextViewPopUpTextAudioString, lostPrizeTextViewPopUpTextAudioString, collectButtonPopUpTextString, lostPrizeButtonPopUpTextString,
+    wonFFAudio, wonRAAudio, noneAnswerAudio, wrongAnswerAudio, fiftyFiftyNumberAudio, rightAnswerNumberAudio, shortRAButtonTextString, noneAnswerButtonTextString, wrongAnswerButtonTextString, describeAudio, describeCommandsAudio, connectedToastAudio, lostConnectionToastAudio, invalidCommandToastAudio;
     ImageView xImageViewPopUp;
 
     int count = 1;
@@ -103,23 +101,50 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     }
 
     private void setViewForEnglishLanguage() {
-        rightCountTextTextView.setText(R.string.rightAnswerTextLuckEn);
+        rightCountTextTextView.setText(R.string.rightAnswerTextAudioLuckEn);
         collectButton.setText(R.string.collectButtonTextLuckEn);
-        collectQuestionTextViewPopUpTextString = getString(R.string.collectQuestionTextLuckEn);
-        lostPrizeTextViewPopUpTextString = getString(R.string.lostPrizeQuestionTextLuckEn);
+        collectQuestionTextViewPopUpTextAudioString = getString(R.string.collectQuestionTextAudioLuckEn);
+        lostPrizeTextViewPopUpTextAudioString = getString(R.string.lostPrizeTextAudioLuckEn);
         collectButtonPopUpTextString = getString(R.string.collectButtonTextLuckEn);
         lostPrizeButtonPopUpTextString = getString(R.string.exitButtonTextLuckEn);
+        describeAudio = getString(R.string.describeAudioLuckEn);
+        describeCommandsAudio = getString(R.string.describeAudioLuckEn);
+        wonFFAudio = getString(R.string.wonFFAudioLuckEn);
+        wonRAAudio = getString(R.string.wonRAAudioLuckEn);
+        noneAnswerAudio = getString(R.string.noneAnswerAudioLuckEn);
+        wrongAnswerAudio = getString(R.string.wrongAnswerAudioLuckEn);
+        shortRAButtonTextString = getString(R.string.rightAnswerShortTextLuckEn);
+        noneAnswerButtonTextString = getString(R.string.noneAnswerTextLuckEn);
+        wrongAnswerButtonTextString = getString(R.string.wrongAnswerTextLuckEn);
+        fiftyFiftyNumberAudio = getString(R.string.fiftyFiftyNumberAudioLuckEn);
+        rightAnswerNumberAudio = getString(R.string.rightAnswerTextAudioLuckEn);
+        connectedToastAudio = getString(R.string.connectionToastAudioEn);
+        lostConnectionToastAudio = getString(R.string.connectionLostToastAudioEn);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
 
     }
 
 
     private void setViewForRomanianLanguage() {
-        rightCountTextTextView.setText(R.string.rightAnswerTextLuckRou);
+        rightCountTextTextView.setText(R.string.rightAnswerTextAudioLuckRou);
         collectButton.setText(R.string.collectButtonTextLuckRou);
-        collectQuestionTextViewPopUpTextString = getString(R.string.collectQuestionTextLuckRou);
-        lostPrizeTextViewPopUpTextString = getString(R.string.lostPrizeQuestionTextLuckRou);
+        collectQuestionTextViewPopUpTextAudioString = getString(R.string.collectQuestionTextAudioLuckRou);
+        lostPrizeTextViewPopUpTextAudioString = getString(R.string.lostPrizeTextAudioLuckRou);
         collectButtonPopUpTextString = getString(R.string.collectButtonTextLuckRou);
         lostPrizeButtonPopUpTextString = getString(R.string.exitButtonTextLuckRou);
+        describeAudio = getString(R.string.describeAudioLuckRou);
+        wonFFAudio = getString(R.string.wonFFAudioLuckRou);
+        wonRAAudio = getString(R.string.wonRAAudioLuckRou);
+        noneAnswerAudio = getString(R.string.noneAnswerAudioLuckRou);
+        wrongAnswerAudio = getString(R.string.wrongAnswerAudioLuckRou);
+        shortRAButtonTextString = getString(R.string.rightAnswerShortTextLuckRou);
+        noneAnswerButtonTextString = getString(R.string.noneAnswerTextLuckRou);
+        wrongAnswerButtonTextString = getString(R.string.wrongAnswerTextLuckRou);
+        fiftyFiftyNumberAudio = getString(R.string.fiftyFiftyNumberAudioLuckRou);
+        rightAnswerNumberAudio = getString(R.string.rightAnswerTextAudioLuckRou);
+        connectedToastAudio = getString(R.string.connectionToastAudioRou);
+        lostConnectionToastAudio = getString(R.string.connectionLostToastAudioRou);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
 
     }
 
@@ -132,7 +157,7 @@ public class LuckPlayModeActivity extends AppCompatActivity {
                 break;
             case "romanian":
                 setViewForRomanianLanguage();
-                selectedLanguage = Locale.ENGLISH;
+                selectedLanguage = Locale.getDefault();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
@@ -184,27 +209,27 @@ public class LuckPlayModeActivity extends AppCompatActivity {
         switch (bonus) {
             case 0:
                 speechRecognizer.destroy();
-                ((Button) view).setText("R. A.");
-                checkOptions("You won a right answer!", "Base");
+                ((Button) view).setText(shortRAButtonTextString);
+                checkOptions(wonRAAudio, "Base");
                 rightAnswerCount++;
                 rightCountValueTextView.setText(String.valueOf(rightAnswerCount));
                 break;
             case 1:
                 speechRecognizer.destroy();
-                ((Button) view).setText("F. F.");
-                checkOptions("You won a fifty-fifty!", "Base");
+                ((Button) view).setText("50/50");
+                checkOptions(wonFFAudio, "Base");
                 fiftyFiftyCount++;
                 fiftyCountValueTextView.setText(String.valueOf(fiftyFiftyCount));
                 break;
             case 2:
                 speechRecognizer.destroy();
-                ((Button) view).setText("None");
-                checkOptions("You won nothing!", "Base");
+                ((Button) view).setText(noneAnswerButtonTextString);
+                checkOptions(noneAnswerAudio, "Base");
                 break;
             case 3:
                 speechRecognizer.destroy();
-                ((Button) view).setText("Wrong");
-                checkOptions("Wrong answer!", "Base");
+                ((Button) view).setText(wrongAnswerButtonTextString);
+                checkOptions(wrongAnswerAudio, "Base");
                 delay(3000, "Wrong");
                 return;
 
@@ -260,15 +285,15 @@ public class LuckPlayModeActivity extends AppCompatActivity {
 
         switch (control) {
             case "Collect":
-                infoTextViewPopUp.setText(collectQuestionTextViewPopUpTextString);
+                infoTextViewPopUp.setText(collectQuestionTextViewPopUpTextAudioString);
                 collectButtonPopUp.setText(collectButtonPopUpTextString);
-                checkOptions("Do you want to collect what you obtained until now?", "PopUpCollect");
+                checkOptions(collectQuestionTextViewPopUpTextAudioString, "PopUpCollect");
                 break;
             case "Wrong":
                 xImageViewPopUp.setVisibility(View.GONE);
-                infoTextViewPopUp.setText(lostPrizeTextViewPopUpTextString);
+                infoTextViewPopUp.setText(lostPrizeTextViewPopUpTextAudioString);
                 collectButtonPopUp.setText(lostPrizeButtonPopUpTextString);
-                checkOptions("Return to Game Activity", "PopUpWrong");
+                checkOptions(lostPrizeTextViewPopUpTextAudioString, "PopUpWrong");
                 break;
 
         }
@@ -288,7 +313,7 @@ public class LuckPlayModeActivity extends AppCompatActivity {
         speechRecognizer.destroy();
         dialog.dismiss();
         dialogBuilder = null;
-        checkOptions("Back to Luck Mode", "Base");
+        checkOptions(describeAudio, "Base");
 
 
     }
@@ -369,7 +394,7 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            checkOptions("Welcome to Luck Mode!", "Base");
+            checkOptions(describeAudio, "Base");
             setConnectionListener();
 
         });
@@ -484,9 +509,9 @@ public class LuckPlayModeActivity extends AppCompatActivity {
                     speechRecognizer.destroy();
                     if (connectionStatus) {
                         connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), lostConnectionToastAudio, Toast.LENGTH_SHORT).show();
                         if (optionList.get(EXSPEAKER).isValue()) {
-                            speak("Connection failed", QUEUE_ADD);
+                            speak(lostConnectionToastAudio, QUEUE_ADD);
 
                         }
 
@@ -503,7 +528,6 @@ public class LuckPlayModeActivity extends AppCompatActivity {
                 Log.d("Luck Activity voice input " + screen + ":", result.get(0));
                 switch (LoggedUserData.language) {
                     case "english":
-                    case "romanian":
                         switch (screen) {
                             case "Base":
                                 speechInputEn(voiceInput);
@@ -513,6 +537,20 @@ public class LuckPlayModeActivity extends AppCompatActivity {
                                 break;
                             case "PopUpWrong":
                                 speechInputPopUpWrongEn(voiceInput);
+                                break;
+
+                        }
+                        break;
+                    case "romanian":
+                        switch (screen) {
+                            case "Base":
+                                speechInputRou(voiceInput);
+                                break;
+                            case "PopUpCollect":
+                                speechInputPopUpCollectRou(voiceInput);
+                                break;
+                            case "PopUpWrong":
+                                speechInputPopUpWrongRou(voiceInput);
                                 break;
 
                         }
@@ -539,8 +577,8 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     }
 
     private void invalidVoiceInput(String screen) {
-        Toast.makeText(this, "Invalid command!", Toast.LENGTH_SHORT).show();
-        checkOptions("Invalid command!", screen);
+        Toast.makeText(this, invalidCommandToastAudio, Toast.LENGTH_SHORT).show();
+        checkOptions(invalidCommandToastAudio, screen);
 
     }
 
@@ -578,7 +616,36 @@ public class LuckPlayModeActivity extends AppCompatActivity {
                 break;
             case "prize":
                 speechRecognizer.destroy();
-                checkOptions(fiftyFiftyCount + "fifty-fifties and " + rightAnswerCount + " right answers", "base");
+                checkOptions(fiftyFiftyCount + SPACESTRING + fiftyFiftyNumberAudio + SPACESTRING + rightAnswerCount + SPACESTRING + rightAnswerNumberAudio, "base");
+                break;
+            default:
+                invalidVoiceInput("Base");
+
+        }
+
+    }
+
+    private void speechInputRou(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+        switch (voiceInput) {
+            case "1":
+                firstOptionButton.performClick();
+                break;
+            case "2":
+                secondOptionButton.performClick();
+                break;
+            case "3":
+                thirdOptionButton.performClick();
+                break;
+            case "4":
+                fourthOptionButton.performClick();
+                break;
+            case "colectează":
+                collectPopUp("Collect");
+                break;
+            case "premiu":
+                speechRecognizer.destroy();
+                checkOptions(fiftyFiftyCount + SPACESTRING + fiftyFiftyNumberAudio + SPACESTRING + rightAnswerCount + SPACESTRING + rightAnswerNumberAudio, "base");
                 break;
             default:
                 invalidVoiceInput("Base");
@@ -603,9 +670,37 @@ public class LuckPlayModeActivity extends AppCompatActivity {
 
     }
 
+    private void speechInputPopUpCollectRou(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+        switch (voiceInput) {
+            case "continuă":
+                collectButtonPopUp.performClick();
+                return;
+            case "închide":
+                xImageViewPopUp.performClick();
+                return;
+            default:
+                invalidVoiceInput("PopUpCollect");
+
+        }
+
+    }
+
     private void speechInputPopUpWrongEn(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
         if ("close".equals(voiceInput)) {
+            collectButtonPopUp.performClick();
+
+        } else {
+            invalidVoiceInput("PopUpWrong");
+
+        }
+
+    }
+
+    private void speechInputPopUpWrongRou(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+        if ("închide".equals(voiceInput)) {
             collectButtonPopUp.performClick();
 
         } else {
@@ -646,16 +741,16 @@ public class LuckPlayModeActivity extends AppCompatActivity {
 
     private void connected() {
         connectionStatus = true;
-        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         if (dialogBuilder == null) {
-            checkOptions("Connected", "Base");
+            checkOptions(connectedToastAudio, "Base");
         } else {
             if (xImageViewPopUp.getVisibility() == View.VISIBLE) {
-                checkOptions("Connected", "PopUpCollect");
+                checkOptions(connectedToastAudio, "PopUpCollect");
 
             } else {
-                checkOptions("Connected", "PopUpWrong");
+                checkOptions(connectedToastAudio, "PopUpWrong");
 
             }
 
@@ -666,15 +761,14 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     private void lossConnection() {
         if (!optionList.get(EXMIC).isValue()) {
             connectionStatus = false;
-            Toast.makeText(getApplicationContext(), "Connection lost!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), lostConnectionToastAudio, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Connection lost!", QUEUE_ADD);
+                speak(lostConnectionToastAudio, QUEUE_ADD);
 
             }
 
         }
 
     }
-
 
 }

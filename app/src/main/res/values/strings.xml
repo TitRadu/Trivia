@@ -227,16 +227,37 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="timeExpiredTextPlayEn">Time expired!</string>
     <string name="timeExpiredTextPlayRou">Timpul a expirat!</string>
 
-    <string name="rightAnswerTextLuckEn">Right Answers</string>
-    <string name="rightAnswerTextLuckRou">Raspunsuri corecte</string>
-    <string name="collectQuestionTextLuckEn">Do you want to collect what you obtained until now?</string>
-    <string name="collectQuestionTextLuckRou">Vrei sa colectezi ce ai obtinut pana acum?</string>
-    <string name="lostPrizeQuestionTextLuckEn">You lost the prize!</string>
-    <string name="lostPrizeQuestionTextLuckRou">Ai pierdut premiul!</string>
+
+    <string name="describeAudioLuckEn">Welcome to lucky mode!</string>
+    <string name="describeAudioLuckRou">Bun venit în modul norocos!</string>
+    <string name="describeCommandsAudioLuckEn">Commands description!</string>
+    <string name="describeCommandsAudioLuckRou">Descrierea comenzilor!</string>
+    <string name="wonFFAudioLuckEn">You won a 50-50!</string>
+    <string name="wonFFAudioLuckRou">Ai câstigat un 50-50!</string>
+    <string name="wonRAAudioLuckEn">You won a right answer!</string>
+    <string name="wonRAAudioLuckRou">Ai câștigat un răspuns corect!</string>
+    <string name="noneAnswerAudioLuckEn">You won nothing!</string>
+    <string name="noneAnswerAudioLuckRou">Nu ai câștigat nimic!</string>
+    <string name="wrongAnswerAudioLuckEn">Wrong answer!</string>
+    <string name="wrongAnswerAudioLuckRou">Răspuns greșit!</string>
+    <string name="rightAnswerShortTextLuckEn">R.A.</string>
+    <string name="rightAnswerShortTextLuckRou">R.C.</string>
+    <string name="noneAnswerTextLuckEn">None</string>
+    <string name="noneAnswerTextLuckRou">Nimic</string>
+    <string name="wrongAnswerTextLuckEn">Wrong!</string>
+    <string name="wrongAnswerTextLuckRou">Greșit</string>
+    <string name="fiftyFiftyNumberAudioLuckEn">fifty-fifties and</string>
+    <string name="fiftyFiftyNumberAudioLuckRou">cincizeci-cincizeci și</string>
+    <string name="rightAnswerTextAudioLuckEn">Right answers</string>
+    <string name="rightAnswerTextAudioLuckRou">Răspunsuri corecte</string>
+    <string name="collectQuestionTextAudioLuckEn">Do you want to collect what you obtained until now?</string>
+    <string name="collectQuestionTextAudioLuckRou">Vrei să colectezi ce ai obținut până acum?</string>
+    <string name="lostPrizeTextAudioLuckEn">You lost the prize!</string>
+    <string name="lostPrizeTextAudioLuckRou">Ai pierdut premiul!</string>
     <string name="collectButtonTextLuckEn">Collect</string>
-    <string name="collectButtonTextLuckRou">Colecteaza</string>
+    <string name="collectButtonTextLuckRou">Colectează</string>
     <string name="exitButtonTextLuckEn">Close</string>
-    <string name="exitButtonTextLuckRou">Inchide</string>
+    <string name="exitButtonTextLuckRou">Închide</string>
 
 
     <string name="navigationDrawerOpen">"Open navigation drawer!"</string>

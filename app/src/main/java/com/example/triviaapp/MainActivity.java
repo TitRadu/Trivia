@@ -108,9 +108,9 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         currentActivity = this;
         if (onResumeFromAnotherActivity) {
+            chooseLanguage();
             setTextToSpeechListener(describeAudio);
             //speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-            chooseLanguage();
 
         }
 
