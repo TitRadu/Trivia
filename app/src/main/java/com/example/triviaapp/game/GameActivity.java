@@ -65,10 +65,13 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private Fragment activeFragment;
     private final FragmentManager fragmentManager = getSupportFragmentManager();
     private MenuItem profile, score, game, help, signOut;
+
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
     private boolean navigationListenerSet = false;
     private int lastFragment = 1;
+
+    String continueButtonPopUpTextString, infoTextViewPopUpTextStringAudio, describeAudio, describeCommandAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
 
     String voiceInput = null;
     Intent speechIntent = null;
@@ -80,8 +83,6 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private ImageView xImageViewPopUp;
     private TextView infoTextViewPopUp;
     private Button continueButtonPopUp;
-    String continueButtonPopUpTextString;
-    String infoTextViewPopUpTextString;
 
     Date date;
 
@@ -172,8 +173,14 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         help.setTitle(R.string.helpMenuItemProfileEn);
         signOut.setTitle(R.string.signOutMenuItemProfileEn);
 
-        infoTextViewPopUpTextString = getString(R.string.infoTextViewMenuEn);
+        infoTextViewPopUpTextStringAudio = getString(R.string.infoTextViewMenuEn);
         continueButtonPopUpTextString = getString(R.string.nextButtonLogMenuPlayEn);
+
+        describeAudio = getString(R.string.describeAudioMenuEn);
+        describeCommandAudio = getString(R.string.describeCommandsAudioMenuEn);
+        connectedToastAudio = getString(R.string.connectionToastAudioEn);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
 
     }
 
@@ -184,8 +191,14 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         help.setTitle(R.string.helpMenuItemProfileRou);
         signOut.setTitle(R.string.signOutMenuItemProfileRou);
 
-        infoTextViewPopUpTextString = getString(R.string.infoTextViewMenuRou);
+        infoTextViewPopUpTextStringAudio = getString(R.string.infoTextViewMenuRou);
         continueButtonPopUpTextString = getString(R.string.nextButtonLogMenuPlayRou);
+
+        describeAudio = getString(R.string.describeAudioMenuRou);
+        describeCommandAudio = getString(R.string.describeCommandsAudioMenuRou);
+        connectedToastAudio = getString(R.string.connectionToastAudioRou);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
 
     }
 
@@ -197,7 +210,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 break;
             case "romanian":
                 setMenuItemsForRomanianLanguage();
-                selectedLanguage = Locale.ENGLISH;
+                selectedLanguage = Locale.getDefault();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
@@ -346,17 +359,8 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            checkOptions("Welcome to Game Activity!","Base");
+            checkOptions(describeAudio,"Base");
             setConnectionListener();
-
-        });
-
-    }
-
-    private void setTextToSpeechListener(String feedback) {
-        textToSpeech = new TextToSpeech(this, status -> {
-            verifyTextToSpeechListenerStatus(status);
-            checkOptions(feedback, null);
 
         });
 
@@ -461,9 +465,9 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                     speechRecognizer.destroy();
                     if (connectionStatus) {
                         connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
                         if (optionList.get(EXSPEAKER).isValue()) {
-                              speak("Connection failed", QUEUE_ADD);
+                              speak(connectionLostToastAudio, QUEUE_ADD);
 
                         }
 
@@ -480,13 +484,23 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 Log.d("Game Activity voice input "+ screen + ":", result.get(0));
                 switch (LoggedUserData.language) {
                     case "english":
-                    case "romanian":
                         switch (screen) {
                             case "Base":
                                 speechInputEn(voiceInput);
                                 break;
                             case "PopUp":
                                 speechInputPopUpEn(voiceInput);
+                                break;
+
+                        }
+                        break;
+                    case "romanian":
+                        switch (screen) {
+                            case "Base":
+                                speechInputRou(voiceInput);
+                                break;
+                            case "PopUp":
+                                speechInputPopUpRou(voiceInput);
                                 break;
 
                         }
@@ -513,8 +527,8 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void invalidVoiceInput(String screen) {
-        Toast.makeText(this, "Invalid command!", Toast.LENGTH_SHORT).show();
-        checkOptions("Invalid command!", screen);
+        Toast.makeText(this, invalidCommandToastAudio, Toast.LENGTH_SHORT).show();
+        checkOptions(invalidCommandToastAudio, screen);
 
     }
 
@@ -567,6 +581,49 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 luckModeActivity();
                 return;
             default:invalidVoiceInput("Base");
+                    return;
+
+        }
+        getSpeechInput("Base");
+
+    }
+
+    private void speechInputRou(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+        switch (voiceInput) {
+            case "punctaj":
+                placeAudioFeedback();
+                break;
+            case "profil":
+                onNavigationItemSelected(profile);
+                break;
+            case "clasament":
+                onNavigationItemSelected(score);
+                break;
+            case "joc":
+                onNavigationItemSelected(game);
+                break;
+            case "ajutor":
+                onNavigationItemSelected(help);
+                break;
+            case "deconectare":
+                onNavigationItemSelected(signOut);
+                break;
+            case "setări":
+                editDataActivity();
+                return;
+            case "Modul clasic":
+            case "modul clasic":
+                openGameSettingsActivity();
+                return;
+            case "întrebarea zilei":
+                dailyQuestionPopUp();
+                return;
+            case "modul norocos":
+                luckModeActivity();
+                return;
+            default:invalidVoiceInput("Base");
+                    return;
 
         }
         getSpeechInput("Base");
@@ -585,7 +642,21 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             default:invalidVoiceInput("PopUp");
 
         }
-        getSpeechInput("PopUp");
+
+    }
+
+    private void speechInputPopUpRou(String voiceInput) {
+        voiceInput = voiceInput.toLowerCase();
+        switch (voiceInput) {
+            case "continuă":
+                continueButtonPopUp.performClick();
+                return;
+            case "ieșire":
+                xImageViewPopUp.performClick();
+                return;
+            default:invalidVoiceInput("PopUp");
+
+        }
 
     }
 
@@ -618,7 +689,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         infoTextViewPopUp = questionPopUpView.findViewById(R.id.templateInfoTextViewPopUp);
         continueButtonPopUp = questionPopUpView.findViewById(R.id.continueButtonPopUp);
 
-        infoTextViewPopUp.setText(infoTextViewPopUpTextString);
+        infoTextViewPopUp.setText(infoTextViewPopUpTextStringAudio);
         continueButtonPopUp.setText(continueButtonPopUpTextString);
 
         dialogBuilder.setView(questionPopUpView);
@@ -628,11 +699,11 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         dialog.show();
 
 
-        checkOptions("Do you want to answer to daily question?","PopUp");
+        checkOptions(infoTextViewPopUpTextStringAudio,"PopUp");
 
         xImageViewPopUp.setOnClickListener((v) -> {
             speechRecognizer.destroy();
-            checkOptions("Welcome to Game Activity!", "Base");
+            checkOptions(describeAudio, "Base");
             dialog.dismiss();
             dialogBuilder = null;
 
@@ -707,12 +778,12 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
 
     private void connected() {
         connectionStatus = true;
-        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         if(dialogBuilder == null) {
-            checkOptions("Connected", "Base");
+            checkOptions(connectedToastAudio, "Base");
         }else{
-            checkOptions("Connected","PopUp");
+            checkOptions(connectedToastAudio,"PopUp");
 
         }
 
@@ -721,9 +792,9 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private void lossConnection() {
         if (!optionList.get(EXMIC).isValue()) {
             connectionStatus = false;
-            Toast.makeText(getApplicationContext(), "Connection lost!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Connection lost!", QUEUE_ADD);
+                speak(connectionLostToastAudio, QUEUE_ADD);
 
             }
 

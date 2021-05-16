@@ -145,14 +145,18 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="userNameTextViewRankEn">Username:</string>
     <string name="userNameTextViewRankRou">Utilizator:</string>
 
+    <string name="describeAudioMenuEn">Welcome to Game Activity!</string>
+    <string name="describeAudioMenuRou">Bun venit în meniul de joc!</string>
+    <string name="describeCommandsAudioMenuEn">Commands description!</string>
+    <string name="describeCommandsAudioMenuRou">Descrierea comenzilor!</string>
     <string name="classicButtonMenuEn">Classic</string>
     <string name="classicButtonMenuRou">Clasic</string>
     <string name="dailyQuestionButtonMenuEn">Daily question</string>
-    <string name="dailyQuestionButtonMenuRou">Intrebarea zilnica</string>
+    <string name="dailyQuestionButtonMenuRou">Întrebarea zilnică</string>
     <string name="luckModeButtonMenuEn">Luck Mode</string>
     <string name="luckModeButtonMenuRou">Noroc</string>
     <string name="infoTextViewMenuEn">Do you want to answer the daily question?</string>
-    <string name="infoTextViewMenuRou">Vrei sa raspunzi la intrebarea zilnica?</string>
+    <string name="infoTextViewMenuRou">Vrei să răspunzi la întrebarea zilnică?</string>
     <string name="exitButtonMenuHelpEn">Exit</string>
     <string name="exitButtonMenuHelpRou">Ieșire</string>
 

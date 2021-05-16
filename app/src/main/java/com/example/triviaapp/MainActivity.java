@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initialize() {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        selectedLanguage = Locale.ENGLISH;
         prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
         speechInitialize();
 
@@ -614,6 +613,7 @@ public class MainActivity extends AppCompatActivity {
         dialog = dialogBuilder.create();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
+        setPopUpLanguage();
         languageChooseListener();
         interactionChooseListener();
         continueButtonPopUp.setOnClickListener((v) -> verifyContinueButtonAction());
@@ -656,6 +656,20 @@ public class MainActivity extends AppCompatActivity {
         speakerSelectAudio = getString(R.string.speakerSelectOptionAudioLogEditRou);
         speakerDeselectAudio = getString(R.string.speakerDeselectOptionAudioLogEditRou);
         selectALanguageToastAudio = getString(R.string.selectALanguageToastAudioLogRou);
+
+    }
+
+    private void setPopUpLanguage(){
+        switch (LoggedUserData.language) {
+            case "english":
+                setPopUpViewsForEnglishLanguage();
+                break;
+            case "romanian":
+                setPopUpViewsForRomanianLanguage();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + LoggedUserData.language);
+        }
 
     }
 
