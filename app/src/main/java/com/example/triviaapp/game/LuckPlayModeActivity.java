@@ -109,10 +109,10 @@ public class LuckPlayModeActivity extends AppCompatActivity {
         lostPrizeButtonPopUpTextString = getString(R.string.exitButtonTextLuckEn);
         describeAudio = getString(R.string.describeAudioLuckEn);
         describeCommandsAudio = getString(R.string.describeAudioLuckEn);
-        wonFFAudio = getString(R.string.wonFFAudioLuckEn);
-        wonRAAudio = getString(R.string.wonRAAudioLuckEn);
+        wonFFAudio = getString(R.string.wonFFAudioPlayLuckEn);
+        wonRAAudio = getString(R.string.wonRAAudioPlayLuckEn);
         noneAnswerAudio = getString(R.string.noneAnswerAudioLuckEn);
-        wrongAnswerAudio = getString(R.string.wrongAnswerAudioLuckEn);
+        wrongAnswerAudio = getString(R.string.wrongAnswerAudioPlayLuckEn);
         shortRAButtonTextString = getString(R.string.rightAnswerShortTextLuckEn);
         noneAnswerButtonTextString = getString(R.string.noneAnswerTextLuckEn);
         wrongAnswerButtonTextString = getString(R.string.wrongAnswerTextLuckEn);
@@ -133,10 +133,10 @@ public class LuckPlayModeActivity extends AppCompatActivity {
         collectButtonPopUpTextString = getString(R.string.collectButtonTextLuckRou);
         lostPrizeButtonPopUpTextString = getString(R.string.exitButtonTextLuckRou);
         describeAudio = getString(R.string.describeAudioLuckRou);
-        wonFFAudio = getString(R.string.wonFFAudioLuckRou);
-        wonRAAudio = getString(R.string.wonRAAudioLuckRou);
+        wonFFAudio = getString(R.string.wonFFAudioPlayLuckRou);
+        wonRAAudio = getString(R.string.wonRAAudioPlayLuckRou);
         noneAnswerAudio = getString(R.string.noneAnswerAudioLuckRou);
-        wrongAnswerAudio = getString(R.string.wrongAnswerAudioLuckRou);
+        wrongAnswerAudio = getString(R.string.wrongAnswerAudioPlayLuckRou);
         shortRAButtonTextString = getString(R.string.rightAnswerShortTextLuckRou);
         noneAnswerButtonTextString = getString(R.string.noneAnswerTextLuckRou);
         wrongAnswerButtonTextString = getString(R.string.wrongAnswerTextLuckRou);

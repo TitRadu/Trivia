@@ -49,6 +49,7 @@ public class GameSettingsActivity extends AppCompatActivity {
     private TextToSpeech textToSpeech;
     private boolean connectionListenerStatus = false;
 
+    String categorySelectedAudio, categoryDeselectedAudio, describeAudio, describeCommandsAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
 
 
     @Override
@@ -68,7 +69,7 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     }
 
-    private void initializeViews(){
+    private void initializeViews() {
         sportCategorySwitch = findViewById(R.id.sportCategorySwitch);
         geographyCategorySwitch = findViewById(R.id.geographyCategorySwitch);
         mathsCategorySwitch = findViewById(R.id.mathsCategorySwitch);
@@ -82,30 +83,44 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     }
 
-    private void setViewForEnglishLanguage(){
+    private void setViewForEnglishLanguage() {
         geographyCategorySwitch.setText(R.string.geographySwitchSettingsEn);
         mathsCategorySwitch.setText(R.string.mathsSwitchSettingsEn);
         othersCategorySwitch.setText(R.string.othersSwitchSettingsEn);
         playButton.setText(R.string.playButtonSettingsEn);
         oneCategoryToast = getString(R.string.oneCategoryToastSettingsEn);
         invalidInputToast = getString(R.string.invalidInputToastPlayEn);
+        categorySelectedAudio = getString(R.string.categorySelectedAudioSettingsEn);
+        categoryDeselectedAudio = getString(R.string.categoryDeselectedAudioSettingsEn);
+        describeAudio = getString(R.string.describeAudioSettingsEn);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioSettingsEn);
+        connectedToastAudio = getString(R.string.connectionToastAudioEn);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
         selectedLanguage = Locale.ENGLISH;
 
     }
 
-    private void setViewForRomanianLanguage(){
+    private void setViewForRomanianLanguage() {
         geographyCategorySwitch.setText(R.string.geographySwitchSettingsRou);
         mathsCategorySwitch.setText(R.string.mathsSwitchSettingsRou);
         othersCategorySwitch.setText(R.string.othersSwitchSettingsRou);
         playButton.setText(R.string.playButtonSettingsRou);
         oneCategoryToast = getString(R.string.oneCategoryToastSettingsRou);
         invalidInputToast = getString(R.string.invalidInputToastPlayRou);
+        categorySelectedAudio = getString(R.string.categorySelectedAudioSettingsRou);
+        categoryDeselectedAudio = getString(R.string.categoryDeselectedAudioSettingsRou);
+        describeAudio = getString(R.string.describeAudioSettingsRou);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioSettingsRou);
+        connectedToastAudio = getString(R.string.connectionToastAudioRou);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
         selectedLanguage = Locale.getDefault();
 
     }
 
-    private void chooseLanguage(){
-        switch (LoggedUserData.language){
+    private void chooseLanguage() {
+        switch (LoggedUserData.language) {
             case "english":
                 setViewForEnglishLanguage();
                 break;
@@ -119,15 +134,15 @@ public class GameSettingsActivity extends AppCompatActivity {
     }
 
 
-    private void switchListenerTemplate(int option, boolean value){
+    private void switchListenerTemplate(int option, boolean value) {
         SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
         optionList.get(option).setValue(value);
-        editor.putString(optionList.get(option).getName(),String.valueOf(value));
+        editor.putString(optionList.get(option).getName(), String.valueOf(value));
         editor.apply();
 
     }
 
-    private void switchesListeners(){
+    private void switchesListeners() {
         sportCategorySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             switchListenerTemplate(SPORT, isChecked);
             audioFeedbackForSwitchChanges(sportCategorySwitch);
@@ -154,22 +169,22 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     }
 
-    private void audioFeedbackForSwitchChanges(Switch s){
+    private void audioFeedbackForSwitchChanges(Switch s) {
         currentState = s.isChecked();
-        if(currentState) {
-            checkOptions(s.getText() + " category selected!");
-        }else{
-            checkOptions(s.getText() + " category deselected!");
+        if (currentState) {
+            checkOptions(s.getText() + SPACESTRING + categorySelectedAudio);
+        } else {
+            checkOptions(s.getText() + SPACESTRING + categoryDeselectedAudio);
 
         }
 
     }
 
-    public void openPlayActivity(View view){
+    public void openPlayActivity(View view) {
         speechRecognizer.destroy();
-        if(!optionList.get(SPORT).isValue() && !optionList.get(GEO).isValue() && !optionList.get(MATHS).isValue() && !optionList.get(OTHERS).isValue()){
-            Toast.makeText(getBaseContext(),oneCategoryToast,Toast.LENGTH_SHORT).show();
-            if(optionList.get(MIC).isValue()) {
+        if (!optionList.get(SPORT).isValue() && !optionList.get(GEO).isValue() && !optionList.get(MATHS).isValue() && !optionList.get(OTHERS).isValue()) {
+            Toast.makeText(getBaseContext(), oneCategoryToast, Toast.LENGTH_SHORT).show();
+            if (optionList.get(MIC).isValue()) {
                 getSpeechInput();
             }
             return;
@@ -201,7 +216,7 @@ public class GameSettingsActivity extends AppCompatActivity {
     private void verifyTextToSpeechListenerStatus(int status) {
         if (status == TextToSpeech.SUCCESS) {
             setProgressListener();
-            int result = textToSpeech.setLanguage(Locale.ENGLISH);
+            int result = textToSpeech.setLanguage(selectedLanguage);
             textToSpeech.setPitch(1);
             textToSpeech.setSpeechRate(0.75f);
 
@@ -221,7 +236,7 @@ public class GameSettingsActivity extends AppCompatActivity {
     private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            checkOptions("Welcome to Game Settings!");
+            checkOptions(describeAudio);
             setConnectionListener();
 
         });
@@ -270,16 +285,15 @@ public class GameSettingsActivity extends AppCompatActivity {
             Log.d("GameSettings", "NULL SPEAK OBJECT");
 
         }
-            textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
 
     }
 
 
-
-    private void speechInitialize(){
+    private void speechInitialize() {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
-        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, selectedLanguage);
 
     }
@@ -313,8 +327,8 @@ public class GameSettingsActivity extends AppCompatActivity {
 
             @Override
             public void onError(int error) {
-                Log.d("error",String.valueOf(error));
-                if(error == SpeechRecognizer.ERROR_NO_MATCH) {
+                Log.d("error", String.valueOf(error));
+                if (error == SpeechRecognizer.ERROR_NO_MATCH) {
                     speechRecognizer.destroy();
                     getSpeechInput();
 
@@ -324,9 +338,9 @@ public class GameSettingsActivity extends AppCompatActivity {
                     speechRecognizer.destroy();
                     if (connectionStatus) {
                         connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
                         if (optionList.get(EXSPEAKER).isValue()) {
-                            speak("Connection failed", QUEUE_ADD);
+                            speak(connectionLostToastAudio, QUEUE_ADD);
 
                         }
 
@@ -340,8 +354,8 @@ public class GameSettingsActivity extends AppCompatActivity {
             public void onResults(Bundle results) {
                 ArrayList<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 String response = result.get(0);
-                Log.d("GameSettings",response);
-                switch (LoggedUserData.language){
+                Log.d("GameSettings", response);
+                switch (LoggedUserData.language) {
                     case "english":
                         afterSpeechInputEn(response);
                         break;
@@ -368,7 +382,7 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     }
 
-    private void changeSwitchOption(Switch s){
+    private void changeSwitchOption(Switch s) {
         speechRecognizer.destroy();
         currentState = s.isChecked();
         currentState = !currentState;
@@ -376,8 +390,8 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     }
 
-    private void afterSpeechInputEn(String response){
-        switch (response){
+    private void afterSpeechInputEn(String response) {
+        switch (response) {
             case "Sport":
             case "sport":
                 changeSwitchOption(sportCategorySwitch);
@@ -402,14 +416,19 @@ public class GameSettingsActivity extends AppCompatActivity {
             case "status":
                 optionsStatus();
                 break;
-            default:invalidVoiceInput();
+            case "described":
+            case "describe":
+                checkOptions(describeCommandsAudio);
+                break;
+            default:
+                invalidVoiceInput();
 
         }
 
     }
 
-    private void afterSpeechInputRou(String response){
-        switch (response){
+    private void afterSpeechInputRou(String response) {
+        switch (response) {
             case "Sport":
             case "sport":
                 changeSwitchOption(sportCategorySwitch);
@@ -434,25 +453,30 @@ public class GameSettingsActivity extends AppCompatActivity {
             case "status":
                 optionsStatus();
                 break;
-            default:invalidVoiceInput();
+            case "descriere":
+            case "descrie":
+                checkOptions(describeCommandsAudio);
+                break;
+            default:
+                invalidVoiceInput();
 
         }
 
     }
 
-    private void optionsStatus(){
+    private void optionsStatus() {
         String sportSwitchStatus = setOptionText(sportCategorySwitch);
         String geographySwitchStatus = setOptionText(geographyCategorySwitch);
         String mathsSwitchStatus = setOptionText(mathsCategorySwitch);
         String othersSwitchStatus = setOptionText(othersCategorySwitch);
 
-        if(optionList.get(EXSPEAKER).isValue()){
+        if (optionList.get(EXSPEAKER).isValue()) {
             speak("Sport Switch:" + sportSwitchStatus, QUEUE_ADD);
             speak("Geography Switch:" + geographySwitchStatus, QUEUE_ADD);
             speak("Maths Switch:" + mathsSwitchStatus, QUEUE_ADD);
             speak("Others Switch:" + othersSwitchStatus, QUEUE_ADD);
 
-        }else {
+        } else {
             if (optionList.get(EXMIC).isValue()) {
                 getSpeechInput();
 
@@ -462,8 +486,8 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     }
 
-    private String setOptionText(Switch s){
-        if(s.isChecked()){
+    private String setOptionText(Switch s) {
+        if (s.isChecked()) {
             return "On";
 
         }
@@ -476,8 +500,8 @@ public class GameSettingsActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (connectionListenerStatus && currentActivity instanceof GameActivity) {
-                    Log.d("Luck", "connectionListener");
+                if (connectionListenerStatus && currentActivity instanceof GameSettingsActivity) {
+                    Log.d("GameSettings", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();
@@ -503,18 +527,18 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     private void connected() {
         connectionStatus = true;
-        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
-        checkOptions("Connected");
+        checkOptions(connectedToastAudio);
 
     }
 
     private void lossConnection() {
         if (!optionList.get(EXMIC).isValue()) {
             connectionStatus = false;
-            Toast.makeText(getApplicationContext(), "Connection lost!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Connection lost!", QUEUE_ADD);
+                speak(connectionLostToastAudio, QUEUE_ADD);
 
             }
 
@@ -525,7 +549,7 @@ public class GameSettingsActivity extends AppCompatActivity {
 
     private void invalidVoiceInput() {
         Toast.makeText(this, invalidInputToast, Toast.LENGTH_SHORT).show();
-        checkOptions("Invalid command!");
+        checkOptions(invalidCommandToastAudio);
 
     }
 

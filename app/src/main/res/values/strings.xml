@@ -199,6 +199,14 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="oldPasswordSetAudioEditRou">Parola veche a fost setată!</string>
 
 
+    <string name="describeAudioSettingsEn">Welcome to classic mode settings!</string>
+    <string name="describeAudioSettingsRou">Bun venit în setările modului clasic!</string>
+    <string name="describeCommandsAudioSettingsEn">Commands description.</string>
+    <string name="describeCommandsAudioSettingsRou">Descrierea comenzilor.</string>
+    <string name="categorySelectedAudioSettingsEn">selected.</string>
+    <string name="categorySelectedAudioSettingsRou">selectată.</string>
+    <string name="categoryDeselectedAudioSettingsEn">deselected.</string>
+    <string name="categoryDeselectedAudioSettingsRou">oprită.</string>
     <string name="geographySwitchSettingsEn">Geography</string>
     <string name="geographySwitchSettingsRou">Geografie</string>
     <string name="mathsSwitchSettingsEn">Math</string>
@@ -210,6 +218,20 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="oneCategoryToastSettingsEn">Please select minimum one category!</string>
     <string name="oneCategoryToastSettingsRou">Selectează minim o categorie!</string>
 
+    <string name="gameMenuAudioPlayEn">Game menu.</string>
+    <string name="gameMenuAudioPlayRou">Meniul jocului.</string>
+    <string name="gameWonAudioPlayEn">You won a game!</string>
+    <string name="gameWonAudioPlayRou">Ai câstigat un joc!</string>
+    <string name="wonFFAudioPlayLuckEn">You won a 50-50!</string>
+    <string name="wonFFAudioPlayLuckRou">Ai câstigat un 50-50!</string>
+    <string name="wonRAAudioPlayLuckEn">You won a right answer!</string>
+    <string name="wonRAAudioPlayLuckRou">Ai câștigat un răspuns corect!</string>
+    <string name="correctAnswerAudioPlayEn">You answered correct!</string>
+    <string name="correctAnswerAudioPlayRou">Ai răspuns corect!</string>
+    <string name="wrongAnswerAudioPlayLuckEn">Wrong answer!</string>
+    <string name="wrongAnswerAudioPlayLuckRou">Răspuns greșit!</string>
+    <string name="bonusRAAudioPlayEn">Bonus: right answer!</string>
+    <string name="bonusRAAudioPlayRou">Bonus: răspuns corect!</string>
     <string name="totalScoreTextViewPlayEn">Score:\n</string>
     <string name="totalScoreTextViewPlayRou">Scor:\n</string>
     <string name="questionTextViewPlayEn">Question:\n</string>
@@ -222,8 +244,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="totalScoreNextTextViewPlayRou">Punctaj total:</string>
     <string name="invalidInputToastPlayEn">Please say a valid input!</string>
     <string name="invalidInputToastPlayRou">Spune un răspuns valid!</string>
-    <string name="youAnsweredTextPlayEn">You answered!</string>
-    <string name="youAnsweredTextPlayRou">Ai răspuns!</string>
+    <string name="youAnsweredTextAudioPlayEn">You answered!</string>
+    <string name="youAnsweredTextAudioPlayRou">Ai răspuns!</string>
     <string name="timeExpiredTextPlayEn">Time expired!</string>
     <string name="timeExpiredTextPlayRou">Timpul a expirat!</string>
 
@@ -232,14 +254,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="describeAudioLuckRou">Bun venit în modul norocos!</string>
     <string name="describeCommandsAudioLuckEn">Commands description!</string>
     <string name="describeCommandsAudioLuckRou">Descrierea comenzilor!</string>
-    <string name="wonFFAudioLuckEn">You won a 50-50!</string>
-    <string name="wonFFAudioLuckRou">Ai câstigat un 50-50!</string>
-    <string name="wonRAAudioLuckEn">You won a right answer!</string>
-    <string name="wonRAAudioLuckRou">Ai câștigat un răspuns corect!</string>
     <string name="noneAnswerAudioLuckEn">You won nothing!</string>
     <string name="noneAnswerAudioLuckRou">Nu ai câștigat nimic!</string>
-    <string name="wrongAnswerAudioLuckEn">Wrong answer!</string>
-    <string name="wrongAnswerAudioLuckRou">Răspuns greșit!</string>
     <string name="rightAnswerShortTextLuckEn">R.A.</string>
     <string name="rightAnswerShortTextLuckRou">R.C.</string>
     <string name="noneAnswerTextLuckEn">None</string>

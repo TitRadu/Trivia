@@ -87,7 +87,7 @@ public class PlayActivity extends AppCompatActivity {
 
     String totalScoreTextViewString, questionTextViewString;
     String invalidInputToast;
-    String youAnsweredText, timeExpiredText;
+    String youAnsweredTextAudio, timeExpiredTextAudio;
     String remainings, rights;
     Locale appLanguage;
 
@@ -96,6 +96,8 @@ public class PlayActivity extends AppCompatActivity {
     List<Answer> currentAnswers;
 
     private boolean connectionListenerStatus = false;
+
+    String gameMenuAudio, gameWonTextAudio, wonFFTextAudio, wonRATextAudio, correctAnswerTextAudio, wrongAnswerTextAudio, bonusRATextAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -299,7 +301,7 @@ public class PlayActivity extends AppCompatActivity {
         speakerControl = "Nothing";
         setViewsProprieties();
         chooseLanguage();
-        setTextViewWithQuestionAndAnswers(false);
+        setTextViewWithQuestionAndAnswers();
 
     }
 
@@ -312,11 +314,21 @@ public class PlayActivity extends AppCompatActivity {
         questionScoreView.setText(R.string.questionScoreTextViewPlayEn);
         totalScoreNextView.setText(R.string.totalScoreNextTextViewPlayEn);
         invalidInputToast = getString(R.string.invalidInputToastPlayEn);
-        youAnsweredText = getString(R.string.youAnsweredTextPlayEn);
-        timeExpiredText = getString(R.string.timeExpiredTextPlayEn);
+        youAnsweredTextAudio = getString(R.string.youAnsweredTextAudioPlayEn);
+        timeExpiredTextAudio = getString(R.string.timeExpiredTextPlayEn);
         appLanguage = Locale.ENGLISH;
         remainings = getString(R.string.superPowerRemainingEn);
         rights = getString(R.string.superPowerRightAnwerEn);
+        gameMenuAudio = getString(R.string.gameMenuAudioPlayEn);
+        gameWonTextAudio = getString(R.string.gameWonAudioPlayEn);
+        wonFFTextAudio = getString(R.string.wonFFAudioPlayLuckEn);
+        wonRATextAudio = getString(R.string.wonRAAudioPlayLuckEn);
+        correctAnswerTextAudio = getString(R.string.correctAnswerAudioPlayEn);
+        wrongAnswerTextAudio = getString(R.string.wrongAnswerAudioPlayLuckEn);
+        bonusRATextAudio = getString(R.string.bonusRAAudioPlayEn);
+        connectedToastAudio = getString(R.string.connectionToastAudioEn);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
 
     }
 
@@ -329,11 +341,21 @@ public class PlayActivity extends AppCompatActivity {
         questionScoreView.setText(R.string.questionScoreTextViewPlayRou);
         totalScoreNextView.setText(R.string.totalScoreNextTextViewPlayRou);
         invalidInputToast = getString(R.string.invalidInputToastPlayRou);
-        youAnsweredText = getString(R.string.youAnsweredTextPlayRou);
-        timeExpiredText = getString(R.string.timeExpiredTextPlayRou);
+        youAnsweredTextAudio = getString(R.string.youAnsweredTextAudioPlayRou);
+        timeExpiredTextAudio = getString(R.string.timeExpiredTextPlayRou);
         appLanguage = Locale.getDefault();
         remainings = getString(R.string.superPowerRemainingRou);
         rights = getString(R.string.superPowerRightAnwerRou);
+        gameMenuAudio = getString(R.string.gameMenuAudioPlayRou);
+        gameWonTextAudio = getString(R.string.gameWonAudioPlayRou);
+        wonFFTextAudio = getString(R.string.wonFFAudioPlayLuckRou);
+        wonRATextAudio = getString(R.string.wonRAAudioPlayLuckRou);
+        correctAnswerTextAudio = getString(R.string.correctAnswerAudioPlayRou);
+        wrongAnswerTextAudio = getString(R.string.wrongAnswerAudioPlayLuckRou);
+        bonusRATextAudio = getString(R.string.bonusRAAudioPlayRou);
+        connectedToastAudio = getString(R.string.connectionToastAudioRou);
+        connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
+        invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
     }
 
     private void setTextForViewsWithComplexText() {
@@ -470,7 +492,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    public void setTextViewWithQuestionAndAnswers(boolean isFifty) {
+    public void setTextViewWithQuestionAndAnswers() {
         readQuestionData(new FirebaseCallback() {
             @Override
             public void onCallbackQuestions(List<Question> questions) {
@@ -492,7 +514,7 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onCallbackAnswers(List<Answer> answers) {
-                setAnswers(answers, isFifty);
+                setAnswers(answers);
                 if (optionList.get(SPEAKER).isValue() || optionList.get(EXSPEAKER).isValue()) {
                     speakerControl = "Question";
                     setTextToSpeechListener();
@@ -525,7 +547,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setAnswers(List<Answer> answers, boolean fifty) {
+    private void setAnswers(List<Answer> answers) {
         setButtonsVisible();
         currentAnswers = new ArrayList<>();
         Random rand = new Random();
@@ -735,9 +757,9 @@ public class PlayActivity extends AppCompatActivity {
                     speechRecognizer.destroy();
                     if (connectionStatus) {
                         connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
                         if (optionList.get(EXSPEAKER).isValue()) {
-                            speak("Connection failed", QUEUE_ADD);
+                            speak(connectionLostToastAudio, QUEUE_ADD);
 
                         }
 
@@ -1051,7 +1073,7 @@ public class PlayActivity extends AppCompatActivity {
         } else {
             if (optionList.get(EXSPEAKER).isValue()) {
                 speakerControl = "Delay";
-                speak("You answered!", QUEUE_ADD);
+                speak(youAnsweredTextAudio, QUEUE_ADD);
 
             }
 
@@ -1127,23 +1149,23 @@ public class PlayActivity extends AppCompatActivity {
 
         if (userAnswerIsCorrect) {
             if (r == 0) {
-                questionScoreView.setText("You won a fifty-fifty!");
+                questionScoreView.setText(wonFFTextAudio);
                 speechRecognizer.destroy();
-                checkOptions("You won a fifty-fifty!");
+                checkOptions(wonFFTextAudio);
                 loggedSuperPowerFiftyFifty++;
 
             } else {
-                questionScoreView.setText("You won a right answer!");
+                questionScoreView.setText(wonRATextAudio);
                 speechRecognizer.destroy();
-                checkOptions("You won a right answer!");
+                checkOptions(wonRATextAudio);
                 loggedSuperPowerCorrectAnswer++;
 
             }
             sendToDatabase();
         } else {
-            questionScoreView.setText("You answer wrong!");
+            questionScoreView.setText(wrongAnswerTextAudio);
             speechRecognizer.destroy();
-            checkOptions("You answer wrong!");
+            checkOptions(wrongAnswerTextAudio);
 
         }
 
@@ -1162,19 +1184,19 @@ public class PlayActivity extends AppCompatActivity {
                 String text;
                 if(userAnswerIsCorrect){
                     if(questionCounter == TOTAL_QUESTION_TO_WIN_GAME){
-                        text = "You won a game!";
+                        text = gameWonTextAudio;
                         if (LoggedUserData.loggedGamesWon % 2 == 0) {
-                            text = text + " Bonus: right answer!";
+                            text = text + SPACESTRING + bonusRATextAudio;
                         }
 
                     }else {
 
-                        text = "You answered correct!";
+                        text = correctAnswerTextAudio;
                     }
 
                 }
                 else{
-                    text = "You answered wrong!";
+                    text = wrongAnswerTextAudio;
 
                 }
 
@@ -1206,7 +1228,7 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 if (answerWasSet) {
-                    question.setText(youAnsweredText);
+                    question.setText(youAnsweredTextAudio);
                     cancel();
                     return;
 
@@ -1228,9 +1250,9 @@ public class PlayActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-                question.setText(timeExpiredText);
+                question.setText(timeExpiredTextAudio);
                 speechRecognizer.destroy();
-                checkOptions(timeExpiredText + ". Game menu!");
+                checkOptions(timeExpiredTextAudio + gameMenuAudio);
                 LoggedUserData.loggedUserPoints = LoggedUserData.loggedUserPoints + totalPoints;
                 sendToDatabase();
                 userAnswerIsCorrect = false;
@@ -1344,7 +1366,7 @@ public class PlayActivity extends AppCompatActivity {
         time = 0;
         questionCounterTextView.setText(questionTextViewString + "   " + questionCounter + " / 10");
         setQuestion(questions);
-        setAnswers(answers, false);
+        setAnswers(answers);
         answerWasSet = false;
         voiceInput = null;
         selectedThroughVoiceOption = null;
@@ -1398,8 +1420,8 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void invalidVoiceInput() {
-        Toast.makeText(this, "Invalid command!", Toast.LENGTH_SHORT).show();
-        checkOptions("Invalid command!");
+        Toast.makeText(this,invalidCommandToastAudio, Toast.LENGTH_SHORT).show();
+        checkOptions(invalidCommandToastAudio);
 
     }
 
@@ -1408,7 +1430,7 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (connectionListenerStatus && currentActivity instanceof PlayActivity && textToSpeech != null) {
-                    Log.d("EditData","connectionListener");
+                    Log.d("Play","connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();
@@ -1434,18 +1456,18 @@ public class PlayActivity extends AppCompatActivity {
 
     private void connected() {
         connectionStatus = true;
-        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
-        checkOptions("Connected");
+        checkOptions(connectedToastAudio);
 
     }
 
     private void lossConnection() {
         if (!optionList.get(EXMIC).isValue()) {
             connectionStatus = false;
-            Toast.makeText(getApplicationContext(), "Connection lost!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
             if (optionList.get(EXSPEAKER).isValue()) {
-                speak("Connection lost!", QUEUE_ADD);
+                speak(connectionLostToastAudio, QUEUE_ADD);
 
             }
 

@@ -853,13 +853,13 @@ public class EditDataActivity extends AppCompatActivity {
         voiceInput = voiceInput.toLowerCase();
 
         String utilData;
-        if ((utilData = checkNewUserNameCommandEn(voiceInput)) != null) {
+        if ((utilData = checkNewUserNameCommandRou(voiceInput)) != null) {
             newUserNameEditView.setText(utilData);
             updateUserName(utilData);
             return;
 
         }
-        if ((utilData = checkSetOldPasswordCommandEn(voiceInput)) != null) {
+        if ((utilData = checkSetOldPasswordCommandRou(voiceInput)) != null) {
             oldPasswordEditView.setText(utilData);
             checkOptions(oldPasswordSetAudio);
             return;
@@ -871,7 +871,7 @@ public class EditDataActivity extends AppCompatActivity {
 
         }
 
-        if ((utilData = checkDeletePasswordCommandEn(voiceInput)) != null) {
+        if ((utilData = checkDeletePasswordCommandRou(voiceInput)) != null) {
             passwordDeleteView.setText(utilData);
             checkOptions(oldPasswordSetAudio);
             return;
