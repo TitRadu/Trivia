@@ -1,4 +1,4 @@
-package com.example.triviaapp.game;
+package com.example.triviaapp.game.modes;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +22,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.triviaapp.FirebaseHelper;
-import com.example.triviaapp.LoggedUserData;
+import com.example.triviaapp.data.LoggedUserData;
 import com.example.triviaapp.R;
+import com.example.triviaapp.game.GameActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -36,12 +37,12 @@ import java.util.Random;
 
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
-import static com.example.triviaapp.LoggedUserData.EXMIC;
-import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
-import static com.example.triviaapp.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.LoggedUserData.connectionStatus;
-import static com.example.triviaapp.LoggedUserData.currentActivity;
-import static com.example.triviaapp.LoggedUserData.optionList;
+import static com.example.triviaapp.data.LoggedUserData.EXMIC;
+import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
+import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
+import static com.example.triviaapp.data.LoggedUserData.currentActivity;
+import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class LuckPlayModeActivity extends AppCompatActivity {
     TextView countTextView, fiftyCountTextTextView, fiftyCountValueTextView, rightCountTextTextView, rightCountValueTextView;

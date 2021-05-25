@@ -1,4 +1,4 @@
-package com.example.triviaapp.game.ui.dashboard;
+package com.example.triviaapp.game.ui.rank;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,16 +10,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.triviaapp.FirebaseHelper;
-import com.example.triviaapp.LoggedUserData;
+import com.example.triviaapp.data.LoggedUserData;
 import com.example.triviaapp.R;
-import com.example.triviaapp.rank.RankAdapter;
-import com.example.triviaapp.rank.RankSorter;
-import com.example.triviaapp.rank.User;
+import com.example.triviaapp.data.rank.RankAdapter;
+import com.example.triviaapp.data.rank.RankSorter;
+import com.example.triviaapp.data.rank.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -27,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class DashboardFragment extends Fragment {
+public class RankFragment extends Fragment {
     private RecyclerView rankListRV;
     private RankAdapter rankAdapter;
 

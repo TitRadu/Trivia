@@ -1,17 +1,13 @@
-package com.example.triviaapp.game.ui.home;
+package com.example.triviaapp.game.ui.profile;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,13 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.triviaapp.FirebaseHelper;
-import com.example.triviaapp.LoggedUserData;
+import com.example.triviaapp.data.LoggedUserData;
 import com.example.triviaapp.R;
-import com.example.triviaapp.game.EditDataActivity;
 import com.example.triviaapp.game.GameActivity;
-import com.example.triviaapp.game.PlayActivity;
-import com.example.triviaapp.rank.User;
-import com.example.triviaapp.rank.RankSorter;
+import com.example.triviaapp.data.rank.User;
+import com.example.triviaapp.data.rank.RankSorter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,9 +32,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
 
-public class HomeFragment extends Fragment {
+public class ProfileFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     Button editActivityButton;
@@ -84,7 +77,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void verifyTime(){
-        if(date.getTime() -  LoggedUserData.millis >= 300000)
+        if(LoggedUserData.optionList.get(LoggedUserData.AUTODELOG).isValue() && (date.getTime() -  LoggedUserData.millis >= 300000))
         {
             LoggedUserData.onResumeFromAnotherActivity = true;
             Toast.makeText(getContext(), autoLogOutToast,Toast.LENGTH_SHORT).show();

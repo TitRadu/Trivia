@@ -1,11 +1,9 @@
-package com.example.triviaapp;
-
-import android.view.View;
+package com.example.triviaapp.data;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 
-import com.example.triviaapp.rank.User;
+import com.example.triviaapp.data.Option;
+import com.example.triviaapp.data.rank.User;
 
 import java.util.List;
 
@@ -37,6 +35,7 @@ public class LoggedUserData{
     public static final int OTHERS = 5;
     public static final int EXMIC = 6;
     public static final int EXSPEAKER = 7;
+    public static final int AUTODELOG = 8;
 
     public static String language= EMPTYSTRING;
     public static boolean dailyQuestion = false;

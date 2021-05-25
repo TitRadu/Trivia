@@ -1,4 +1,4 @@
-package com.example.triviaapp.rank;
+package com.example.triviaapp.data.rank;
 
 import android.content.Context;
 import android.view.LayoutInflater;

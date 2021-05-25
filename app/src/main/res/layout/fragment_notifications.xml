@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".game.ui.notifications.NotificationsFragment">
+    tools:context=".game.ui.menu.MenuFragment">
 
     <Switch
         android:id="@+id/sw_microphone"

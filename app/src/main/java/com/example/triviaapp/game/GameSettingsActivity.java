@@ -17,8 +17,9 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.example.triviaapp.LoggedUserData;
+import com.example.triviaapp.data.LoggedUserData;
 import com.example.triviaapp.R;
+import com.example.triviaapp.game.modes.PlayActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -28,7 +29,7 @@ import java.util.Locale;
 
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
-import static com.example.triviaapp.LoggedUserData.*;
+import static com.example.triviaapp.data.LoggedUserData.*;
 
 public class GameSettingsActivity extends AppCompatActivity {
     private Switch sportCategorySwitch;
@@ -500,7 +501,7 @@ public class GameSettingsActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (connectionListenerStatus && currentActivity instanceof GameSettingsActivity) {
+                if (connectionListenerStatus && currentActivity instanceof GameSettingsActivity && textToSpeech != null) {
                     Log.d("GameSettings", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {

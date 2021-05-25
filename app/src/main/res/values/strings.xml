@@ -45,8 +45,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="exOptionsTextViewLogEditRou">Selectează optiunile:</string>
     <string name="microphoneSwitchLogMenuEditPlayEn">Microphone</string>
     <string name="microphoneSwitchLogMenuEditPlayRou">Microfon</string>
-    <string name="loudSpeakerSwitchLogMenuEditEn">Loudspeaker</string>
-    <string name="loudSpeakerSwitchLogMenuEditRou">Difuzor</string>
+    <string name="loudSpeakerSwitchLogMenuEditPlayEn">Loudspeaker</string>
+    <string name="loudSpeakerSwitchLogMenuEditPlayRou">Difuzor</string>
     <string name="muteButtonLogEn">Mute</string>
     <string name="muteButtonLogRou">Mut</string>
     <string name="nextButtonLogMenuPlayEn">Next</string>
@@ -140,11 +140,15 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
 
     <string name="placeTextViewRankEn">Place</string>
     <string name="placeTextViewRankRou">Loc</string>
-    <string name="pointsTextViewRankEn">Points</string>
-    <string name="pointsTextViewRankRou">Puncte</string>
+    <string name="pointsTextViewAudioRankEn">Points</string>
+    <string name="pointsTextViewAudioRankRou">Puncte</string>
     <string name="userNameTextViewRankEn">Username:</string>
     <string name="userNameTextViewRankRou">Utilizator:</string>
 
+    <string name="placeAudioMenuEn">Your place is</string>
+    <string name="placeAudioMenuRou">Locul tău este</string>
+    <string name="withAudioMenuEn">with</string>
+    <string name="withAudioMenuRou">cu</string>
     <string name="describeAudioMenuEn">Welcome to Game Activity!</string>
     <string name="describeAudioMenuRou">Bun venit în meniul de joc!</string>
     <string name="describeCommandsAudioMenuEn">Commands description!</string>
@@ -195,8 +199,16 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="successDeleteToastAudioEditRou">Contul a fost șters cu succes!</string>
     <string name="describeAudioEditEn">Welcome to settings!</string>
     <string name="describeAudioEditRou">Bun venit în setări!</string>
+    <string name="describeCommandsAudioEditEn">Commands description!</string>
+    <string name="describeCommandsAudioEditRou">Descrierea comenzilor!</string>
     <string name="oldPasswordSetAudioEditEn">Old password was set!</string>
     <string name="oldPasswordSetAudioEditRou">Parola veche a fost setată!</string>
+    <string name="autodDelogSwitchEditEn">Auto delog</string>
+    <string name="autodDelogSwitchEditRou">Deconectare automată!</string>
+    <string name="autoDelogSelectOptionAudioEditEn">Auto delog was selected!</string>
+    <string name="autoDelogSelectOptionAudioEditRou">Deconectarea automată activată!</string>
+    <string name="autoDelogDeselectOptionAudioEditEn">Auto delog was deselected!</string>
+    <string name="autoDelogDeselectOptionAudioEditRou">Deconectarea automată dezactivată!</string>
 
 
     <string name="describeAudioSettingsEn">Welcome to classic mode settings!</string>

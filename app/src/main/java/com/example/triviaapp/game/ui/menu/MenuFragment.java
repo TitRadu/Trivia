@@ -1,4 +1,4 @@
-package com.example.triviaapp.game.ui.notifications;
+package com.example.triviaapp.game.ui.menu;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
@@ -13,7 +13,7 @@ import android.widget.Switch;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.triviaapp.LoggedUserData;
+import com.example.triviaapp.data.LoggedUserData;
 import com.example.triviaapp.R;
 import com.example.triviaapp.game.GameActivity;
 
@@ -21,12 +21,12 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
-import static com.example.triviaapp.LoggedUserData.MIC;
-import static com.example.triviaapp.LoggedUserData.SPEAKER;
-import static com.example.triviaapp.LoggedUserData.optionList;
+import static com.example.triviaapp.data.LoggedUserData.EMPTYSTRING;
+import static com.example.triviaapp.data.LoggedUserData.MIC;
+import static com.example.triviaapp.data.LoggedUserData.SPEAKER;
+import static com.example.triviaapp.data.LoggedUserData.optionList;
 
-public class NotificationsFragment extends Fragment {
+public class MenuFragment extends Fragment {
     Button clasicButton, exitButton, dailyQuestionButton, luckModeButton;
     Date date;
 

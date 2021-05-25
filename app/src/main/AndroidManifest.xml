@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/HiddenTitleTheme">
-        <activity android:name=".game.LuckPlayModeActivity"></activity>
+        <activity android:name=".game.modes.LuckPlayModeActivity"></activity>
         <activity
             android:name=".game.GameSettingsActivity"
             android:screenOrientation="nosensor" />
@@ -26,7 +26,7 @@
             android:name=".RegisterActivity"
             android:screenOrientation="nosensor" />
         <activity
-            android:name=".game.PlayActivity"
+            android:name=".game.modes.PlayActivity"
             android:screenOrientation="nosensor" />
         <activity
             android:name=".MainActivity"

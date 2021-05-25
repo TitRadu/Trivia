@@ -18,8 +18,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.triviaapp.data.LoggedUserData;
 import com.example.triviaapp.game.GameActivity;
-import com.example.triviaapp.rank.User;
+import com.example.triviaapp.data.rank.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,12 +33,12 @@ import java.util.UUID;
 
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
-import static com.example.triviaapp.LoggedUserData.EXMIC;
-import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
-import static com.example.triviaapp.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.LoggedUserData.connectionStatus;
-import static com.example.triviaapp.LoggedUserData.currentActivity;
-import static com.example.triviaapp.LoggedUserData.optionList;
+import static com.example.triviaapp.data.LoggedUserData.EXMIC;
+import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
+import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
+import static com.example.triviaapp.data.LoggedUserData.currentActivity;
+import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
@@ -69,6 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         initialize();
         initializeViews();
+        setExtendedOptions();
 
     }
 
@@ -81,7 +83,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void initialize() {
         currentActivity = this;
-        setTextToSpeechListener();
         prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
         speechInitialize();
 
@@ -307,7 +308,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void setTextToSpeechListener() {
+    private void setExtendedOptions() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
             checkOptions(describeAudio);
@@ -664,7 +665,7 @@ public class RegisterActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(connectionListenerStatus && currentActivity instanceof RegisterActivity) {
+                if(connectionListenerStatus && currentActivity instanceof RegisterActivity && textToSpeech !=null) {
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();

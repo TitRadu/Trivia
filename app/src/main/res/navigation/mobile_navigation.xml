@@ -8,19 +8,19 @@
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.triviaapp.game.ui.home.HomeFragment"
+        android:name="com.example.triviaapp.game.ui.profile.ProfileFragment"
         android:label="@string/title_profileEn"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_score"
-        android:name="com.example.triviaapp.game.ui.dashboard.DashboardFragment"
+        android:name="com.example.triviaapp.game.ui.rank.RankFragment"
         android:label="@string/title_scoreEn"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_game"
-        android:name="com.example.triviaapp.game.ui.notifications.NotificationsFragment"
+        android:name="com.example.triviaapp.game.ui.menu.MenuFragment"
         android:label="@string/title_gameEn"
         tools:layout="@layout/fragment_notifications" />
 </navigation>

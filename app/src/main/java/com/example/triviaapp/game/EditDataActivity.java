@@ -22,7 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.triviaapp.FirebaseHelper;
-import com.example.triviaapp.LoggedUserData;
+import com.example.triviaapp.data.LoggedUserData;
 import com.example.triviaapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -40,24 +40,25 @@ import java.util.Locale;
 
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
-import static com.example.triviaapp.LoggedUserData.EXMIC;
-import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
-import static com.example.triviaapp.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.LoggedUserData.connectionStatus;
-import static com.example.triviaapp.LoggedUserData.currentActivity;
-import static com.example.triviaapp.LoggedUserData.optionList;
+import static com.example.triviaapp.data.LoggedUserData.AUTODELOG;
+import static com.example.triviaapp.data.LoggedUserData.EXMIC;
+import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
+import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
+import static com.example.triviaapp.data.LoggedUserData.currentActivity;
+import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class EditDataActivity extends AppCompatActivity {
     FirebaseUser firebaseUser;
     EditText newUserNameEditView, oldPasswordEditView, newPasswordEditView, passwordDeleteView;
     RadioGroup chooseLanguageRadioGroup;
     RadioButton engRadioButton, romRadioButton;
-    Switch exMicSwitch, exSpeakerSwitch;
+    Switch exMicSwitch, exSpeakerSwitch, autoDelogSwitch;
     Button editButton, backButton, deleteButton, confirmDeleteButton;
     TextView newUserNameTextView, oldPasswordTextView, newPasswordTextView, chooseLanguageTextView, exOptionsTextView;
     String existUserNameToastAudio, successUserNameToast, wrongPasswordToastAudio, shortPasswordToastAudio, successPasswordToastAudio, emptyPasswordToast, successDeleteToastAudio,
-    userNameSetAudio, describeAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
-    oldPasswordSetAudio;
+            userNameSetAudio, describeAudio, describeCommandsAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
+            autoDelogSelectAudio, autoDelogDeselectAudio, oldPasswordSetAudio;
 
     private TextToSpeech textToSpeech;
     Locale selectedLanguage;
@@ -75,7 +76,7 @@ public class EditDataActivity extends AppCompatActivity {
         initializeViews();
         initialize();
         initializeRadioGroup();
-        setExOptionSwitchListeners();
+        setSwitchesListeners();
         languageChangeListener();
 
     }
@@ -100,6 +101,8 @@ public class EditDataActivity extends AppCompatActivity {
         exMicSwitch.setChecked(optionList.get(EXMIC).isValue());
         exSpeakerSwitch = findViewById(R.id.exSpeakerOptionSwitch);
         exSpeakerSwitch.setChecked(optionList.get(EXSPEAKER).isValue());
+        autoDelogSwitch = findViewById(R.id.autoDelogOptionSwitch);
+        autoDelogSwitch.setChecked(optionList.get(AUTODELOG).isValue());
         confirmDeleteButton = findViewById(R.id.confirmDeleteButton);
         newUserNameTextView = findViewById(R.id.newUserNameTextView);
         oldPasswordTextView = findViewById(R.id.oldPasswordTextView);
@@ -120,7 +123,8 @@ public class EditDataActivity extends AppCompatActivity {
         chooseLanguageTextView.setText(R.string.chooseLanguageTextViewLogEditEn);
         exOptionsTextView.setText(R.string.exOptionsTextViewLogEditEn);
         exMicSwitch.setText(R.string.microphoneSwitchLogMenuEditPlayEn);
-        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchLogMenuEditEn);
+        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchLogMenuEditPlayEn);
+        autoDelogSwitch.setText(R.string.autodDelogSwitchEditEn);
         editButton.setText(R.string.editButtonEditEn);
         backButton.setText(R.string.backButtonEditEn);
         deleteButton.setText(R.string.deleteAccountButtonEditEn);
@@ -135,6 +139,7 @@ public class EditDataActivity extends AppCompatActivity {
         successDeleteToastAudio = getString(R.string.successDeleteToastAudioEditEn);
         userNameSetAudio = getString(R.string.userNameSetAudioRegEditEn);
         describeAudio = getString(R.string.describeAudioEditEn);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioEditEn);
         connectedToastAudio = getString(R.string.connectionToastAudioEn);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
@@ -142,6 +147,8 @@ public class EditDataActivity extends AppCompatActivity {
         microphoneDeselectAudio = getString(R.string.microphoneDeselectOptionAudioLogEditEn);
         speakerSelectAudio = getString(R.string.speakerSelectOptionAudioLogEditEn);
         speakerDeselectAudio = getString(R.string.speakerDeselectOptionAudioLogEditEn);
+        autoDelogSelectAudio = getString(R.string.autoDelogSelectOptionAudioEditEn);
+        autoDelogDeselectAudio = getString(R.string.autoDelogDeselectOptionAudioEditEn);
         oldPasswordSetAudio = getString(R.string.oldPasswordSetAudioEditEn);
 
     }
@@ -154,7 +161,8 @@ public class EditDataActivity extends AppCompatActivity {
         chooseLanguageTextView.setText(R.string.chooseLanguageTextViewLogEditRou);
         exOptionsTextView.setText(R.string.exOptionsTextViewLogEditRou);
         exMicSwitch.setText(R.string.microphoneSwitchLogMenuEditPlayRou);
-        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchLogMenuEditRou);
+        exSpeakerSwitch.setText(R.string.loudSpeakerSwitchLogMenuEditPlayRou);
+        autoDelogSwitch.setText(R.string.autodDelogSwitchEditRou);
         editButton.setText(R.string.editButtonEditRou);
         backButton.setText(R.string.backButtonEditRou);
         deleteButton.setText(R.string.deleteAccountButtonEditRou);
@@ -169,6 +177,7 @@ public class EditDataActivity extends AppCompatActivity {
         successDeleteToastAudio = getString(R.string.successDeleteToastAudioEditRou);
         userNameSetAudio = getString(R.string.userNameSetAudioRegEditRou);
         describeAudio = getString(R.string.describeAudioEditRou);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioEditRou);
         connectedToastAudio = getString(R.string.connectionToastAudioRou);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
@@ -176,6 +185,8 @@ public class EditDataActivity extends AppCompatActivity {
         microphoneDeselectAudio = getString(R.string.microphoneDeselectOptionAudioLogEditRou);
         speakerSelectAudio = getString(R.string.speakerSelectOptionAudioLogEditRou);
         speakerDeselectAudio = getString(R.string.speakerDeselectOptionAudioLogEditRou);
+        autoDelogSelectAudio = getString(R.string.autoDelogSelectOptionAudioEditRou);
+        autoDelogDeselectAudio = getString(R.string.autoDelogDeselectOptionAudioEditRou);
         oldPasswordSetAudio = getString(R.string.oldPasswordSetAudioEditRou);
 
     }
@@ -211,7 +222,7 @@ public class EditDataActivity extends AppCompatActivity {
 
     }
 
-    private void setExOptionSwitchListeners(){
+    private void setSwitchesListeners() {
         exMicSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             speechRecognizer.destroy();
             if (isChecked) {
@@ -229,7 +240,7 @@ public class EditDataActivity extends AppCompatActivity {
         });
         exSpeakerSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             speechRecognizer.destroy();
-            if(!isChecked){
+            if (!isChecked) {
                 checkOptions(speakerDeselectAudio);
 
             }
@@ -239,6 +250,22 @@ public class EditDataActivity extends AppCompatActivity {
             editor.apply();
             if (isChecked) {
                 checkOptions(speakerSelectAudio);
+
+            }
+
+        });
+        autoDelogSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            speechRecognizer.destroy();
+            if (!isChecked) {
+                checkOptions(autoDelogDeselectAudio);
+
+            }
+            SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+            optionList.get(AUTODELOG).setValue(isChecked);
+            editor.putString(optionList.get(AUTODELOG).getName(), String.valueOf(isChecked));
+            editor.apply();
+            if (isChecked) {
+                checkOptions(autoDelogSelectAudio);
 
             }
 
@@ -735,7 +762,7 @@ public class EditDataActivity extends AppCompatActivity {
             }
             String newPassword = usefulDataExtract(voiceInput, 13);
             newPasswordEditView.setText(newPassword);
-            updatePassword(oldPassword,newPassword);
+            updatePassword(oldPassword, newPassword);
         } else {
             return false;
 
@@ -754,7 +781,7 @@ public class EditDataActivity extends AppCompatActivity {
             }
             String newPassword = usefulDataExtract(voiceInput, 12);
             newPasswordEditView.setText(newPassword);
-            updatePassword(oldPassword,newPassword);
+            updatePassword(oldPassword, newPassword);
         } else {
             return false;
 
@@ -832,6 +859,10 @@ public class EditDataActivity extends AppCompatActivity {
             case "speaker":
                 exSpeakerSwitch.performClick();
                 break;
+            case "autodelog":
+            case "auto delog":
+                autoDelogSwitch.performClick();
+                break;
             case "bec":
                 backButton.performClick();
                 return;
@@ -840,7 +871,7 @@ public class EditDataActivity extends AppCompatActivity {
                 return;
             case "describe":
             case "described":
-                checkOptions(describeAudio);
+                checkOptions(describeCommandsAudio);
                 return;
             default:
                 invalidVoiceInput();
@@ -898,6 +929,9 @@ public class EditDataActivity extends AppCompatActivity {
             case "difuzor":
                 exSpeakerSwitch.performClick();
                 break;
+            case "deconectare automată":
+                autoDelogSwitch.performClick();
+                break;
             case "înapoi":
                 backButton.performClick();
                 return;
@@ -906,7 +940,7 @@ public class EditDataActivity extends AppCompatActivity {
                 return;
             case "descrie":
             case "descriere":
-                checkOptions(describeAudio);
+                checkOptions(describeCommandsAudio);
                 return;
             default:
                 invalidVoiceInput();
@@ -920,7 +954,7 @@ public class EditDataActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (connectionListenerStatus && currentActivity instanceof EditDataActivity && textToSpeech != null) {
-                    Log.d("EditData","connectionListener");
+                    Log.d("EditData", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();

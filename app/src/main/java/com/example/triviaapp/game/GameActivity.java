@@ -19,11 +19,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.triviaapp.FirebaseHelper;
-import com.example.triviaapp.LoggedUserData;
+import com.example.triviaapp.data.LoggedUserData;
 import com.example.triviaapp.R;
-import com.example.triviaapp.game.ui.dashboard.DashboardFragment;
-import com.example.triviaapp.game.ui.home.HomeFragment;
-import com.example.triviaapp.game.ui.notifications.NotificationsFragment;
+import com.example.triviaapp.game.modes.LuckPlayModeActivity;
+import com.example.triviaapp.game.modes.PlayActivity;
+import com.example.triviaapp.game.ui.rank.RankFragment;
+import com.example.triviaapp.game.ui.profile.ProfileFragment;
+import com.example.triviaapp.game.ui.menu.MenuFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,20 +49,21 @@ import java.util.Locale;
 
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
-import static com.example.triviaapp.LoggedUserData.EXMIC;
-import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
-import static com.example.triviaapp.LoggedUserData.connectionStatus;
-import static com.example.triviaapp.LoggedUserData.currentActivity;
-import static com.example.triviaapp.LoggedUserData.optionList;
+import static com.example.triviaapp.data.LoggedUserData.EXMIC;
+import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
+import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
+import static com.example.triviaapp.data.LoggedUserData.currentActivity;
+import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class GameActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
     private FirebaseAuth firebaseAuth;
     private BottomNavigationView bottomNavigationView;
     private NavigationView navigationView;
-    private HomeFragment homeFragment;
-    private DashboardFragment dashboardFragment;
-    private NotificationsFragment notificationsFragment;
+    private ProfileFragment profileFragment;
+    private RankFragment rankFragment;
+    private MenuFragment menuFragment;
     private HelpFragment helpFragment;
     private Fragment activeFragment;
     private final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -71,7 +74,8 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private boolean navigationListenerSet = false;
     private int lastFragment = 1;
 
-    String continueButtonPopUpTextString, infoTextViewPopUpTextStringAudio, describeAudio, describeCommandAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
+    String continueButtonPopUpTextString, infoTextViewPopUpTextStringAudio, describeAudio, describeCommandAudio, connectedToastAudio,
+    connectionLostToastAudio, invalidCommandToastAudio, placeAudio, withAudio, pointsAudio;
 
     String voiceInput = null;
     Intent speechIntent = null;
@@ -150,11 +154,11 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         firebaseAuth = FirebaseAuth.getInstance();
         bottomNavigationView = findViewById(R.id.nav_view);
         navigationView = findViewById(R.id.nav_drawer_view);
-        homeFragment = new HomeFragment();
-        dashboardFragment = new DashboardFragment();
-        notificationsFragment = new NotificationsFragment();
+        profileFragment = new ProfileFragment();
+        rankFragment = new RankFragment();
+        menuFragment = new MenuFragment();
         helpFragment = new HelpFragment();
-        activeFragment = homeFragment;
+        activeFragment = profileFragment;
         navigationView.setNavigationItemSelectedListener(this);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         profile = bottomNavigationView.getMenu().findItem(R.id.navigation_profile);
@@ -181,6 +185,9 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         connectedToastAudio = getString(R.string.connectionToastAudioEn);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
+        placeAudio = getString(R.string.placeAudioMenuEn);
+        withAudio = getString(R.string.withAudioMenuEn);
+        pointsAudio = getString(R.string.pointsTextViewAudioRankEn);
 
     }
 
@@ -199,6 +206,9 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         connectedToastAudio = getString(R.string.connectionToastAudioRou);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
+        placeAudio = getString(R.string.placeAudioMenuRou);
+        withAudio = getString(R.string.withAudioMenuRou);
+        pointsAudio = getString(R.string.pointsTextViewAudioRankRou);
 
     }
 
@@ -236,29 +246,29 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_profile:
-                fragmentManager.beginTransaction().remove(homeFragment).commitNow();
-                fragmentManager.beginTransaction().remove(dashboardFragment).commitNow();
-                fragmentManager.beginTransaction().remove(notificationsFragment).commitNow();
-                fragmentManager.beginTransaction().add(R.id.nav_host_fragment, homeFragment, "1").hide(activeFragment).show(homeFragment).commit();
-                activeFragment = homeFragment;
+                fragmentManager.beginTransaction().remove(profileFragment).commitNow();
+                fragmentManager.beginTransaction().remove(rankFragment).commitNow();
+                fragmentManager.beginTransaction().remove(menuFragment).commitNow();
+                fragmentManager.beginTransaction().add(R.id.nav_host_fragment, profileFragment, "1").hide(activeFragment).show(profileFragment).commit();
+                activeFragment = profileFragment;
                 lastFragment = 1;
                 return true;
 
             case R.id.navigation_score:
-                fragmentManager.beginTransaction().remove(homeFragment).commitNow();
-                fragmentManager.beginTransaction().remove(dashboardFragment).commitNow();
-                fragmentManager.beginTransaction().remove(notificationsFragment).commitNow();
-                fragmentManager.beginTransaction().add(R.id.nav_host_fragment, dashboardFragment, "2").hide(activeFragment).show(dashboardFragment).commit();
-                activeFragment = dashboardFragment;
+                fragmentManager.beginTransaction().remove(profileFragment).commitNow();
+                fragmentManager.beginTransaction().remove(rankFragment).commitNow();
+                fragmentManager.beginTransaction().remove(menuFragment).commitNow();
+                fragmentManager.beginTransaction().add(R.id.nav_host_fragment, rankFragment, "2").hide(activeFragment).show(rankFragment).commit();
+                activeFragment = rankFragment;
                 lastFragment = 2;
                 return true;
 
             case R.id.navigation_game:
-                fragmentManager.beginTransaction().remove(homeFragment).commitNow();
-                fragmentManager.beginTransaction().remove(dashboardFragment).commitNow();
-                fragmentManager.beginTransaction().remove(notificationsFragment).commitNow();
-                fragmentManager.beginTransaction().add(R.id.nav_host_fragment, notificationsFragment, "3").hide(activeFragment).show(notificationsFragment).commit();
-                activeFragment = notificationsFragment;
+                fragmentManager.beginTransaction().remove(profileFragment).commitNow();
+                fragmentManager.beginTransaction().remove(rankFragment).commitNow();
+                fragmentManager.beginTransaction().remove(menuFragment).commitNow();
+                fragmentManager.beginTransaction().add(R.id.nav_host_fragment, menuFragment, "3").hide(activeFragment).show(menuFragment).commit();
+                activeFragment = menuFragment;
                 lastFragment = 3;
                 return true;
             case R.id.navigation_help:
@@ -275,7 +285,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void LoadFragment() {
-        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, homeFragment, "1").commit();
+        fragmentManager.beginTransaction().add(R.id.nav_host_fragment, profileFragment, "1").commit();
 
     }
 
@@ -359,7 +369,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private void setTextToSpeechListener() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            checkOptions(describeAudio,"Base");
+            checkOptions(describeAudio, "Base");
             setConnectionListener();
 
         });
@@ -379,10 +389,10 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 speechRecognizer.destroy();
                 Runnable runnable = () -> {
                     if (optionList.get(EXMIC).isValue()) {
-                        if(dialogBuilder == null) {
+                        if (dialogBuilder == null) {
                             getSpeechInput("Base");
 
-                        }else{
+                        } else {
                             getSpeechInput("PopUp");
 
                         }
@@ -410,8 +420,8 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void speak(String text, int queueMode) {
-        if(textToSpeech == null){
-            Log.d("Game","NULL SPEAK OBJECT");
+        if (textToSpeech == null) {
+            Log.d("Game", "NULL SPEAK OBJECT");
 
         }
         textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
@@ -467,7 +477,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                         connectionStatus = false;
                         Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
                         if (optionList.get(EXSPEAKER).isValue()) {
-                              speak(connectionLostToastAudio, QUEUE_ADD);
+                            speak(connectionLostToastAudio, QUEUE_ADD);
 
                         }
 
@@ -481,7 +491,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             public void onResults(Bundle results) {
                 ArrayList<String> result = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 voiceInput = result.get(0);
-                Log.d("Game Activity voice input "+ screen + ":", result.get(0));
+                Log.d("Game Activity voice input " + screen + ":", result.get(0));
                 switch (LoggedUserData.language) {
                     case "english":
                         switch (screen) {
@@ -567,8 +577,12 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             case "sign out":
                 onNavigationItemSelected(signOut);
                 break;
-            case "edit":
+            case "settings":
                 editDataActivity();
+                return;
+            case "describe":
+            case "described":
+                checkOptions(describeCommandAudio, "Base");
                 return;
             case "Classic mode":
             case "classic mode":
@@ -580,8 +594,9 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             case "lucky mode":
                 luckModeActivity();
                 return;
-            default:invalidVoiceInput("Base");
-                    return;
+            default:
+                invalidVoiceInput("Base");
+                return;
 
         }
         getSpeechInput("Base");
@@ -612,6 +627,10 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             case "setări":
                 editDataActivity();
                 return;
+            case "descriere":
+            case "descrie":
+                checkOptions(describeCommandAudio, "Base");
+                return;
             case "Modul clasic":
             case "modul clasic":
                 openGameSettingsActivity();
@@ -622,8 +641,9 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             case "modul norocos":
                 luckModeActivity();
                 return;
-            default:invalidVoiceInput("Base");
-                    return;
+            default:
+                invalidVoiceInput("Base");
+                return;
 
         }
         getSpeechInput("Base");
@@ -639,7 +659,8 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             case "exit":
                 xImageViewPopUp.performClick();
                 return;
-            default:invalidVoiceInput("PopUp");
+            default:
+                invalidVoiceInput("PopUp");
 
         }
 
@@ -654,15 +675,17 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             case "ieșire":
                 xImageViewPopUp.performClick();
                 return;
-            default:invalidVoiceInput("PopUp");
+            default:
+                invalidVoiceInput("PopUp");
 
         }
 
     }
 
-    private void placeAudioFeedback(){
-        String text = "Your place is " + LoggedUserData.loggedUserPlace + " with " + LoggedUserData.loggedUserPoints + " points.";
-        checkOptions(text,"Base");
+    private void placeAudioFeedback() {
+        String text = placeAudio + SPACESTRING + LoggedUserData.loggedUserPlace + SPACESTRING + withAudio +
+                SPACESTRING + LoggedUserData.loggedUserPoints + SPACESTRING + pointsAudio + ".";
+        checkOptions(text, "Base");
 
     }
 
@@ -699,7 +722,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         dialog.show();
 
 
-        checkOptions(infoTextViewPopUpTextStringAudio,"PopUp");
+        checkOptions(infoTextViewPopUpTextStringAudio, "PopUp");
 
         xImageViewPopUp.setOnClickListener((v) -> {
             speechRecognizer.destroy();
@@ -751,8 +774,8 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (connectionListenerStatus && currentActivity instanceof GameActivity) {
-                    Log.d("Game","connectionListener");
+                if (connectionListenerStatus && currentActivity instanceof GameActivity && textToSpeech != null) {
+                    Log.d("Game", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();
@@ -780,10 +803,10 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         connectionStatus = true;
         Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
-        if(dialogBuilder == null) {
+        if (dialogBuilder == null) {
             checkOptions(connectedToastAudio, "Base");
-        }else{
-            checkOptions(connectedToastAudio,"PopUp");
+        } else {
+            checkOptions(connectedToastAudio, "PopUp");
 
         }
 

@@ -119,8 +119,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/newPasswordEditView"
         android:layout_alignParentEnd="true"
-        android:orientation="vertical"
-        android:gravity="end">
+        android:gravity="end"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/exOptionsTextView"
@@ -134,86 +134,105 @@
         </TextView>
 
 
-            <Switch
-                android:id="@+id/exMicOptionSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Microphone">
+        <Switch
+            android:id="@+id/exMicOptionSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Microphone">
 
-            </Switch>
+        </Switch>
 
-            <Switch
-                android:id="@+id/exSpeakerOptionSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Speaker"></Switch>
+        <Switch
+            android:id="@+id/exSpeakerOptionSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Speaker"></Switch>
+
+        <Switch
+            android:id="@+id/autoDelogOptionSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Auto delog"></Switch>
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/editButton"
-        android:layout_width="match_parent"
+    <ScrollView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/chooseLanguageLinearLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:background="@drawable/custom_botton_design_corners"
-        android:onClick="updateData"
-        android:text="Edit"
-        android:textColor="#000000" />
+        android:layout_below="@+id/exOptionsLinearLayout">
 
-    <Button
-        android:id="@+id/exitButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/editButton"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:layout_marginTop="50dp"
-        android:background="@drawable/custom_botton_design_corners"
-        android:onClick="exit"
-        android:textColor="#000000" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/exitButton"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/custom_botton_design_corners_red"
-        android:onClick="deleteAccount"
-        android:text="Delete Account"
-        android:textColor="#000000" />
+            <Button
+                android:id="@+id/editButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                android:background="@drawable/custom_botton_design_corners"
+                android:onClick="updateData"
+                android:text="Edit"
+                android:textColor="#000000" />
 
-    <EditText
-        android:id="@+id/passwordDeleteView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/deleteButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="password"
-        android:inputType="textPassword"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:visibility="gone" />
+            <Button
+                android:id="@+id/exitButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/editButton"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/custom_botton_design_corners"
+                android:onClick="exit"
+                android:text="Back"
+                android:textColor="#000000" />
 
-    <Button
-        android:id="@+id/confirmDeleteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/passwordDeleteView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/custom_botton_design_corners_red"
-        android:onClick="confirmDelete"
-        android:text="Confirm"
-        android:visibility="gone" />
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/exitButton"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/custom_botton_design_corners_red"
+                android:onClick="deleteAccount"
+                android:text="Delete Account"
+                android:textColor="#000000" />
+
+            <EditText
+                android:id="@+id/passwordDeleteView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/deleteButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:hint="password"
+                android:inputType="textPassword"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/confirmDeleteButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/passwordDeleteView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/custom_botton_design_corners_red"
+                android:onClick="confirmDelete"
+                android:text="Confirm"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 </RelativeLayout>

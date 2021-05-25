@@ -29,8 +29,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.triviaapp.data.LoggedUserData;
+import com.example.triviaapp.data.Option;
 import com.example.triviaapp.game.GameActivity;
-import com.example.triviaapp.rank.User;
+import com.example.triviaapp.data.rank.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -47,14 +49,14 @@ import java.util.Locale;
 
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
-import static com.example.triviaapp.LoggedUserData.EXMIC;
-import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
-import static com.example.triviaapp.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.LoggedUserData.connectionStatus;
-import static com.example.triviaapp.LoggedUserData.currentActivity;
-import static com.example.triviaapp.LoggedUserData.language;
-import static com.example.triviaapp.LoggedUserData.onResumeFromAnotherActivity;
-import static com.example.triviaapp.LoggedUserData.optionList;
+import static com.example.triviaapp.data.LoggedUserData.EXMIC;
+import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
+import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
+import static com.example.triviaapp.data.LoggedUserData.currentActivity;
+import static com.example.triviaapp.data.LoggedUserData.language;
+import static com.example.triviaapp.data.LoggedUserData.onResumeFromAnotherActivity;
+import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class MainActivity extends AppCompatActivity {
     public static final Integer RECORD_AUDIO = 1;
@@ -96,10 +98,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initialize();
-        initializeMicrophoneStatusAndCategoriesOptions();
+        getOptionsAndOthersStatus();
         initializeViews();
         initializeUserNameList();
-        setTextToSpeechListener();
+        setExtendedOptions();
 
     }
 
@@ -109,8 +111,7 @@ public class MainActivity extends AppCompatActivity {
         currentActivity = this;
         if (onResumeFromAnotherActivity) {
             chooseLanguage();
-            setTextToSpeechListener(describeAudio);
-            //speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+            setExtendedOptions(describeAudio);
 
         }
 
@@ -447,10 +448,11 @@ public class MainActivity extends AppCompatActivity {
         optionList.add(new Option("others", true));
         optionList.add(new Option("exMic", true));
         optionList.add(new Option("exSpeaker", true));
+        optionList.add(new Option("autoDelog", true));
 
     }
 
-    private void initializeMicrophoneStatusAndCategoriesOptions() {
+    private void getOptionsAndOthersStatus() {
         initializeOptionList();
         String data;
 
@@ -501,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
 
                     selectedLanguage = Locale.ENGLISH;
                     speechInitialize();
-                    setTextToSpeechListener(getString(R.string.englishLanguageSelectedAudioLogEditEn));
+                    setExtendedOptions(getString(R.string.englishLanguageSelectedAudioLogEditEn));
 
 
                     LoggedUserData.language = "english";
@@ -515,7 +517,7 @@ public class MainActivity extends AppCompatActivity {
 
                     selectedLanguage = Locale.getDefault();
                     speechInitialize();
-                    setTextToSpeechListener(getString(R.string.romanianLanguageSelectedAudioLogEditRou));
+                    setExtendedOptions(getString(R.string.romanianLanguageSelectedAudioLogEditRou));
 
                     LoggedUserData.language = "romanian";
                     editor.putString("language", "romanian");
@@ -630,7 +632,7 @@ public class MainActivity extends AppCompatActivity {
         chooseLanguagePopUpTextView.setText(R.string.chooseLanguageTextViewLogEditEn);
         chooseInteractionPopUpTextView.setText(R.string.exOptionsTextViewLogEditEn);
         extendedSwitchMicrophone.setText(R.string.microphoneSwitchLogMenuEditPlayEn);
-        extendedSwitchSpeaker.setText(R.string.loudSpeakerSwitchLogMenuEditEn);
+        extendedSwitchSpeaker.setText(R.string.loudSpeakerSwitchLogMenuEditPlayEn);
         muteButtonPopUp.setText(R.string.muteButtonLogEn);
         continueButtonPopUp.setText(R.string.nextButtonLogMenuPlayEn);
         restartPresentationAudio = getString(R.string.restartPresentationAudioLogEn);
@@ -647,7 +649,7 @@ public class MainActivity extends AppCompatActivity {
         chooseLanguagePopUpTextView.setText(R.string.chooseLanguageTextViewLogEditRou);
         chooseInteractionPopUpTextView.setText(R.string.exOptionsTextViewLogEditRou);
         extendedSwitchMicrophone.setText(R.string.microphoneSwitchLogMenuEditPlayRou);
-        extendedSwitchSpeaker.setText(R.string.loudSpeakerSwitchLogMenuEditRou);
+        extendedSwitchSpeaker.setText(R.string.loudSpeakerSwitchLogMenuEditPlayRou);
         muteButtonPopUp.setText(R.string.muteButtonLogRou);
         continueButtonPopUp.setText(R.string.nextButtonLogMenuPlayRou);
         restartPresentationAudio = getString(R.string.restartPresentationAudioLogRou);
@@ -714,7 +716,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setTextToSpeechListener() {
+    private void setExtendedOptions() {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
             setActivityStartPopUp();
@@ -724,7 +726,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setTextToSpeechListener(String feedback) {
+    private void setExtendedOptions(String feedback) {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
             switch(currentScreen){
@@ -1226,6 +1228,7 @@ public class MainActivity extends AppCompatActivity {
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();
+
                     } else {
                         lossConnection();
 

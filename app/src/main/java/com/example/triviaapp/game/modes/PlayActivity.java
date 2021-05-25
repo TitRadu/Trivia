@@ -1,4 +1,4 @@
-package com.example.triviaapp.game;
+package com.example.triviaapp.game.modes;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -24,13 +24,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.triviaapp.Answer;
+import com.example.triviaapp.data.Answer;
 import com.example.triviaapp.FirebaseCallback;
 import com.example.triviaapp.FirebaseHelper;
-import com.example.triviaapp.LoggedUserData;
-import com.example.triviaapp.Option;
-import com.example.triviaapp.Question;
+import com.example.triviaapp.data.LoggedUserData;
+import com.example.triviaapp.data.Option;
+import com.example.triviaapp.data.Question;
 import com.example.triviaapp.R;
+import com.example.triviaapp.game.GameActivity;
+import com.example.triviaapp.game.GameSettingsActivity;
 import com.example.triviaapp.game.ui.SubmitButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
@@ -47,18 +49,18 @@ import java.util.Random;
 import static android.speech.tts.TextToSpeech.QUEUE_ADD;
 import static android.speech.tts.TextToSpeech.QUEUE_FLUSH;
 import static com.example.triviaapp.FirebaseHelper.connectedRef;
-import static com.example.triviaapp.LoggedUserData.EMPTYSTRING;
-import static com.example.triviaapp.LoggedUserData.EXMIC;
-import static com.example.triviaapp.LoggedUserData.EXSPEAKER;
-import static com.example.triviaapp.LoggedUserData.MIC;
-import static com.example.triviaapp.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.LoggedUserData.SPEAKER;
-import static com.example.triviaapp.LoggedUserData.connectionStatus;
-import static com.example.triviaapp.LoggedUserData.currentActivity;
-import static com.example.triviaapp.LoggedUserData.dailyQuestion;
-import static com.example.triviaapp.LoggedUserData.loggedSuperPowerCorrectAnswer;
-import static com.example.triviaapp.LoggedUserData.loggedSuperPowerFiftyFifty;
-import static com.example.triviaapp.LoggedUserData.optionList;
+import static com.example.triviaapp.data.LoggedUserData.EMPTYSTRING;
+import static com.example.triviaapp.data.LoggedUserData.EXMIC;
+import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
+import static com.example.triviaapp.data.LoggedUserData.MIC;
+import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
+import static com.example.triviaapp.data.LoggedUserData.SPEAKER;
+import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
+import static com.example.triviaapp.data.LoggedUserData.currentActivity;
+import static com.example.triviaapp.data.LoggedUserData.dailyQuestion;
+import static com.example.triviaapp.data.LoggedUserData.loggedSuperPowerCorrectAnswer;
+import static com.example.triviaapp.data.LoggedUserData.loggedSuperPowerFiftyFifty;
+import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class PlayActivity extends AppCompatActivity {
 
@@ -67,7 +69,7 @@ public class PlayActivity extends AppCompatActivity {
     Button nextQuestionButton, tryAgainButton, btn_superpower, btn_RightAnswer;
     SubmitButton btnA, btnB, btnC, btnD, selectedThroughVoiceOption;
     TextView question, questionCounterTextView, timerView, totalScoreView, questionScoreView, totalScoreNextView, questionScoreViewScore, totalScoreNextViewPoints;
-    Switch microphoneSwitch;
+    Switch microphoneSwitch, speakerSwitch;
     ProgressBar progressBar;
     MaterialCardView materialCardView;
     int questionCounter;
@@ -296,8 +298,10 @@ public class PlayActivity extends AppCompatActivity {
         totalScoreNextView = findViewById(R.id.totalScoreNextView);
         progressBar = findViewById(R.id.progress_bar);
         materialCardView = findViewById(R.id.materialCardView);
-        microphoneSwitch = findViewById(R.id.sw_microphonePlay);
+        microphoneSwitch = findViewById(R.id.microphoneSwitch);
         microphoneSwitch.setChecked(optionList.get(MIC).isValue());
+        speakerSwitch = findViewById(R.id.speakerSwitch);
+        speakerSwitch.setChecked(optionList.get(SPEAKER).isValue());
         speakerControl = "Nothing";
         setViewsProprieties();
         chooseLanguage();
@@ -307,6 +311,7 @@ public class PlayActivity extends AppCompatActivity {
 
     private void setViewForEnglishLanguage() {
         microphoneSwitch.setText(R.string.microphoneSwitchLogMenuEditPlayEn);
+        speakerSwitch.setText(R.string.loudSpeakerSwitchLogMenuEditPlayEn);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayEn);
         questionTextViewString = getString(R.string.questionTextViewPlayEn);
         nextQuestionButton.setText(R.string.nextButtonLogMenuPlayEn);
@@ -334,6 +339,7 @@ public class PlayActivity extends AppCompatActivity {
 
     private void setViewForRomanianLanguage() {
         microphoneSwitch.setText(R.string.microphoneSwitchLogMenuEditPlayRou);
+        speakerSwitch.setText(R.string.loudSpeakerSwitchLogMenuEditPlayRou);
         totalScoreTextViewString = getString(R.string.totalScoreTextViewPlayRou);
         questionTextViewString = getString(R.string.questionTextViewPlayRou);
         nextQuestionButton.setText(R.string.nextButtonLogMenuPlayRou);
@@ -1287,6 +1293,7 @@ public class PlayActivity extends AppCompatActivity {
 
         }
         microphoneSwitch.setVisibility(View.VISIBLE);
+        speakerSwitch.setVisibility(View.VISIBLE);
         questionScoreView.setVisibility(View.VISIBLE);
 
         if (!LoggedUserData.dailyQuestion) {
@@ -1324,13 +1331,23 @@ public class PlayActivity extends AppCompatActivity {
                 }
                 getSpeechInput();
             }
-            editor.putString("mic", String.valueOf(isChecked));
+            editor.putString(optionList.get(MIC).getName(), String.valueOf(isChecked));
             editor.apply();
+
+        });
+
+        speakerSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            optionList.get(SPEAKER).setValue(isChecked);
+            SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+            editor.putString(optionList.get(SPEAKER).getName(), String.valueOf(isChecked));
+            editor.apply();
+
         });
     }
 
     private void updateUIForTheNextQuestion() {
         microphoneSwitch.setVisibility(View.GONE);
+        speakerSwitch.setVisibility(View.GONE);
         nextQuestionButton.setVisibility(View.GONE);
         tryAgainButton.setVisibility(View.GONE);
         questionScoreView.setVisibility(View.GONE);

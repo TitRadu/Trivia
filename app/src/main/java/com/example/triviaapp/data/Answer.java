@@ -1,4 +1,4 @@
-package com.example.triviaapp;
+package com.example.triviaapp.data;
 
 public class Answer {
     private  int answerId;
