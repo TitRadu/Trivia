@@ -225,6 +225,8 @@ public class EditDataActivity extends AppCompatActivity {
     private void setSwitchesListeners() {
         exMicSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             speechRecognizer.destroy();
+            SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
+            optionList.get(EXMIC).setValue(isChecked);
             if (isChecked) {
                 checkOptions(microphoneSelectAudio);
 
@@ -232,8 +234,6 @@ public class EditDataActivity extends AppCompatActivity {
                 checkOptions(microphoneDeselectAudio);
 
             }
-            SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
-            optionList.get(EXMIC).setValue(isChecked);
             editor.putString(optionList.get(EXMIC).getName(), String.valueOf(isChecked));
             editor.apply();
 
@@ -256,16 +256,15 @@ public class EditDataActivity extends AppCompatActivity {
         });
         autoDelogSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             speechRecognizer.destroy();
-            if (!isChecked) {
-                checkOptions(autoDelogDeselectAudio);
-
-            }
             SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();
             optionList.get(AUTODELOG).setValue(isChecked);
             editor.putString(optionList.get(AUTODELOG).getName(), String.valueOf(isChecked));
             editor.apply();
             if (isChecked) {
                 checkOptions(autoDelogSelectAudio);
+
+            }else{
+                checkOptions(autoDelogDeselectAudio);
 
             }
 

@@ -107,8 +107,7 @@ public class PlayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play);
         initialize();
         setViews();
-        setListenerForMicrophoneSwitch();
-        setBonusButtonsListener();
+        setSwitchesListeners();
 
     }
 
@@ -220,7 +219,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void setBonusButtonsListener() {
+    private void setButtonsListeners() {
         btn_superpower.setOnClickListener(v -> {
             speechRecognizer.destroy();
             LoggedUserData.loggedSuperPowerFiftyFifty--;
@@ -235,6 +234,11 @@ public class PlayActivity extends AppCompatActivity {
             btn_RightAnswer.setEnabled(false);
             btn_RightAnswer.setText(rights + LoggedUserData.loggedSuperPowerCorrectAnswer + " " + remainings);
         });
+        btnA.setOnClickListener(this::clicked);
+        btnB.setOnClickListener(this::clicked);
+        btnC.setOnClickListener(this::clicked);
+        btnD.setOnClickListener(this::clicked);
+
     }
 
     private void clickCorrectAnswer() {
@@ -503,36 +507,38 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onCallbackQuestions(List<Question> questions) {
                 setQuestion(questions);
-
-            }
-
-            @Override
-            public void onCallbackAnswers(List<Answer> answers) {
-
-            }
-
-        });
-        readAnswersData(new FirebaseCallback() {
-            @Override
-            public void onCallbackQuestions(List<Question> questions) {
-
-            }
-
-            @Override
-            public void onCallbackAnswers(List<Answer> answers) {
-                setAnswers(answers);
-                if (optionList.get(SPEAKER).isValue() || optionList.get(EXSPEAKER).isValue()) {
-                    speakerControl = "Question";
-                    setTextToSpeechListener();
-
-                }else{
-                    if(optionList.get(MIC).isValue() || optionList.get(EXMIC).isValue()) {
-                        getSpeechInput();
+                readAnswersData(new FirebaseCallback() {
+                    @Override
+                    public void onCallbackQuestions(List<Question> questions) {
 
                     }
-                 timer();
 
-                }
+                    @Override
+                    public void onCallbackAnswers(List<Answer> answers) {
+                        setAnswers(answers);
+                        setButtonsListeners();
+                        if (optionList.get(SPEAKER).isValue() || optionList.get(EXSPEAKER).isValue()) {
+                            speakerControl = "Question";
+                            setTextToSpeechListener();
+
+                        }else{
+                            if(optionList.get(MIC).isValue() || optionList.get(EXMIC).isValue()) {
+                                getSpeechInput();
+
+                            }
+                            timer();
+
+                        }
+
+                    }
+
+                });
+
+
+            }
+
+            @Override
+            public void onCallbackAnswers(List<Answer> answers) {
 
             }
 
@@ -1319,7 +1325,7 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
-    private void setListenerForMicrophoneSwitch() {
+    private void setSwitchesListeners() {
         microphoneSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             optionList.get(MIC).setValue(isChecked);
             SharedPreferences.Editor editor = getSharedPreferences("preferences.txt", MODE_PRIVATE).edit();

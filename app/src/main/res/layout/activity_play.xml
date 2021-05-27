@@ -109,8 +109,7 @@
             app:sub_btn_background="@color/white"
             app:sub_btn_duration="2000"
             app:sub_btn_line_color="#3AF598"
-            app:sub_btn_tick_color="@color/white"
-            android:onClick="clicked"/>
+            app:sub_btn_tick_color="@color/white" />
 
         <com.example.triviaapp.game.ui.SubmitButton
             android:id="@+id/varB"
@@ -122,8 +121,7 @@
             app:sub_btn_background="@color/white"
             app:sub_btn_duration="2000"
             app:sub_btn_line_color="#3AF598"
-            app:sub_btn_tick_color="@color/white"
-            android:onClick="clicked"/>
+            app:sub_btn_tick_color="@color/white" />
         <com.example.triviaapp.game.ui.SubmitButton
             android:id="@+id/varC"
             android:layout_width="match_parent"
@@ -134,8 +132,7 @@
             app:sub_btn_background="@color/white"
             app:sub_btn_duration="2000"
             app:sub_btn_line_color="#3AF598"
-            app:sub_btn_tick_color="@color/white"
-            android:onClick="clicked"/>
+            app:sub_btn_tick_color="@color/white" />
         <com.example.triviaapp.game.ui.SubmitButton
             android:id="@+id/varD"
             android:layout_width="match_parent"
@@ -146,8 +143,7 @@
             app:sub_btn_background="@color/white"
             app:sub_btn_duration="2000"
             app:sub_btn_line_color="#3AF598"
-            app:sub_btn_tick_color="@color/white"
-            android:onClick="clicked"/>
+            app:sub_btn_tick_color="@color/white" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -186,7 +182,6 @@
         android:checked="true"
         android:layout_gravity="center_horizontal"
         android:switchMinWidth="56dp"
-        android:layout_marginBottom="50dp"
         tools:ignore="UseSwitchCompatOrMaterialXml"
         android:visibility="gone"/>
 
