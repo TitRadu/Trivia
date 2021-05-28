@@ -44,7 +44,6 @@ import static com.example.triviaapp.data.LoggedUserData.AUTODELOG;
 import static com.example.triviaapp.data.LoggedUserData.EXMIC;
 import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.optionList;
 
@@ -635,19 +634,6 @@ public class EditDataActivity extends AppCompatActivity {
                     getSpeechInput();
 
                 }
-                if (error == SpeechRecognizer.ERROR_NETWORK) {
-                    speechRecognizer.destroy();
-                    if (connectionStatus) {
-                        connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
-                        if (optionList.get(EXSPEAKER).isValue()) {
-                            speak(connectionLostToastAudio, QUEUE_ADD);
-
-                        }
-
-                    }
-
-                }
 
             }
 
@@ -952,7 +938,7 @@ public class EditDataActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (connectionListenerStatus && currentActivity instanceof EditDataActivity && textToSpeech != null) {
+                if (connectionListenerStatus && textToSpeech != null) {
                     Log.d("EditData", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
@@ -978,7 +964,6 @@ public class EditDataActivity extends AppCompatActivity {
     }
 
     private void connected() {
-        connectionStatus = true;
         Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         checkOptions(connectedToastAudio);
@@ -986,13 +971,9 @@ public class EditDataActivity extends AppCompatActivity {
     }
 
     private void lossConnection() {
-        if (!optionList.get(EXMIC).isValue()) {
-            connectionStatus = false;
-            Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak(connectionLostToastAudio, QUEUE_ADD);
-
-            }
+        Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
+        if (optionList.get(EXSPEAKER).isValue()) {
+            speak(connectionLostToastAudio, QUEUE_ADD);
 
         }
 

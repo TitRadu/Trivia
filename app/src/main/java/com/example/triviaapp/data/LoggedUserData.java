@@ -42,8 +42,6 @@ public class LoggedUserData{
 
     public static boolean onResumeFromAnotherActivity = false;
 
-    public static boolean connectionStatus = false;
-
     public static AppCompatActivity currentActivity;
 
     //public static View root;

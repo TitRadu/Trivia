@@ -52,7 +52,6 @@ import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.data.LoggedUserData.EXMIC;
 import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.language;
 import static com.example.triviaapp.data.LoggedUserData.onResumeFromAnotherActivity;
@@ -70,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
     Button logInButton, createAccountButton, sendMailButton;
     TextView welcomePopUpTextView, chooseLanguagePopUpTextView, chooseInteractionPopUpTextView, forgotPasswordTextView;
     String emptyMailToastAudio, emptyPasswordToastAudio, successDataToast, wrongDataToastAudio, successSendMailToastAudio, wrongMailToastAudio, audioGrantedToastAudio, audioDeniedToastAudio,
-    describePopUpAudio, describeAudio, describeAudioPermissionAudio, describeCommandsAudio,restartPresentationAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
-    selectALanguageToastAudio, mailSetAudio, passwordSetAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
+            describePopUpAudio, describeAudio, describeAudioPermissionAudio, describeCommandsAudio, restartPresentationAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
+            selectALanguageToastAudio, mailSetAudio, passwordSetAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
 
     Date date;
     SharedPreferences prefs;
@@ -627,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setPopUpViewsForEnglishLanguage(){
+    private void setPopUpViewsForEnglishLanguage() {
         welcomePopUpTextView.setText(R.string.welcomeTextViewLogEn);
         chooseLanguagePopUpTextView.setText(R.string.chooseLanguageTextViewLogEditEn);
         chooseInteractionPopUpTextView.setText(R.string.exOptionsTextViewLogEditEn);
@@ -644,7 +643,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setPopUpViewsForRomanianLanguage(){
+    private void setPopUpViewsForRomanianLanguage() {
         welcomePopUpTextView.setText(R.string.welcomeTextViewLogRou);
         chooseLanguagePopUpTextView.setText(R.string.chooseLanguageTextViewLogEditRou);
         chooseInteractionPopUpTextView.setText(R.string.exOptionsTextViewLogEditRou);
@@ -661,7 +660,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setPopUpLanguage(){
+    private void setPopUpLanguage() {
         switch (LoggedUserData.language) {
             case "english":
                 setPopUpViewsForEnglishLanguage();
@@ -729,7 +728,7 @@ public class MainActivity extends AppCompatActivity {
     private void setExtendedOptions(String feedback) {
         textToSpeech = new TextToSpeech(this, status -> {
             verifyTextToSpeechListenerStatus(status);
-            switch(currentScreen){
+            switch (currentScreen) {
                 case "Activity":
                     checkOptions(feedback, "Activity");
                     break;
@@ -832,19 +831,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Error", String.valueOf(error));
                 if (error == SpeechRecognizer.ERROR_NO_MATCH) {
                     getSpeechInput(control);
-
-                }
-                if (error == SpeechRecognizer.ERROR_NETWORK) {
-                    speechRecognizer.destroy();
-                    if (connectionStatus) {
-                        connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), "Connection failed!", Toast.LENGTH_SHORT).show();
-                        if (optionList.get(EXSPEAKER).isValue()) {
-                            speak("Connection failed", QUEUE_ADD);
-
-                        }
-
-                    }
 
                 }
 
@@ -1167,7 +1153,7 @@ public class MainActivity extends AppCompatActivity {
                 if (optionList.get(EXSPEAKER).isValue()) {
                     speak(describeCommandsAudio, QUEUE_ADD);
 
-                }else{
+                } else {
                     invalidVoiceInput("Activity");
 
                 }
@@ -1207,7 +1193,7 @@ public class MainActivity extends AppCompatActivity {
                 if (optionList.get(EXSPEAKER).isValue()) {
                     speak(describeAudio, QUEUE_ADD);
 
-                }else{
+                } else {
                     invalidVoiceInput("Activity");
 
                 }
@@ -1224,7 +1210,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (textToSpeech != null) {
-                    Log.d("Main","connectionListener");
+                    Log.d("Main", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();
@@ -1248,13 +1234,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void connected() {
-        connectionStatus = true;
         Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         switch (currentScreen) {
             case "Nothing":
             case "Activity":
-                checkOptions(connectedToastAudio,currentScreen);
+                checkOptions(connectedToastAudio, currentScreen);
                 break;
             case "PopUp":
                 speak(connectedToastAudio, QUEUE_ADD);
@@ -1267,23 +1252,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void lossConnection() {
-        if (!optionList.get(EXMIC).isValue()) {
-            connectionStatus = false;
-            Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
-            switch (currentScreen) {
-                case "Nothing":
-                case "Activity":
-                    if (optionList.get(EXSPEAKER).isValue()) {
-                        speak(connectionLostToastAudio, QUEUE_ADD);
-
-                    }
-                    break;
-                case "PopUp":
+        Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
+        switch (currentScreen) {
+            case "Nothing":
+            case "Activity":
+                if (optionList.get(EXSPEAKER).isValue()) {
                     speak(connectionLostToastAudio, QUEUE_ADD);
-                    break;
-                default:
-                    break;
-            }
+
+                }
+                break;
+            case "PopUp":
+                speak(connectionLostToastAudio, QUEUE_ADD);
+                break;
+            default:
+                break;
 
         }
 

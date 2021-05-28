@@ -40,7 +40,6 @@ import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.data.LoggedUserData.EXMIC;
 import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.optionList;
 
@@ -48,7 +47,7 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     TextView countTextView, fiftyCountTextTextView, fiftyCountValueTextView, rightCountTextTextView, rightCountValueTextView;
     Button firstOptionButton, secondOptionButton, thirdOptionButton, fourthOptionButton, collectButton, collectButtonPopUp;
     String collectQuestionTextViewPopUpTextAudioString, lostPrizeTextViewPopUpTextAudioString, collectButtonPopUpTextString, lostPrizeButtonPopUpTextString,
-    wonFFAudio, wonRAAudio, noneAnswerAudio, wrongAnswerAudio, fiftyFiftyNumberAudio, rightAnswerNumberAudio, shortRAButtonTextString, noneAnswerButtonTextString, wrongAnswerButtonTextString, describeAudio, describeCommandsAudio, connectedToastAudio, lostConnectionToastAudio, invalidCommandToastAudio;
+            wonFFAudio, wonRAAudio, noneAnswerAudio, wrongAnswerAudio, fiftyFiftyNumberAudio, rightAnswerNumberAudio, shortRAButtonTextString, noneAnswerButtonTextString, wrongAnswerButtonTextString, describeAudio, describeCommandsAudio, connectedToastAudio, lostConnectionToastAudio, invalidCommandToastAudio;
     ImageView xImageViewPopUp;
 
     int count = 1;
@@ -506,19 +505,6 @@ public class LuckPlayModeActivity extends AppCompatActivity {
                     getSpeechInput(screen);
 
                 }
-                if (error == SpeechRecognizer.ERROR_NETWORK) {
-                    speechRecognizer.destroy();
-                    if (connectionStatus) {
-                        connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), lostConnectionToastAudio, Toast.LENGTH_SHORT).show();
-                        if (optionList.get(EXSPEAKER).isValue()) {
-                            speak(lostConnectionToastAudio, QUEUE_ADD);
-
-                        }
-
-                    }
-
-                }
 
             }
 
@@ -741,7 +727,6 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     }
 
     private void connected() {
-        connectionStatus = true;
         Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         if (dialogBuilder == null) {
@@ -760,13 +745,9 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     }
 
     private void lossConnection() {
-        if (!optionList.get(EXMIC).isValue()) {
-            connectionStatus = false;
-            Toast.makeText(getApplicationContext(), lostConnectionToastAudio, Toast.LENGTH_SHORT).show();
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak(lostConnectionToastAudio, QUEUE_ADD);
-
-            }
+        Toast.makeText(getApplicationContext(), lostConnectionToastAudio, Toast.LENGTH_SHORT).show();
+        if (optionList.get(EXSPEAKER).isValue()) {
+            speak(lostConnectionToastAudio, QUEUE_ADD);
 
         }
 

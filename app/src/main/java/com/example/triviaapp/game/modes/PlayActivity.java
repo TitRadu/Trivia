@@ -55,7 +55,6 @@ import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.MIC;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.data.LoggedUserData.SPEAKER;
-import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.dailyQuestion;
 import static com.example.triviaapp.data.LoggedUserData.loggedSuperPowerCorrectAnswer;
@@ -521,8 +520,8 @@ public class PlayActivity extends AppCompatActivity {
                             speakerControl = "Question";
                             setTextToSpeechListener();
 
-                        }else{
-                            if(optionList.get(MIC).isValue() || optionList.get(EXMIC).isValue()) {
+                        } else {
+                            if (optionList.get(MIC).isValue() || optionList.get(EXMIC).isValue()) {
                                 getSpeechInput();
 
                             }
@@ -763,19 +762,6 @@ public class PlayActivity extends AppCompatActivity {
                 Log.d("Error", String.valueOf(error));
                 if (error == SpeechRecognizer.ERROR_NO_MATCH) {
                     getSpeechInput();
-
-                }
-                if (error == SpeechRecognizer.ERROR_NETWORK) {
-                    speechRecognizer.destroy();
-                    if (connectionStatus) {
-                        connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
-                        if (optionList.get(EXSPEAKER).isValue()) {
-                            speak(connectionLostToastAudio, QUEUE_ADD);
-
-                        }
-
-                    }
 
                 }
 
@@ -1021,10 +1007,10 @@ public class PlayActivity extends AppCompatActivity {
                 }
                 String scoreText;
                 scoreText = questionScoreView.getText().toString() + questionScoreViewScore.getText().toString();
-                if(questionCounter == TOTAL_QUESTION_TO_WIN_GAME) {
+                if (questionCounter == TOTAL_QUESTION_TO_WIN_GAME) {
                     scoreText = scoreText + ". " + totalScoreNextView.getText().toString() + totalPoints + " X 2";
 
-                }else{
+                } else {
                     scoreText = scoreText + ". " + totalScoreNextView.getText().toString() + totalPoints;
 
                 }
@@ -1194,20 +1180,19 @@ public class PlayActivity extends AppCompatActivity {
             setTextAfterAnswerToTheQuestion();
             if (!dailyQuestion) {
                 String text;
-                if(userAnswerIsCorrect){
-                    if(questionCounter == TOTAL_QUESTION_TO_WIN_GAME){
+                if (userAnswerIsCorrect) {
+                    if (questionCounter == TOTAL_QUESTION_TO_WIN_GAME) {
                         text = gameWonTextAudio;
                         if (LoggedUserData.loggedGamesWon % 2 == 0) {
                             text = text + SPACESTRING + bonusRATextAudio;
                         }
 
-                    }else {
+                    } else {
 
                         text = correctAnswerTextAudio;
                     }
 
-                }
-                else{
+                } else {
                     text = wrongAnswerTextAudio;
 
                 }
@@ -1443,7 +1428,7 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void invalidVoiceInput() {
-        Toast.makeText(this,invalidCommandToastAudio, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, invalidCommandToastAudio, Toast.LENGTH_SHORT).show();
         checkOptions(invalidCommandToastAudio);
 
     }
@@ -1453,7 +1438,7 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (connectionListenerStatus && currentActivity instanceof PlayActivity && textToSpeech != null) {
-                    Log.d("Play","connectionListener");
+                    Log.d("Play", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();
@@ -1478,7 +1463,6 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void connected() {
-        connectionStatus = true;
         Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         checkOptions(connectedToastAudio);
@@ -1486,13 +1470,9 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void lossConnection() {
-        if (!optionList.get(EXMIC).isValue()) {
-            connectionStatus = false;
-            Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak(connectionLostToastAudio, QUEUE_ADD);
-
-            }
+        Toast.makeText(getApplicationContext(), connectionLostToastAudio, Toast.LENGTH_SHORT).show();
+        if (optionList.get(EXSPEAKER).isValue()) {
+            speak(connectionLostToastAudio, QUEUE_ADD);
 
         }
 

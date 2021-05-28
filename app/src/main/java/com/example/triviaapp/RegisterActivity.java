@@ -36,7 +36,6 @@ import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.data.LoggedUserData.EXMIC;
 import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.data.LoggedUserData.connectionStatus;
 import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.optionList;
 
@@ -401,18 +400,6 @@ public class RegisterActivity extends AppCompatActivity {
                     getSpeechInput();
 
                 }
-                if (error == SpeechRecognizer.ERROR_NETWORK) {
-                    speechRecognizer.destroy();
-                    if (connectionStatus) {
-                        connectionStatus = false;
-                        Toast.makeText(getApplicationContext(), lostConnectionToastAudio, Toast.LENGTH_SHORT).show();
-                        if (optionList.get(EXSPEAKER).isValue()) {
-                            speak(lostConnectionToastAudio, QUEUE_ADD);
-
-                        }
-                    }
-
-                }
 
             }
 
@@ -665,7 +652,7 @@ public class RegisterActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(connectionListenerStatus && currentActivity instanceof RegisterActivity && textToSpeech !=null) {
+                if(connectionListenerStatus && textToSpeech != null) {
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();
@@ -688,7 +675,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void connected(){
-        connectionStatus = true;
         Toast.makeText(getApplicationContext(),connectedToastAudio,Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         checkOptions(connectedToastAudio);
@@ -696,14 +682,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void lossConnection(){
-        if(!optionList.get(EXMIC).isValue()) {
-            connectionStatus = false;
-            Toast.makeText(getApplicationContext(),lostConnectionToastAudio,Toast.LENGTH_SHORT).show();
-            if (optionList.get(EXSPEAKER).isValue()) {
-                speak(lostConnectionToastAudio,QUEUE_ADD);
-
-            }
-
+        Toast.makeText(getApplicationContext(),lostConnectionToastAudio,Toast.LENGTH_SHORT).show();
+        if (optionList.get(EXSPEAKER).isValue()) {
+            speak(lostConnectionToastAudio,QUEUE_ADD);
         }
 
     }
