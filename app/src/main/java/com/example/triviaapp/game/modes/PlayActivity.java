@@ -55,7 +55,6 @@ import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.MIC;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.data.LoggedUserData.SPEAKER;
-import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.dailyQuestion;
 import static com.example.triviaapp.data.LoggedUserData.loggedSuperPowerCorrectAnswer;
 import static com.example.triviaapp.data.LoggedUserData.loggedSuperPowerFiftyFifty;
@@ -98,7 +97,8 @@ public class PlayActivity extends AppCompatActivity {
 
     private boolean connectionListenerStatus = false;
 
-    String gameMenuAudio, gameWonTextAudio, wonFFTextAudio, wonRATextAudio, correctAnswerTextAudio, wrongAnswerTextAudio, bonusRATextAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
+    String gameMenuAudio, gameWonTextAudio, wonFFTextAudio, wonRATextAudio, correctAnswerTextAudio, wrongAnswerTextAudio, bonusRATextAudio,
+            connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio, describeAudio, describeCommandsAudio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,7 +204,15 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void speak(String text, int queueMode) {
-        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        if(textToSpeech != null) {
+            textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        }else{
+            if(optionList.get(EXMIC).isValue()){
+                getSpeechInput();
+
+            }
+
+        }
 
     }
 
@@ -337,6 +345,8 @@ public class PlayActivity extends AppCompatActivity {
         connectedToastAudio = getString(R.string.connectionToastAudioEn);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
+        describeAudio = getString(R.string.describeAudioPlayEn);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioPlayEn);
 
     }
 
@@ -365,6 +375,9 @@ public class PlayActivity extends AppCompatActivity {
         connectedToastAudio = getString(R.string.connectionToastAudioRou);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
+        describeAudio = getString(R.string.describeAudioPlayRou);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioPlayRou);
+
     }
 
     private void setTextForViewsWithComplexText() {
@@ -420,7 +433,6 @@ public class PlayActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        currentActivity = this;
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         speechIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);//deschide o activitate ce solicita utilizatorului sa vorbeasca si trimite mesajul catre un SpeechRecognizer.
         speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -974,6 +986,25 @@ public class PlayActivity extends AppCompatActivity {
 
                 checkOptions(prizeText);
                 break;
+            case "describe":
+            case "described":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                return;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                return;
             default:
                 speechRecognizer.destroy();
                 invalidVoiceInput();
@@ -1028,6 +1059,25 @@ public class PlayActivity extends AppCompatActivity {
 
                 checkOptions(prizeText);
                 break;
+            case "descriere":
+            case "descrie":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                return;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                return;
             default:
                 speechRecognizer.destroy();
                 invalidVoiceInput();
@@ -1437,7 +1487,7 @@ public class PlayActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (connectionListenerStatus && currentActivity instanceof PlayActivity && textToSpeech != null) {
+                if (connectionListenerStatus && textToSpeech != null) {
                     Log.d("Play", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {

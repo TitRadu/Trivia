@@ -40,14 +40,15 @@ import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.data.LoggedUserData.EXMIC;
 import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class LuckPlayModeActivity extends AppCompatActivity {
     TextView countTextView, fiftyCountTextTextView, fiftyCountValueTextView, rightCountTextTextView, rightCountValueTextView;
     Button firstOptionButton, secondOptionButton, thirdOptionButton, fourthOptionButton, collectButton, collectButtonPopUp;
     String collectQuestionTextViewPopUpTextAudioString, lostPrizeTextViewPopUpTextAudioString, collectButtonPopUpTextString, lostPrizeButtonPopUpTextString,
-            wonFFAudio, wonRAAudio, noneAnswerAudio, wrongAnswerAudio, fiftyFiftyNumberAudio, rightAnswerNumberAudio, shortRAButtonTextString, noneAnswerButtonTextString, wrongAnswerButtonTextString, describeAudio, describeCommandsAudio, connectedToastAudio, lostConnectionToastAudio, invalidCommandToastAudio;
+            wonFFAudio, wonRAAudio, noneAnswerAudio, wrongAnswerAudio, fiftyFiftyNumberAudio, rightAnswerNumberAudio, shortRAButtonTextString,
+            noneAnswerButtonTextString, wrongAnswerButtonTextString, describeAudio, describeCommandsAudio, describeCollectPopUpCommandsAudio, describeWrongPopUpCommandsAudio,
+            connectedToastAudio, lostConnectionToastAudio, invalidCommandToastAudio;
     ImageView xImageViewPopUp;
 
     int count = 1;
@@ -79,7 +80,6 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        currentActivity = this;
         speechInitialize();
         setTextToSpeechListener();
 
@@ -107,8 +107,10 @@ public class LuckPlayModeActivity extends AppCompatActivity {
         lostPrizeTextViewPopUpTextAudioString = getString(R.string.lostPrizeTextAudioLuckEn);
         collectButtonPopUpTextString = getString(R.string.collectButtonTextLuckEn);
         lostPrizeButtonPopUpTextString = getString(R.string.exitButtonTextLuckEn);
-        describeAudio = getString(R.string.describeAudioLuckEn);
-        describeCommandsAudio = getString(R.string.describeAudioLuckEn);
+        describeAudio = getString(R.string.describeCommandsAudioLuckEn);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioLuckEn);
+        describeCollectPopUpCommandsAudio = getString(R.string.describeCommandsCollectPopUpAudioLuckEn);
+        describeWrongPopUpCommandsAudio = getString(R.string.describeCommandsWrongPopUpAudioLuckEn);
         wonFFAudio = getString(R.string.wonFFAudioPlayLuckEn);
         wonRAAudio = getString(R.string.wonRAAudioPlayLuckEn);
         noneAnswerAudio = getString(R.string.noneAnswerAudioLuckEn);
@@ -133,6 +135,9 @@ public class LuckPlayModeActivity extends AppCompatActivity {
         collectButtonPopUpTextString = getString(R.string.collectButtonTextLuckRou);
         lostPrizeButtonPopUpTextString = getString(R.string.exitButtonTextLuckRou);
         describeAudio = getString(R.string.describeAudioLuckRou);
+        describeCommandsAudio = getString(R.string.describeCommandsAudioLuckRou);
+        describeCollectPopUpCommandsAudio = getString(R.string.describeCommandsCollectPopUpAudioLuckRou);
+        describeWrongPopUpCommandsAudio = getString(R.string.describeCommandsWrongPopUpAudioLuckRou);
         wonFFAudio = getString(R.string.wonFFAudioPlayLuckRou);
         wonRAAudio = getString(R.string.wonRAAudioPlayLuckRou);
         noneAnswerAudio = getString(R.string.noneAnswerAudioLuckRou);
@@ -458,7 +463,31 @@ public class LuckPlayModeActivity extends AppCompatActivity {
             Log.d("NULL", "NULL");
 
         }
-        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        if (textToSpeech != null) {
+            textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        } else {
+            if (optionList.get(EXMIC).isValue()) {
+                if (dialogBuilder == null) {
+                    if (viewsEnableStatus) {
+                        getSpeechInput("Base");
+
+                    }
+
+                } else {
+                    if (xImageViewPopUp.getVisibility() == View.VISIBLE) {
+                        getSpeechInput("PopUpCollect");
+
+                    } else {
+                        getSpeechInput("PopUpWrong");
+
+                    }
+
+                }
+
+
+            }
+
+        }
 
     }
 
@@ -605,6 +634,25 @@ public class LuckPlayModeActivity extends AppCompatActivity {
                 speechRecognizer.destroy();
                 checkOptions(fiftyFiftyCount + SPACESTRING + fiftyFiftyNumberAudio + SPACESTRING + rightAnswerCount + SPACESTRING + rightAnswerNumberAudio, "base");
                 break;
+            case "described":
+            case "describe":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
+                break;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
+                break;
             default:
                 invalidVoiceInput("Base");
 
@@ -634,6 +682,25 @@ public class LuckPlayModeActivity extends AppCompatActivity {
                 speechRecognizer.destroy();
                 checkOptions(fiftyFiftyCount + SPACESTRING + fiftyFiftyNumberAudio + SPACESTRING + rightAnswerCount + SPACESTRING + rightAnswerNumberAudio, "base");
                 break;
+            case "descrie":
+            case "descriere":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
+                break;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
+                break;
             default:
                 invalidVoiceInput("Base");
 
@@ -650,6 +717,25 @@ public class LuckPlayModeActivity extends AppCompatActivity {
             case "exit":
                 xImageViewPopUp.performClick();
                 return;
+            case "described":
+            case "describe":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(collectQuestionTextViewPopUpTextAudioString, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUpCollect");
+
+                }
+                break;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCollectPopUpCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUpCollect");
+
+                }
+                break;
             default:
                 invalidVoiceInput("PopUpCollect");
 
@@ -666,6 +752,25 @@ public class LuckPlayModeActivity extends AppCompatActivity {
             case "închide":
                 xImageViewPopUp.performClick();
                 return;
+            case "descriere":
+            case "descrie":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(collectQuestionTextViewPopUpTextAudioString, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUpCollect");
+
+                }
+                break;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCollectPopUpCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUpCollect");
+
+                }
+                break;
             default:
                 invalidVoiceInput("PopUpCollect");
 
@@ -675,11 +780,31 @@ public class LuckPlayModeActivity extends AppCompatActivity {
 
     private void speechInputPopUpWrongEn(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
-        if ("close".equals(voiceInput)) {
-            collectButtonPopUp.performClick();
+        switch (voiceInput) {
+            case "exit":
+                collectButtonPopUp.performClick();
+                return;
+            case "describe":
+            case "described":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(lostPrizeTextViewPopUpTextAudioString, QUEUE_ADD);
 
-        } else {
-            invalidVoiceInput("PopUpWrong");
+                } else {
+                    invalidVoiceInput("PopUpWrong");
+
+                }
+                break;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeWrongPopUpCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUpWrong");
+
+                }
+                break;
+            default:
+                invalidVoiceInput("PopUpWrong");
 
         }
 
@@ -687,11 +812,31 @@ public class LuckPlayModeActivity extends AppCompatActivity {
 
     private void speechInputPopUpWrongRou(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
-        if ("închide".equals(voiceInput)) {
-            collectButtonPopUp.performClick();
+        switch (voiceInput) {
+            case "închide":
+                collectButtonPopUp.performClick();
+                return;
+            case "descriere":
+            case "descrie":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(lostPrizeTextViewPopUpTextAudioString, QUEUE_ADD);
 
-        } else {
-            invalidVoiceInput("PopUpWrong");
+                } else {
+                    invalidVoiceInput("PopUpWrong");
+
+                }
+                break;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeWrongPopUpCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUpWrong");
+
+                }
+                break;
+            default:
+                invalidVoiceInput("PopUpWrong");
 
         }
 
@@ -701,7 +846,7 @@ public class LuckPlayModeActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (connectionListenerStatus && currentActivity instanceof GameActivity) {
+                if (connectionListenerStatus && textToSpeech != null) {
                     Log.d("Luck", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {

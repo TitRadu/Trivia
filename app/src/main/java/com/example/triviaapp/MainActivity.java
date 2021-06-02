@@ -52,7 +52,6 @@ import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.data.LoggedUserData.EXMIC;
 import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.language;
 import static com.example.triviaapp.data.LoggedUserData.onResumeFromAnotherActivity;
 import static com.example.triviaapp.data.LoggedUserData.optionList;
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     Button logInButton, createAccountButton, sendMailButton;
     TextView welcomePopUpTextView, chooseLanguagePopUpTextView, chooseInteractionPopUpTextView, forgotPasswordTextView;
     String emptyMailToastAudio, emptyPasswordToastAudio, successDataToast, wrongDataToastAudio, successSendMailToastAudio, wrongMailToastAudio, audioGrantedToastAudio, audioDeniedToastAudio,
-            describePopUpAudio, describeAudio, describeAudioPermissionAudio, describeCommandsAudio, restartPresentationAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
+            describePopUpAudio, describePopUpCommandsAudio, describeAudio, describeAudioPermissionAudio, describeCommandsAudio, restartPresentationAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
             selectALanguageToastAudio, mailSetAudio, passwordSetAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
 
     Date date;
@@ -107,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        currentActivity = this;
         if (onResumeFromAnotherActivity) {
             chooseLanguage();
             setExtendedOptions(describeAudio);
@@ -147,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         describeCommandsAudio = getString(R.string.describeCommandsAudioLogEn);
         describeAudioPermissionAudio = getString(R.string.describeAudioPermissionAudioLogEn);
         describePopUpAudio = getString(R.string.describePopUpAudioLogEn);
+        describePopUpCommandsAudio = getString(R.string.describePopUpCommandsAudioLogEn);
         describeAudio = getString(R.string.describeAudioLogEn);
         passwordInput.setHint(R.string.passwordHintLogRegEditEn);
         logInButton.setText(R.string.logInButtonLogRegEn);
@@ -173,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         describeCommandsAudio = getString(R.string.describeCommandsAudioLogRou);
         describeAudioPermissionAudio = getString(R.string.describeAudioPermissionAudioLogRou);
         describePopUpAudio = getString(R.string.describePopUpAudioLogRou);
+        describePopUpCommandsAudio = getString(R.string.describePopUpCommandsAudioLogRou);
         describeAudio = getString(R.string.describeAudioLogRou);
         passwordInput.setHint(R.string.passwordHintLogRegEditRou);
         logInButton.setText(R.string.logInButtonLogRegRou);
@@ -329,7 +329,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI() {
         destroySpeaker();
-        currentActivity = new GameActivity();
         LoggedUserData.loggedUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         Intent intent = new Intent(this, GameActivity.class);
         startActivity(intent);
@@ -788,7 +787,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void speak(String text, int queueMode) {
-        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        if (textToSpeech != null) {
+            textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        } else {
+            if(currentScreen.equals("PopUp")){
+                getSpeechInput(currentScreen);
+
+            }else {
+                if (optionList.get(EXMIC).isValue()) {
+                    getSpeechInput(currentScreen);
+
+                }
+
+            }
+
+        }
 
     }
 
@@ -909,7 +922,9 @@ public class MainActivity extends AppCompatActivity {
             case "described":
                 speak(describePopUpAudio, QUEUE_ADD);
                 return;
-
+            case "commands":
+                speak(describePopUpAudio, QUEUE_ADD);
+                break;
             default:
                 invalidVoiceInput("PopUp");
         }
@@ -949,7 +964,9 @@ public class MainActivity extends AppCompatActivity {
             case "descriere":
                 speak(describePopUpAudio, QUEUE_ADD);
                 return;
-
+            case "comenzi":
+                speak(describePopUpCommandsAudio, QUEUE_ADD);
+                break;
             default:
                 invalidVoiceInput("PopUp");
         }
@@ -1151,13 +1168,22 @@ public class MainActivity extends AppCompatActivity {
             case "describe":
             case "described":
                 if (optionList.get(EXSPEAKER).isValue()) {
-                    speak(describeCommandsAudio, QUEUE_ADD);
+                    speak(describeAudio, QUEUE_ADD);
 
                 } else {
                     invalidVoiceInput("Activity");
 
                 }
                 return;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Activity");
+
+                }
+                break;
             default:
                 invalidVoiceInput("Activity");
 
@@ -1198,6 +1224,15 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 return;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Activity");
+
+                }
+                break;
             default:
                 invalidVoiceInput("Activity");
 

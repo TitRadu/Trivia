@@ -44,7 +44,6 @@ import static com.example.triviaapp.data.LoggedUserData.AUTODELOG;
 import static com.example.triviaapp.data.LoggedUserData.EXMIC;
 import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class EditDataActivity extends AppCompatActivity {
@@ -81,7 +80,6 @@ public class EditDataActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        currentActivity = this;
         speechInitialize();
         setTextToSpeechListener();
 
@@ -588,7 +586,15 @@ public class EditDataActivity extends AppCompatActivity {
     }
 
     private void speak(String text, int queueMode) {
-        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        if(textToSpeech != null) {
+            textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        }else{
+            if(optionList.get(EXMIC).isValue()){
+                getSpeechInput();
+
+            }
+
+        }
 
     }
 
@@ -830,7 +836,7 @@ public class EditDataActivity extends AppCompatActivity {
                 if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.engLanguageRadioButton) {
                     engRadioButton.performClick();
                 } else {
-                    speak(getString(R.string.englishAlsoSelectedAudioLogEditEn), QUEUE_ADD);
+                    checkOptions(getString(R.string.englishAlsoSelectedAudioLogEditEn));
 
                 }
                 break;
@@ -856,7 +862,22 @@ public class EditDataActivity extends AppCompatActivity {
                 return;
             case "describe":
             case "described":
-                checkOptions(describeCommandsAudio);
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                return;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
                 return;
             default:
                 invalidVoiceInput();
@@ -904,7 +925,7 @@ public class EditDataActivity extends AppCompatActivity {
                 if (chooseLanguageRadioGroup.getCheckedRadioButtonId() != R.id.romLanguageRadioButton) {
                     romRadioButton.performClick();
                 } else {
-                    speak(getString(R.string.romanianAlsoSelectedAudioLogEditRou), QUEUE_ADD);
+                    checkOptions(getString(R.string.romanianAlsoSelectedAudioLogEditRou));
 
                 }
                 break;
@@ -923,9 +944,24 @@ public class EditDataActivity extends AppCompatActivity {
             case "șterge cont":
                 confirmDeleteButton.performClick();
                 return;
-            case "descrie":
             case "descriere":
-                checkOptions(describeCommandsAudio);
+            case "descrie":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                return;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
                 return;
             default:
                 invalidVoiceInput();

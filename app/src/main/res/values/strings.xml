@@ -53,6 +53,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="nextButtonLogMenuPlayRou">Continuă</string>
     <string name="describePopUpAudioLogEn">Welcome to Trivia!</string>
     <string name="describePopUpAudioLogRou">Bun venit în Trivia!</string>
+    <string name="describePopUpCommandsAudioLogEn">PopUp commands description!</string>
+    <string name="describePopUpCommandsAudioLogRou">Descriere comenzilor din PopUp!</string>
     <string name="describeAudioLogEn">Welcome to Main Activity!</string>
     <string name="describeAudioLogRou">Bun venit în meniul de logare!</string>
     <string name="describeAudioPermissionAudioLogEn">Welcome to Trivia audio permission!</string>
@@ -161,6 +163,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="luckModeButtonMenuRou">Noroc</string>
     <string name="infoTextViewMenuEn">Do you want to answer the daily question?</string>
     <string name="infoTextViewMenuRou">Vrei să răspunzi la întrebarea zilnică?</string>
+    <string name="describeCommandsPopUpAudioMenuEn">PopUp commands description!</string>
+    <string name="describeCommandsPopUpAudioMenuRou">Descrierea comenzilor din PopUp!</string>
     <string name="exitButtonMenuHelpEn">Exit</string>
     <string name="exitButtonMenuHelpRou">Ieșire</string>
 
@@ -260,12 +264,20 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="youAnsweredTextAudioPlayRou">Ai răspuns!</string>
     <string name="timeExpiredTextPlayEn">Time expired!</string>
     <string name="timeExpiredTextPlayRou">Timpul a expirat!</string>
+    <string name="describeAudioPlayEn">Welcome to game menu!</string>
+    <string name="describeAudioPlayRou">Bun venit în meniul de joc!</string>
+    <string name="describeCommandsAudioPlayEn">Commands description!</string>
+    <string name="describeCommandsAudioPlayRou">Descrierea comenzilor!</string>
 
 
     <string name="describeAudioLuckEn">Welcome to lucky mode!</string>
     <string name="describeAudioLuckRou">Bun venit în modul norocos!</string>
     <string name="describeCommandsAudioLuckEn">Commands description!</string>
     <string name="describeCommandsAudioLuckRou">Descrierea comenzilor!</string>
+    <string name="describeCommandsCollectPopUpAudioLuckEn">PopUp Collect commands description!</string>
+    <string name="describeCommandsCollectPopUpAudioLuckRou">Descrierea comenzilor din Collect PopUp!</string>
+    <string name="describeCommandsWrongPopUpAudioLuckEn">PopUp Wrong Commands description!</string>
+    <string name="describeCommandsWrongPopUpAudioLuckRou">Descrierea comenzilor din Wrong PopUp!</string>
     <string name="noneAnswerAudioLuckEn">You won nothing!</string>
     <string name="noneAnswerAudioLuckRou">Nu ai câștigat nimic!</string>
     <string name="rightAnswerShortTextLuckEn">R.A.</string>

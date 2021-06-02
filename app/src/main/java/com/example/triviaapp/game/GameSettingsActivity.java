@@ -64,7 +64,6 @@ public class GameSettingsActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        currentActivity = this;
         speechInitialize();
         setTextToSpeechListener();
 
@@ -286,7 +285,15 @@ public class GameSettingsActivity extends AppCompatActivity {
             Log.d("GameSettings", "NULL SPEAK OBJECT");
 
         }
-        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        if (textToSpeech != null) {
+            textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        } else {
+            if (optionList.get(EXMIC).isValue()) {
+                getSpeechInput();
+
+            }
+
+        }
 
     }
 
@@ -405,7 +412,22 @@ public class GameSettingsActivity extends AppCompatActivity {
                 break;
             case "described":
             case "describe":
-                checkOptions(describeCommandsAudio);
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                break;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
                 break;
             default:
                 invalidVoiceInput();
@@ -442,7 +464,22 @@ public class GameSettingsActivity extends AppCompatActivity {
                 break;
             case "descriere":
             case "descrie":
-                checkOptions(describeCommandsAudio);
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                break;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
                 break;
             default:
                 invalidVoiceInput();

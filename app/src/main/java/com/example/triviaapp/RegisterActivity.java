@@ -36,7 +36,6 @@ import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.data.LoggedUserData.EXMIC;
 import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -48,8 +47,8 @@ public class RegisterActivity extends AppCompatActivity {
     Button createAccountButton;
     TextView alreadyHaveAccountTextView;
     String emptyEmailToastAudio, emptyUserNameToastAudio, emptyPasswordToastAudio, shortPasswordToastAudio, existUserNameToastAudio,
-    successCreateToast, existEmailToastAudio, describeAudio, setMailAudio, setPasswordAudio, userNameSetAudio, describeCommandsAudio,
-    connectedToastAudio, lostConnectionToastAudio, invalidCommandToastAudio;
+            successCreateToast, existEmailToastAudio, describeAudio, setMailAudio, setPasswordAudio, userNameSetAudio, describeCommandsAudio,
+            connectedToastAudio, lostConnectionToastAudio, invalidCommandToastAudio;
 
     Date date;
     SharedPreferences prefs;
@@ -81,7 +80,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        currentActivity = this;
         prefs = getSharedPreferences("preferences.txt", MODE_PRIVATE);
         speechInitialize();
 
@@ -354,7 +352,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void speak(String text, int queueMode) {
-        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        if (textToSpeech != null) {
+            textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        } else {
+            if (optionList.get(EXMIC).isValue()) {
+                getSpeechInput();
+
+            }
+
+        }
 
     }
 
@@ -469,7 +475,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
             email = email.replaceAll(platform, "@" + platform + ".com");
             emailInput.setText(email);
-            checkOptions(setMailAudio + SPACESTRING +  email + "!");
+            checkOptions(setMailAudio + SPACESTRING + email + "!");
             return true;
 
         }
@@ -510,6 +516,7 @@ public class RegisterActivity extends AppCompatActivity {
         return false;
 
     }
+
     private boolean checkSetPasswordCommandRou(String voiceInput) {
         boolean rule;
         rule = voiceInput.startsWith("setează parolă ");
@@ -523,21 +530,21 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkSetUserNameCommandEn(String voiceInput){
+    private boolean checkSetUserNameCommandEn(String voiceInput) {
         short length = 0;
         boolean rule = false;
-        if(voiceInput.startsWith("set user name ")){
+        if (voiceInput.startsWith("set user name ")) {
             rule = true;
             length = 14;
 
         }
-        if(voiceInput.startsWith("set username ")){
+        if (voiceInput.startsWith("set username ")) {
             rule = true;
             length = 13;
 
         }
 
-        if(rule){
+        if (rule) {
             String userName = usefulDataExtract(voiceInput, length);
             userNameInput.setText(userName);
             checkOptions(userNameSetAudio + SPACESTRING + userName + "!");
@@ -548,8 +555,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkSetUserNameCommandRou(String voiceInput){
-        if(voiceInput.startsWith("setează nume ")){
+    private boolean checkSetUserNameCommandRou(String voiceInput) {
+        if (voiceInput.startsWith("setează nume ")) {
             String userName = usefulDataExtract(voiceInput, 13);
             userNameInput.setText(userName);
             checkOptions(userNameSetAudio + SPACESTRING + userName + "!");
@@ -575,7 +582,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
 
         }
-        if(checkSetUserNameCommandEn(voiceInput)){
+        if (checkSetUserNameCommandEn(voiceInput)) {
             return;
 
         }
@@ -594,13 +601,22 @@ public class RegisterActivity extends AppCompatActivity {
             case "describe":
             case "described":
                 if (optionList.get(EXSPEAKER).isValue()) {
-                    speak(describeCommandsAudio, QUEUE_ADD);
+                    speak(describeAudio, QUEUE_ADD);
 
-                }else{
+                } else {
                     invalidVoiceInput();
 
                 }
                 return;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                break;
             default:
                 invalidVoiceInput();
 
@@ -615,7 +631,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
 
         }
-        if(checkSetUserNameCommandRou(voiceInput)){
+        if (checkSetUserNameCommandRou(voiceInput)) {
             return;
 
         }
@@ -634,13 +650,22 @@ public class RegisterActivity extends AppCompatActivity {
             case "descrie":
             case "descriere":
                 if (optionList.get(EXSPEAKER).isValue()) {
-                    speak(describeCommandsAudio, QUEUE_ADD);
+                    speak(describeAudio, QUEUE_ADD);
 
-                }else{
+                } else {
                     invalidVoiceInput();
 
                 }
                 return;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput();
+
+                }
+                break;
             default:
                 invalidVoiceInput();
 
@@ -652,7 +677,7 @@ public class RegisterActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(connectionListenerStatus && textToSpeech != null) {
+                if (connectionListenerStatus && textToSpeech != null) {
                     boolean connected = snapshot.getValue(Boolean.class);
                     if (connected) {
                         connected();
@@ -674,17 +699,17 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void connected(){
-        Toast.makeText(getApplicationContext(),connectedToastAudio,Toast.LENGTH_SHORT).show();
+    private void connected() {
+        Toast.makeText(getApplicationContext(), connectedToastAudio, Toast.LENGTH_SHORT).show();
         speechRecognizer.destroy();
         checkOptions(connectedToastAudio);
 
     }
 
-    private void lossConnection(){
-        Toast.makeText(getApplicationContext(),lostConnectionToastAudio,Toast.LENGTH_SHORT).show();
+    private void lossConnection() {
+        Toast.makeText(getApplicationContext(), lostConnectionToastAudio, Toast.LENGTH_SHORT).show();
         if (optionList.get(EXSPEAKER).isValue()) {
-            speak(lostConnectionToastAudio,QUEUE_ADD);
+            speak(lostConnectionToastAudio, QUEUE_ADD);
         }
 
     }

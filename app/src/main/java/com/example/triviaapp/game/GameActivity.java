@@ -52,7 +52,6 @@ import static com.example.triviaapp.FirebaseHelper.connectedRef;
 import static com.example.triviaapp.data.LoggedUserData.EXMIC;
 import static com.example.triviaapp.data.LoggedUserData.EXSPEAKER;
 import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
-import static com.example.triviaapp.data.LoggedUserData.currentActivity;
 import static com.example.triviaapp.data.LoggedUserData.optionList;
 
 public class GameActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
@@ -73,7 +72,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private boolean navigationListenerSet = false;
     private int lastFragment = 1;
 
-    String continueButtonPopUpTextString, infoTextViewPopUpTextStringAudio, describeAudio, describeCommandAudio, connectedToastAudio,
+    String continueButtonPopUpTextString, infoTextViewPopUpTextStringAudio, describeAudio, describeCommandAudio, describePopUpCommandsAudio, connectedToastAudio,
     connectionLostToastAudio, invalidCommandToastAudio, placeAudio, withAudio, pointsAudio;
 
     String voiceInput = null;
@@ -145,7 +144,6 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     protected void onResume() {
         super.onResume();
         chooseLanguage();
-        currentActivity = this;
 
     }
 
@@ -181,6 +179,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
 
         describeAudio = getString(R.string.describeAudioMenuEn);
         describeCommandAudio = getString(R.string.describeCommandsAudioMenuEn);
+        describePopUpCommandsAudio = getString(R.string.describeCommandsPopUpAudioMenuEn);
         connectedToastAudio = getString(R.string.connectionToastAudioEn);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
@@ -202,6 +201,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
 
         describeAudio = getString(R.string.describeAudioMenuRou);
         describeCommandAudio = getString(R.string.describeCommandsAudioMenuRou);
+        describePopUpCommandsAudio = getString(R.string.describeCommandsPopUpAudioMenuRou);
         connectedToastAudio = getString(R.string.connectionToastAudioRou);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
@@ -423,7 +423,20 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             Log.d("Game", "NULL SPEAK OBJECT");
 
         }
-        textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        if(textToSpeech != null) {
+            textToSpeech.speak(text, queueMode, null, TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID);
+        }else{
+            if(optionList.get(EXMIC).isValue()){
+                if(dialogBuilder == null){
+                     getSpeechInput("Base");
+                }else{
+                    getSpeechInput("PopUp");
+
+                }
+
+            }
+
+        }
 
     }
 
@@ -547,7 +560,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         switch (voiceInput) {
             case "place":
                 placeAudioFeedback();
-                break;
+                return;
             case "profile":
                 onNavigationItemSelected(profile);
                 break;
@@ -568,7 +581,13 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 return;
             case "describe":
             case "described":
-                checkOptions(describeCommandAudio, "Base");
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
                 return;
             case "Classic mode":
             case "classic mode":
@@ -579,6 +598,15 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 return;
             case "lucky mode":
                 luckModeActivity();
+                return;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
                 return;
             default:
                 invalidVoiceInput("Base");
@@ -594,7 +622,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         switch (voiceInput) {
             case "punctaj":
                 placeAudioFeedback();
-                break;
+                return;
             case "profil":
                 onNavigationItemSelected(profile);
                 break;
@@ -615,7 +643,13 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 return;
             case "descriere":
             case "descrie":
-                checkOptions(describeCommandAudio, "Base");
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
                 return;
             case "Modul clasic":
             case "modul clasic":
@@ -626,6 +660,15 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 return;
             case "modul norocos":
                 luckModeActivity();
+                return;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describeCommandAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
                 return;
             default:
                 invalidVoiceInput("Base");
@@ -645,6 +688,25 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
             case "exit":
                 xImageViewPopUp.performClick();
                 return;
+            case "describe":
+            case "described":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(infoTextViewPopUpTextStringAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUp");
+
+                }
+                return;
+            case "commands":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describePopUpCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUp");
+
+                }
+                return;
             default:
                 invalidVoiceInput("PopUp");
 
@@ -660,6 +722,25 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 return;
             case "ieșire":
                 xImageViewPopUp.performClick();
+                return;
+            case "descriere":
+            case "descrie":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(infoTextViewPopUpTextStringAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUp");
+
+                }
+                return;
+            case "comenzi":
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(describePopUpCommandsAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("PopUp");
+
+                }
                 return;
             default:
                 invalidVoiceInput("PopUp");
