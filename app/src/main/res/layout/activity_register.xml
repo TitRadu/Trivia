@@ -52,6 +52,28 @@
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_password"/>
+
+        <EditText
+            android:id="@+id/codeRegInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="code"
+            android:textColor="#7A7A7A"
+            android:textSize="12sp"
+            android:inputType="textPassword"/>
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

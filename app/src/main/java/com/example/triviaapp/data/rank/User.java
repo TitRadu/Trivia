@@ -3,18 +3,20 @@ package com.example.triviaapp.data.rank;
 public class User{
     private String email;
     private String password;
+    private String userName;
+    private String loginCode;
     private int points;
     private int superpower;
     private int superpowerCorrectAnswer;
     private int gamesWon;
-    private String userName;
     private long dailyQuestionTime;
     private long luckModeTime;
 
-    public User(String email,int gamesWon ,String password, int points, int superpower,int superpowerCorrectAnswer,String userName, long dailyQuestionTime, long luckModeTime) {
+    public User(String email,int gamesWon ,String password, int points, int superpower,int superpowerCorrectAnswer,String userName, String loginCode, long dailyQuestionTime, long luckModeTime) {
         this.email = email;
         this.userName = userName;
         this.password = password;
+        this.loginCode = loginCode;
         this.points = points;
         this.superpower = superpower;
         this.superpowerCorrectAnswer = superpowerCorrectAnswer;
@@ -83,5 +85,9 @@ public class User{
 
     public void setDailyQuestionTime(long dailyQuestionTime) {
         this.dailyQuestionTime = dailyQuestionTime;
+    }
+
+    public String getLoginCode() {
+        return loginCode;
     }
 }

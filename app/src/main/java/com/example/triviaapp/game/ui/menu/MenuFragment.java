@@ -18,7 +18,6 @@ import com.example.triviaapp.R;
 import com.example.triviaapp.game.GameActivity;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.triviaapp.data.LoggedUserData.EMPTYSTRING;
@@ -50,29 +49,14 @@ public class MenuFragment extends Fragment {
 
     }
 
-    private HashMap<String, Object> populateMap() {
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("email", LoggedUserData.loggedUserEmail);
-        map.put("gamesWon", LoggedUserData.loggedGamesWon);
-        map.put("password", LoggedUserData.loggedUserPassword);
-        map.put("points", LoggedUserData.loggedUserPoints);
-        map.put("superpower", LoggedUserData.loggedSuperPowerFiftyFifty);
-        map.put("superpowerCorrectAnswer", LoggedUserData.loggedSuperPowerCorrectAnswer);
-        map.put("userName", LoggedUserData.loggedUserName);
-        map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
-        map.put("luckModeTime", LoggedUserData.loggedUserLuckModeTime);
-        return map;
-    }
-
-
     private void initializeViews(View root) {
         gameActivity = (GameActivity)getActivity();
         date = new Date();
         clasicButton = root.findViewById(R.id.classicBtn);
         exitButton = root.findViewById(R.id.exitBtn);
-        switchMicrophone = root.findViewById(R.id.sw_microphone);
+        switchMicrophone = root.findViewById(R.id.microphoneSwitch);
         switchMicrophone.setChecked(optionList.get(MIC).isValue());
-        switchSpeaker = root.findViewById(R.id.sw_speaker);
+        switchSpeaker = root.findViewById(R.id.speakerSwitch);
         switchSpeaker.setChecked(optionList.get(SPEAKER).isValue());
         dailyQuestionButton = root.findViewById(R.id.dailyQuestionButton);
         luckModeButton = root.findViewById(R.id.luckModeButton);
@@ -83,6 +67,7 @@ public class MenuFragment extends Fragment {
     private void setViewForEnglishLanguage() {
         clasicButton.setText(R.string.classicButtonMenuEn);
         switchMicrophone.setText(R.string.microphoneSwitchLogMenuEditPlayEn);
+        switchSpeaker.setText(R.string.loudSpeakerSwitchLogMenuEditPlayEn);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuEn);
         luckModeButtonTextString = getString(R.string.luckModeButtonMenuEn);
         exitButton.setText(R.string.exitButtonMenuHelpEn);
@@ -93,6 +78,7 @@ public class MenuFragment extends Fragment {
     private void setViewForRomanianLanguage() {
         clasicButton.setText(R.string.classicButtonMenuRou);
         switchMicrophone.setText(R.string.microphoneSwitchLogMenuEditPlayRou);
+        switchSpeaker.setText(R.string.loudSpeakerSwitchLogMenuEditPlayRou);
         dailyQuestionButtonTextString = getString(R.string.dailyQuestionButtonMenuRou);
         luckModeButtonTextString = getString(R.string.luckModeButtonMenuRou);
         exitButton.setText(R.string.exitButtonMenuHelpRou);

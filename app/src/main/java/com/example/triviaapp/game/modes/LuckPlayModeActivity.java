@@ -347,6 +347,7 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     private HashMap<String, Object> populateMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("email", LoggedUserData.loggedUserEmail);
+        map.put("loginCode", LoggedUserData.loggedUserLoginCode);
         map.put("gamesWon", LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);

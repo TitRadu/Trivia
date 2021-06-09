@@ -43,10 +43,10 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="chooseLanguageTextViewLogEditRou">Selectează limba:</string>
     <string name="exOptionsTextViewLogEditEn">Select options:</string>
     <string name="exOptionsTextViewLogEditRou">Selectează optiunile:</string>
-    <string name="microphoneSwitchLogMenuEditPlayEn">Microphone</string>
-    <string name="microphoneSwitchLogMenuEditPlayRou">Microfon</string>
-    <string name="loudSpeakerSwitchLogMenuEditPlayEn">Loudspeaker</string>
-    <string name="loudSpeakerSwitchLogMenuEditPlayRou">Difuzor</string>
+    <string name="microphoneSwitchLogMenuEditPlayEn">Voice command</string>
+    <string name="microphoneSwitchLogMenuEditPlayRou">Comandă vocală</string>
+    <string name="loudSpeakerSwitchLogMenuEditPlayEn">Audio feedback</string>
+    <string name="loudSpeakerSwitchLogMenuEditPlayRou">Feedback audio</string>
     <string name="muteButtonLogEn">Mute</string>
     <string name="muteButtonLogRou">Mut</string>
     <string name="nextButtonLogMenuPlayEn">Next</string>
@@ -107,9 +107,13 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="audioGrantedToastAudioLogRou">Înregistrarea audio permisă!</string>
     <string name="audioDeniedToastAudioLogEn">Audio record denied!</string>
     <string name="audioDeniedToastAudioLogRou">Înregistrarea audio respinsă!</string>
+    <string name="wrongCodeToastAudioLogEn">Wrong code!</string>
+    <string name="wrongCodeToastAudioLogRou">Cod greșit!</string>
 
     <string name="userNameHintRegEn">username</string>
     <string name="userNameHintRegRou">nume de utilizator</string>
+    <string name="codeHintRegEn">code</string>
+    <string name="codeHintRegRou">cod</string>
     <string name="alreadyHaveTextViewRegEn">Already have an account?</string>
     <string name="alreadyHaveTextViewRegRou">Aveți deja un cont?</string>
     <string name="emptyUserNameToastRegEn">Introduce an username!</string>
@@ -127,7 +131,17 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="describeCommandsAudioRegEn">Commands description!</string>
     <string name="describeCommandsRegRou">Descrierea comenzilor!</string>
     <string name="userNameSetAudioRegEditEn">Username was set to</string>
-    <string name="userNameSetAudioRegEditRou">Numele a fost schimbat în</string>
+    <string name="userNameSetAudioRegEditRou">Numele a fost setat ca</string>
+    <string name="codeSetAudioRegEditEn">Code was set to</string>
+    <string name="codeSetAudioRegEditRou">Codul a fost setat ca</string>
+    <string name="emptyCodeToastAudioLogEn">Introduce a login code!!</string>
+    <string name="emptyCodeToastAudioLogRou">Introdu un cod de logare!</string>
+    <string name="invalidCodeFormatToastAudioLogEn">Login code must contain only digits!</string>
+    <string name="invalidCodeFormatToastAudioLogRou">Codul de logare trebuie să conțină doar cifre!</string>
+    <string name="shortCodeToastAudioLogEn">Login code must contain minimum 6 digits!</string>
+    <string name="shortCodeToastAudioLogRou">Codul de logare trebuie să conțină minim 6 cifre!</string>
+
+
 
     <string name="emailTextViewProfileEn">Signed as</string>
     <string name="emailTextViewProfileRou">Conectat ca</string>

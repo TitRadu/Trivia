@@ -138,6 +138,7 @@ public class ProfileFragment extends Fragment {
     private HashMap<String, Object> populateMap() {
         HashMap<String, Object> map = new HashMap<>();
         map.put("email", LoggedUserData.loggedUserEmail);
+        map.put("loginCode", LoggedUserData.loggedUserLoginCode);
         map.put("gamesWon",LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
@@ -170,6 +171,7 @@ public class ProfileFragment extends Fragment {
 
                     if (user.getEmail().equals(email)) {
                         LoggedUserData.loggedUserName = user.getUserName();
+                        LoggedUserData.loggedUserLoginCode = user.getLoginCode();
                         LoggedUserData.loggedUserPoints = user.getPoints();
                         LoggedUserData.loggedUserKey = dataSnapshot1.getKey();
                         LoggedUserData.loggedSuperPowerFiftyFifty = user.getSuperpower();

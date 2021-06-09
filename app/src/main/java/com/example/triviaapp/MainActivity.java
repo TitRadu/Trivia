@@ -44,6 +44,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -55,6 +57,7 @@ import static com.example.triviaapp.data.LoggedUserData.SPACESTRING;
 import static com.example.triviaapp.data.LoggedUserData.language;
 import static com.example.triviaapp.data.LoggedUserData.onResumeFromAnotherActivity;
 import static com.example.triviaapp.data.LoggedUserData.optionList;
+import static com.example.triviaapp.data.LoggedUserData.voiceCommandLoginData;
 
 public class MainActivity extends AppCompatActivity {
     public static final Integer RECORD_AUDIO = 1;
@@ -69,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
     TextView welcomePopUpTextView, chooseLanguagePopUpTextView, chooseInteractionPopUpTextView, forgotPasswordTextView;
     String emptyMailToastAudio, emptyPasswordToastAudio, successDataToast, wrongDataToastAudio, successSendMailToastAudio, wrongMailToastAudio, audioGrantedToastAudio, audioDeniedToastAudio,
             describePopUpAudio, describePopUpCommandsAudio, describeAudio, describeAudioPermissionAudio, describeCommandsAudio, restartPresentationAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
-            selectALanguageToastAudio, mailSetAudio, passwordSetAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio;
+            selectALanguageToastAudio, mailSetAudio, passwordSetAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio,
+            wrongCodeToastAudio;
 
     Date date;
     SharedPreferences prefs;
@@ -88,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
     String voiceInput = null;
     Intent speechIntent = null;
     SpeechRecognizer speechRecognizer;
-    List<String> emailList;
     String currentScreen = null;
+    List<String> localLoginCodeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         initialize();
         getOptionsAndOthersStatus();
         initializeViews();
-        initializeUserNameList();
+        initializeUserDataStructures();
         setExtendedOptions();
 
     }
@@ -125,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
     private void initializeViews() {
         FirebaseHelper.getInstance();
         LoggedUserData.userNameList = new ArrayList<>();
-        emailList = new ArrayList<>();
         emailInput = findViewById(R.id.emailLogInput);
         passwordInput = findViewById(R.id.passwordLogInput);
         forgotPasswordEmailInput = findViewById(R.id.forgotPasswordEmailInput);
@@ -165,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
         connectedToastAudio = getString(R.string.connectionToastAudioEn);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
+        wrongCodeToastAudio = getString(R.string.wrongCodeToastAudioLogEn);
 
     }
 
@@ -192,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
         connectedToastAudio = getString(R.string.connectionToastAudioRou);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
+        wrongCodeToastAudio = getString(R.string.wrongCodeToastAudioLogRou);
 
     }
 
@@ -293,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void logInActivity(View view) {
+    public void normalLogIn(View view) {
         speechRecognizer.destroy();
         final String email = emailInput.getText().toString();
         final String password = passwordInput.getText().toString();
@@ -302,6 +307,12 @@ public class MainActivity extends AppCompatActivity {
             return;
 
         }
+
+        logIn(email, password);
+
+    }
+
+    private void logIn(String email, String password){
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -312,6 +323,16 @@ public class MainActivity extends AppCompatActivity {
                             LoggedUserData.loggedUserPassword = password;
                             Toast.makeText(getBaseContext(), successDataToast, Toast.LENGTH_SHORT).show();
                             updateMillis();
+
+                            String data = prefs.getString(email, "Key not found!");
+
+                            if (data.equals("Key not found!")) {
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putString(email, voiceCommandLoginData.get(email).getLoginCode());
+                                editor.apply();
+
+                            }
+
                             updateUI();
                             clearInputs();
                         } else {
@@ -335,20 +356,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void initializeUserNameList() {
+    private void initializeUserDataStructures() {
         FirebaseHelper.userDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and NO again
                 // whenever data at this location is updated.
                 LoggedUserData.userNameList = new ArrayList<>();
+                LoggedUserData.voiceCommandLoginData = new HashMap<>();
 
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     User user = dataSnapshot1.getValue(User.class);
                     LoggedUserData.userNameList.add(user.getUserName());
-                    emailList.add(user.getEmail());
+                    voiceCommandLoginData.put(user.getEmail(),user);
 
                 }
+
+                populateLocalLoginCodeList();
 
             }
 
@@ -356,6 +380,19 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 // Failed to read value
                 Toast.makeText(getApplicationContext(), "User name not found!", Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+    }
+
+    private void populateLocalLoginCodeList(){
+        localLoginCodeList = new LinkedList<>();
+        voiceCommandLoginData.forEach((email,user) -> {
+            String data = prefs.getString(email, "Key not found!");
+            if (!data.equals("Key not found!")) {
+                localLoginCodeList.add(user.getLoginCode());
 
             }
 
@@ -1049,34 +1086,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkSetPasswordCommandEn(String voiceInput) {
-        boolean rule;
-        rule = voiceInput.startsWith("set password ");
-        if (rule) {
+        if (voiceInput.startsWith("set password ")) {
             String password = usefulDataExtract(voiceInput, 13);
             passwordInput.setText(password);
             checkOptions(passwordSetAudio, "Activity");
-
-        } else {
-            return false;
+            return true;
 
         }
-        return true;
+
+        return false;
+
 
     }
 
     private boolean checkSetPasswordCommandRou(String voiceInput) {
-        boolean rule;
-        rule = voiceInput.startsWith("setează parolă ");
-        if (rule) {
+        if (voiceInput.startsWith("setează parolă ")) {
             String password = usefulDataExtract(voiceInput, 15);
             passwordInput.setText(password);
             checkOptions(passwordSetAudio, "Activity");
-
-        } else {
-            return false;
-
+            return true;
         }
-        return true;
+
+        return false;
+
 
     }
 
@@ -1134,6 +1166,58 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private boolean checkCodeIsCommandEn(String voiceInput) {
+        if (voiceInput.startsWith("code ")) {
+            String code = usefulDataExtract(voiceInput, 5);
+            if(localLoginCodeList.contains(code)){
+                voiceCommandLoginData.forEach((email,user) -> {
+                    if(user.getLoginCode().equals(code)){
+                        logIn(user.getEmail(),user.getPassword());
+
+                    }
+
+                });
+
+            }else{
+                Toast.makeText(this, wrongCodeToastAudio, Toast.LENGTH_SHORT).show();
+                checkOptions(wrongCodeToastAudio, currentScreen);
+
+            }
+            return true;
+
+        }
+        return false;
+
+    }
+
+
+    private boolean checkCodeIsCommandRou(String voiceInput) {
+        if (voiceInput.startsWith("cod ")) {
+            String code = usefulDataExtract(voiceInput, 4);
+            if(localLoginCodeList.contains(code)){
+                voiceCommandLoginData.forEach((email,user) -> {
+                    if(user.getLoginCode().equals(code)){
+                        logIn(user.getEmail(),user.getPassword());
+
+                    }
+
+                });
+
+            }else{
+                Toast.makeText(this, wrongCodeToastAudio, Toast.LENGTH_SHORT).show();
+                checkOptions(wrongCodeToastAudio, currentScreen);
+
+            }
+            return true;
+
+        }
+        return false;
+
+    }
+
+
+
     private String usefulDataExtract(String voiceInput, int length) {
         String usefulData = voiceInput.substring(length);
         usefulData = usefulData.replaceAll("\\s+", "");
@@ -1154,6 +1238,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if (checkSendMailCommandEn(voiceInput)) {
+            return;
+
+        }
+        if (checkCodeIsCommandEn(voiceInput)) {
             return;
 
         }
@@ -1203,6 +1291,10 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if (checkSendMailCommandRou(voiceInput)) {
+            return;
+
+        }
+        if (checkCodeIsCommandRou(voiceInput)) {
             return;
 
         }

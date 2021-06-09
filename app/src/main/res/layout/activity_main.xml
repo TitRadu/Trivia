@@ -57,7 +57,7 @@
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/custom_botton_design_corners_blue"
-        android:onClick="logInActivity"
+        android:onClick="normalLogIn"
         android:text="Log In"
         android:textAlignment="center"
         android:textAllCaps="false"
