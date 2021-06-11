@@ -50,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
     String emptyEmailToastAudio, emptyUserNameToastAudio, emptyPasswordToastAudio, shortPasswordToastAudio, existUserNameToastAudio,
             successCreateToast, existEmailToastAudio, describeAudio, setMailAudio, setPasswordAudio, userNameSetAudio, describeCommandsAudio,
             connectedToastAudio, lostConnectionToastAudio, invalidCommandToastAudio, emptyCodeToastAudio, invalidCodeFormatToastAudio, shortCodeToastAudio,
-            codeSetAudio;
+            codeSetAudio, noInternetToastAudio;
 
     Date date;
     SharedPreferences prefs;
@@ -63,6 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
     SpeechRecognizer speechRecognizer;
 
     private boolean connectionListenerStatus = false;
+    private boolean connectionStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +125,8 @@ public class RegisterActivity extends AppCompatActivity {
         emptyCodeToastAudio = getString(R.string.emptyCodeToastAudioLogEn);
         invalidCodeFormatToastAudio = getString(R.string.invalidCodeFormatToastAudioLogEn);
         shortCodeToastAudio = getString(R.string.shortCodeToastAudioLogEn);
+        codeSetAudio = getString(R.string.codeSetAudioRegEn);
+        noInternetToastAudio = getString(R.string.noInternetToastAudioLogRegEn);
 
     }
 
@@ -151,6 +154,8 @@ public class RegisterActivity extends AppCompatActivity {
         emptyCodeToastAudio = getString(R.string.emptyCodeToastAudioLogRou);
         invalidCodeFormatToastAudio = getString(R.string.invalidCodeFormatToastAudioLogRou);
         shortCodeToastAudio = getString(R.string.shortCodeToastAudioLogRou);
+        codeSetAudio = getString(R.string.codeSetAudioRegRou);
+        noInternetToastAudio = getString(R.string.noInternetToastAudioLogRegRou);
 
     }
 
@@ -296,10 +301,16 @@ public class RegisterActivity extends AppCompatActivity {
                         finishAndRemoveTask();
 
                     } else {
+                        if(!connectionStatus){
+                            Toast.makeText(getBaseContext(), noInternetToastAudio, Toast.LENGTH_SHORT).show();
+                            checkOptions(noInternetToastAudio);
+                            return;
+
+                        }
+
                         if(voiceCommandLoginData.containsKey(email)){
                             Toast.makeText(getBaseContext(), existEmailToastAudio, Toast.LENGTH_SHORT).show();
                             checkOptions(existEmailToastAudio);
-                            return;
 
                         }
 
@@ -627,7 +638,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (voiceInput.startsWith("setează cod ")) {
             String code = usefulDataExtract(voiceInput, 12);
             codeInput.setText(code);
-            checkOptions(userNameSetAudio + SPACESTRING + code + "!");
+            checkOptions(codeSetAudio + SPACESTRING + code + "!");
             return true;
 
         }
@@ -751,14 +762,19 @@ public class RegisterActivity extends AppCompatActivity {
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (connectionListenerStatus && textToSpeech != null) {
+                if (textToSpeech != null) {
                     boolean connected = snapshot.getValue(Boolean.class);
-                    if (connected) {
-                        connected();
-                    } else {
-                        lossConnection();
+                    connectionStatus = connected;
+                    if(connectionListenerStatus){
+                        if (connected) {
+                            connected();
+                        } else {
+                            lossConnection();
+
+                        }
 
                     }
+
                 }
                 connectionListenerStatus = true;
             }

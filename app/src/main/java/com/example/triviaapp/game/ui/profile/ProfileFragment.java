@@ -142,7 +142,7 @@ public class ProfileFragment extends Fragment {
         map.put("gamesWon",LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
-        map.put("superpower",LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("superpower5050",LoggedUserData.loggedSuperPowerFiftyFifty);
         map.put("superpowerCorrectAnswer",LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
         map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
@@ -174,7 +174,7 @@ public class ProfileFragment extends Fragment {
                         LoggedUserData.loggedUserLoginCode = user.getLoginCode();
                         LoggedUserData.loggedUserPoints = user.getPoints();
                         LoggedUserData.loggedUserKey = dataSnapshot1.getKey();
-                        LoggedUserData.loggedSuperPowerFiftyFifty = user.getSuperpower();
+                        LoggedUserData.loggedSuperPowerFiftyFifty = user.getSuperpower5050();
                         LoggedUserData.loggedSuperPowerCorrectAnswer = user.getSuperpowerCorrectAnswer();
                         LoggedUserData.loggedGamesWon = user.getGamesWon();
                         LoggedUserData.loggedUserDailyQuestionTime = user.getDailyQuestionTime();

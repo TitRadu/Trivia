@@ -35,18 +35,18 @@ public class HelpFragment extends Fragment {
 
     private void setViewForEnglishLanguage(){
         howToPlayTextView.setText(R.string.howToPlayTextViewHelpEn);
-        howToPlayExplicationTextView.setText(R.string.helpTextCumSeJoacaEn);
+        howToPlayExplicationTextView.setText(R.string.helpTextHowToPlayEn);
         howToScoreTextView.setText(R.string.howToScoreTextViewHelpEn);
-        howToScoreExplicationTextView.setText(R.string.helpTextCumSePuncteazaEn);
+        howToScoreExplicationTextView.setText(R.string.helpTextHowToScoreEn);
 
     }
 
 
     private void setViewForRomanianLanguage(){
         howToPlayTextView.setText(R.string.howToPlayTextViewHelpRou);
-        howToPlayExplicationTextView.setText(R.string.helpTextCumSeJoacaRou);
+        howToPlayExplicationTextView.setText(R.string.helpTextHowToPlayRou);
         howToScoreTextView.setText(R.string.howToScoreTextViewHelpRou);
-        howToScoreExplicationTextView.setText(R.string.helpTextCumSePuncteazaRou);
+        howToScoreExplicationTextView.setText(R.string.helpTextHowToScoreRou);
 
     }
 

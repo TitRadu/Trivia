@@ -326,7 +326,7 @@ public class EditDataActivity extends AppCompatActivity {
         map.put("gamesWon", LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
-        map.put("superpower", LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("superpower5050", LoggedUserData.loggedSuperPowerFiftyFifty);
         map.put("superpowerCorrectAnswer", LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
         map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
@@ -855,7 +855,7 @@ public class EditDataActivity extends AppCompatActivity {
             case "auto delog":
                 autoDelogSwitch.performClick();
                 break;
-            case "bec":
+            case "back":
                 backButton.performClick();
                 return;
             case "delete account":

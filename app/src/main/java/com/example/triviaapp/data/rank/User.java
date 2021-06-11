@@ -6,19 +6,19 @@ public class User{
     private String userName;
     private String loginCode;
     private int points;
-    private int superpower;
+    private int superpower5050;
     private int superpowerCorrectAnswer;
     private int gamesWon;
     private long dailyQuestionTime;
     private long luckModeTime;
 
-    public User(String email,int gamesWon ,String password, int points, int superpower,int superpowerCorrectAnswer,String userName, String loginCode, long dailyQuestionTime, long luckModeTime) {
+    public User(String email, int gamesWon , String password, int points, int superpower5050, int superpowerCorrectAnswer, String userName, String loginCode, long dailyQuestionTime, long luckModeTime) {
         this.email = email;
         this.userName = userName;
         this.password = password;
         this.loginCode = loginCode;
         this.points = points;
-        this.superpower = superpower;
+        this.superpower5050 = superpower5050;
         this.superpowerCorrectAnswer = superpowerCorrectAnswer;
         this.gamesWon = gamesWon;
         this.dailyQuestionTime = dailyQuestionTime;
@@ -55,12 +55,12 @@ public class User{
     public int getPoints() { return points; }
 
     public void setPoints(int points) { this.points = points; }
-    public int getSuperpower() {
-        return superpower;
+    public int getSuperpower5050() {
+        return superpower5050;
     }
 
-    public void setSuperpower(int superpower) {
-        this.superpower = superpower;
+    public void setSuperpower5050(int superpower5050) {
+        this.superpower5050 = superpower5050;
     }
 
     public int getSuperpowerCorrectAnswer() {

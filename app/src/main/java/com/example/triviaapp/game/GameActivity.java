@@ -73,7 +73,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private int lastFragment = 1;
 
     String continueButtonPopUpTextString, infoTextViewPopUpTextStringAudio, describeAudio, describeCommandAudio, describePopUpCommandsAudio, connectedToastAudio,
-    connectionLostToastAudio, invalidCommandToastAudio, placeAudio, withAudio, pointsAudio;
+    connectionLostToastAudio, invalidCommandToastAudio, placeAudio, withAudio, pointsAudio, gameModesHelpAudio;
 
     String voiceInput = null;
     Intent speechIntent = null;
@@ -167,7 +167,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
 
     }
 
-    private void setMenuItemsForEnglishLanguage() {
+    private void setMenuItemsAndAudiosForEnglishLanguage() {
         profile.setTitle(R.string.title_profileEn);
         score.setTitle(R.string.title_scoreEn);
         game.setTitle(R.string.title_gameEn);
@@ -183,13 +183,17 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         connectedToastAudio = getString(R.string.connectionToastAudioEn);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
+        gameModesHelpAudio = getString(R.string.howToPlayTextViewHelpEn) +
+                "\n" + getString(R.string.helpTextHowToPlayEn) +
+                "\n" + getString(R.string.howToScoreTextViewHelpEn) +
+                "\n"  + getString(R.string.helpTextHowToScoreEn);
         placeAudio = getString(R.string.placeAudioMenuEn);
         withAudio = getString(R.string.withAudioMenuEn);
         pointsAudio = getString(R.string.pointsTextViewAudioRankEn);
 
     }
 
-    private void setMenuItemsForRomanianLanguage() {
+    private void setMenuItemsAndAudiosForRomanianLanguage() {
         profile.setTitle(R.string.title_profileRou);
         score.setTitle(R.string.title_scoreRou);
         game.setTitle(R.string.title_gameRou);
@@ -205,6 +209,10 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         connectedToastAudio = getString(R.string.connectionToastAudioRou);
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
+        gameModesHelpAudio = getString(R.string.howToPlayTextViewHelpRou) +
+                "\n" + getString(R.string.helpTextHowToPlayRou) +
+                "\n" + getString(R.string.howToScoreTextViewHelpRou) +
+                "\n"  + getString(R.string.helpTextHowToScoreRou);
         placeAudio = getString(R.string.placeAudioMenuRou);
         withAudio = getString(R.string.withAudioMenuRou);
         pointsAudio = getString(R.string.pointsTextViewAudioRankRou);
@@ -214,11 +222,11 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
     private void chooseLanguage() {
         switch (LoggedUserData.language) {
             case "english":
-                setMenuItemsForEnglishLanguage();
+                setMenuItemsAndAudiosForEnglishLanguage();
                 selectedLanguage = Locale.ENGLISH;
                 break;
             case "romanian":
-                setMenuItemsForRomanianLanguage();
+                setMenuItemsAndAudiosForRomanianLanguage();
                 selectedLanguage = Locale.getDefault();
                 break;
             default:
@@ -234,7 +242,7 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
         map.put("gamesWon", LoggedUserData.loggedGamesWon);
         map.put("password", LoggedUserData.loggedUserPassword);
         map.put("points", LoggedUserData.loggedUserPoints);
-        map.put("superpower", LoggedUserData.loggedSuperPowerFiftyFifty);
+        map.put("superpower5050", LoggedUserData.loggedSuperPowerFiftyFifty);
         map.put("superpowerCorrectAnswer", LoggedUserData.loggedSuperPowerCorrectAnswer);
         map.put("userName", LoggedUserData.loggedUserName);
         map.put("dailyQuestionTime", LoggedUserData.loggedUserDailyQuestionTime);
@@ -572,8 +580,14 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 onNavigationItemSelected(game);
                 break;
             case "help":
-                onNavigationItemSelected(help);
-                break;
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(gameModesHelpAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
+                return;
             case "sign out":
                 onNavigationItemSelected(signOut);
                 break;
@@ -634,8 +648,14 @@ public class GameActivity extends AppCompatActivity implements BottomNavigationV
                 onNavigationItemSelected(game);
                 break;
             case "ajutor":
-                onNavigationItemSelected(help);
-                break;
+                if (optionList.get(EXSPEAKER).isValue()) {
+                    speak(gameModesHelpAudio, QUEUE_ADD);
+
+                } else {
+                    invalidVoiceInput("Base");
+
+                }
+                return;
             case "deconectare":
                 onNavigationItemSelected(signOut);
                 break;

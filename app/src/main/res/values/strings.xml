@@ -11,16 +11,16 @@
     <string name="helpMenuItemProfileRou">Ajutor</string>
     <string name="signOutMenuItemProfileEn">Sign out</string>
     <string name="signOutMenuItemProfileRou">Deconectare</string>
-    <string name="helpTextCumSeJoacaRou">\n
-În momentul în care apeși butonul Începe, se va afișa un meniu pentru alegerea categoriilor. După ce se apasă butonul Joacă, ai timp 30 de secunde sa răspunzi
+    <string name="helpTextHowToPlayRou">\n
+În momentul în care apeși butonul MODUL CLASIC, se va afișa un meniu pentru alegerea categoriilor. După ce se apasă butonul Joacă, ai timp 30 de secunde sa răspunzi
 la întrebare. După fiecare întrebare la care s-a răspuns sau în cazul în care expiră timpul, va apărea un meniu intermediar în care vei putea vedea punctajul total acumulat în jocul curent și punctajul
 obținut pe întrebarea curentă.
 Ai 2 opțiuni de alegere a răspunsului: prin atingerea butonului corespunzător variantei dorite sau cu ajutorul
 comenzii vocale daca acesta este activat(poate fi activat/dezactivat din meniul de start sau din meniul intermediar).
 Aceeași situație o avem și în meniul intermediar: pentru a trece la următoarea întrebare poți folosi comanda vocală, rostind "Continuă", sau apasând butonul "Continuă". Un joc conține 10 intrebări.\n\n
     </string>
-    <string name="helpTextCumSeJoacaEn">\n
-    When you press the Start button, a menu for choosing categories will be displayed. After pressing the Play button, you have 30 seconds to respond
+    <string name="helpTextHowToPlayEn">\n
+    When you press the CLASSIC MODE, a menu for choosing categories will be displayed. After pressing the Play button, you have 30 seconds to respond
 to the question. After each question answered or if time expires, an intermediate menu will appear in which you will be able to see the total score accumulated in the current game and the score
 obtained on the current question.
 You have 2 options to choose the answer: by touching the button corresponding to the desired variant or with the help
@@ -28,11 +28,11 @@ voice command if it is activated (it can be activated / deactivated from the sta
 We have the same situation in the intermediate menu: to move to the next question you can use the voice command, saying "Continue", or by pressing the "Continue" button. A game contains 10 questions.\n\n
     </string>
 
-    <string name="helpTextCumSePuncteazaRou">\n
+    <string name="helpTextHowToScoreRou">\n
 Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afișarea intrebării. În cazul în care folosești comanda vocală, atunci vei primi un bonus la un răspuns corect
 , acest bonus acoperind timpul pierdut până ce microfonul reperează ceea ce spui. Daca greșești la o întrebare sau timpul expiră, nu vei primi punctaj pe acea întrebare.\n\n
     </string>
-    <string name="helpTextCumSePuncteazaEn">\n
+    <string name="helpTextHowToScoreEn">\n
         For each question you receive as many points as there are seconds left from displaying the question. If you use voice command, then you will receive a bonus to a correct answer
 , this bonus covering the time lost until the microphone detects what you are saying. If you make a mistake in a question or the time expires, you will not receive a score on that question.\n\n
     </string>
@@ -55,8 +55,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="describePopUpAudioLogRou">Bun venit în Trivia!</string>
     <string name="describePopUpCommandsAudioLogEn">PopUp commands description!</string>
     <string name="describePopUpCommandsAudioLogRou">Descriere comenzilor din PopUp!</string>
-    <string name="describeAudioLogEn">Welcome to Main Activity!</string>
-    <string name="describeAudioLogRou">Bun venit în meniul de logare!</string>
+    <string name="describeAudioLogEn">Welcome to login screen!</string>
+    <string name="describeAudioLogRou">Bun venit în ecranul de logare!</string>
     <string name="describeAudioPermissionAudioLogEn">Welcome to Trivia audio permission!</string>
     <string name="describeAudioPermissionAudioLogRou">Bun venit în permisiunea audio Trivia!</string>
     <string name="describeCommandsAudioLogEn">Commands description!</string>
@@ -109,6 +109,9 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="audioDeniedToastAudioLogRou">Înregistrarea audio respinsă!</string>
     <string name="wrongCodeToastAudioLogEn">Wrong code!</string>
     <string name="wrongCodeToastAudioLogRou">Cod greșit!</string>
+    <string name="noInternetToastAudioLogRegEn">No connection!</string>
+    <string name="noInternetToastAudioLogRegRou">Nu există conexiune!</string>
+
 
     <string name="userNameHintRegEn">username</string>
     <string name="userNameHintRegRou">nume de utilizator</string>
@@ -126,14 +129,14 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="successCreateToastRegRou">Contul a fost creat cu succes!</string>
     <string name="existEmailToastRegEn">Email exists!</string>
     <string name="existEmailToastRegRou">Email indisponibil!</string>
-    <string name="describeAudioRegEn">Welcome to Register Activity!</string>
-    <string name="describeAudioRegRou">Bun venit în meniul de înregistrare!</string>
+    <string name="describeAudioRegEn">Welcome to register screen!</string>
+    <string name="describeAudioRegRou">Bun venit în ecranul de înregistrare!</string>
     <string name="describeCommandsAudioRegEn">Commands description!</string>
     <string name="describeCommandsRegRou">Descrierea comenzilor!</string>
     <string name="userNameSetAudioRegEditEn">Username was set to</string>
     <string name="userNameSetAudioRegEditRou">Numele a fost setat ca</string>
-    <string name="codeSetAudioRegEditEn">Code was set to</string>
-    <string name="codeSetAudioRegEditRou">Codul a fost setat ca</string>
+    <string name="codeSetAudioRegEn">Code was set to</string>
+    <string name="codeSetAudioRegRou">Codul a fost setat ca</string>
     <string name="emptyCodeToastAudioLogEn">Introduce a login code!!</string>
     <string name="emptyCodeToastAudioLogRou">Introdu un cod de logare!</string>
     <string name="invalidCodeFormatToastAudioLogEn">Login code must contain only digits!</string>
@@ -165,8 +168,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="placeAudioMenuRou">Locul tău este</string>
     <string name="withAudioMenuEn">with</string>
     <string name="withAudioMenuRou">cu</string>
-    <string name="describeAudioMenuEn">Welcome to Game Activity!</string>
-    <string name="describeAudioMenuRou">Bun venit în meniul de joc!</string>
+    <string name="describeAudioMenuEn">Welcome to game screen!</string>
+    <string name="describeAudioMenuRou">Bun venit în ecranul de joc!</string>
     <string name="describeCommandsAudioMenuEn">Commands description!</string>
     <string name="describeCommandsAudioMenuRou">Descrierea comenzilor!</string>
     <string name="classicButtonMenuEn">Classic</string>
@@ -215,8 +218,8 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="emptyPasswordToastEditRou">Confirmă cu parola veche!</string>
     <string name="successDeleteToastAudioEditEn">Account deleted successfully!</string>
     <string name="successDeleteToastAudioEditRou">Contul a fost șters cu succes!</string>
-    <string name="describeAudioEditEn">Welcome to settings!</string>
-    <string name="describeAudioEditRou">Bun venit în setări!</string>
+    <string name="describeAudioEditEn">Welcome to account settings!</string>
+    <string name="describeAudioEditRou">Bun venit în setările contului!</string>
     <string name="describeCommandsAudioEditEn">Commands description!</string>
     <string name="describeCommandsAudioEditRou">Descrierea comenzilor!</string>
     <string name="oldPasswordSetAudioEditEn">Old password was set!</string>

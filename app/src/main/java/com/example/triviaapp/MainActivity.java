@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     String emptyMailToastAudio, emptyPasswordToastAudio, successDataToast, wrongDataToastAudio, successSendMailToastAudio, wrongMailToastAudio, audioGrantedToastAudio, audioDeniedToastAudio,
             describePopUpAudio, describePopUpCommandsAudio, describeAudio, describeAudioPermissionAudio, describeCommandsAudio, restartPresentationAudio, microphoneSelectAudio, microphoneDeselectAudio, speakerSelectAudio, speakerDeselectAudio,
             selectALanguageToastAudio, mailSetAudio, passwordSetAudio, connectedToastAudio, connectionLostToastAudio, invalidCommandToastAudio,
-            wrongCodeToastAudio;
+            wrongCodeToastAudio, noInternetToastAudio;
 
     Date date;
     SharedPreferences prefs;
@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
     SpeechRecognizer speechRecognizer;
     String currentScreen = null;
     List<String> localLoginCodeList;
+
+    boolean connectionStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioEn);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioEn);
         wrongCodeToastAudio = getString(R.string.wrongCodeToastAudioLogEn);
+        noInternetToastAudio = getString(R.string.noInternetToastAudioLogRegEn);
 
     }
 
@@ -197,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
         connectionLostToastAudio = getString(R.string.connectionLostToastAudioRou);
         invalidCommandToastAudio = getString(R.string.invalidCommandToastAudioRou);
         wrongCodeToastAudio = getString(R.string.wrongCodeToastAudioLogRou);
+        noInternetToastAudio = getString(R.string.noInternetToastAudioLogRegRou);
 
     }
 
@@ -318,7 +322,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             speechRecognizer.destroy();
                             LoggedUserData.loggedUserPassword = password;
                             Toast.makeText(getBaseContext(), successDataToast, Toast.LENGTH_SHORT).show();
@@ -336,7 +339,13 @@ public class MainActivity extends AppCompatActivity {
                             updateUI();
                             clearInputs();
                         } else {
-                            // If sign in fails, display a message to the user.
+                            if(!connectionStatus){
+                                Toast.makeText(getBaseContext(), noInternetToastAudio, Toast.LENGTH_SHORT).show();
+                                checkOptions(noInternetToastAudio,"Activity");
+                                return;
+
+                            }
+
                             Toast.makeText(getBaseContext(), wrongDataToastAudio, Toast.LENGTH_SHORT).show();
                             checkOptions(wrongDataToastAudio, "Activity");
 
@@ -1168,7 +1177,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private boolean checkCodeIsCommandEn(String voiceInput) {
-        if (voiceInput.startsWith("code ")) {
+        if (voiceInput.startsWith("code ") || voiceInput.startsWith("gold ")) {
             String code = usefulDataExtract(voiceInput, 5);
             if(localLoginCodeList.contains(code)){
                 voiceCommandLoginData.forEach((email,user) -> {
@@ -1339,6 +1348,7 @@ public class MainActivity extends AppCompatActivity {
                 if (textToSpeech != null) {
                     Log.d("Main", "connectionListener");
                     boolean connected = snapshot.getValue(Boolean.class);
+                    connectionStatus = connected;
                     if (connected) {
                         connected();
 
