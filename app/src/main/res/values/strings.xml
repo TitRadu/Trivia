@@ -313,7 +313,7 @@ Pe fiecare intrebarea primești atâtea puncte câte secunde au rămas de la afi
     <string name="lostPrizeTextAudioLuckRou">Ai pierdut premiul!</string>
     <string name="collectButtonTextLuckEn">Collect</string>
     <string name="collectButtonTextLuckRou">Colectează</string>
-    <string name="exitButtonTextLuckEn">Close</string>
+    <string name="exitButtonTextLuckEn">Exit</string>
     <string name="exitButtonTextLuckRou">Închide</string>
 
 

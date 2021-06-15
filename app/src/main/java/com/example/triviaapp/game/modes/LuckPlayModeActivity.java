@@ -107,7 +107,7 @@ public class LuckPlayModeActivity extends AppCompatActivity {
         lostPrizeTextViewPopUpTextAudioString = getString(R.string.lostPrizeTextAudioLuckEn);
         collectButtonPopUpTextString = getString(R.string.collectButtonTextLuckEn);
         lostPrizeButtonPopUpTextString = getString(R.string.exitButtonTextLuckEn);
-        describeAudio = getString(R.string.describeCommandsAudioLuckEn);
+        describeAudio = getString(R.string.describeAudioLuckEn);
         describeCommandsAudio = getString(R.string.describeCommandsAudioLuckEn);
         describeCollectPopUpCommandsAudio = getString(R.string.describeCommandsCollectPopUpAudioLuckEn);
         describeWrongPopUpCommandsAudio = getString(R.string.describeCommandsWrongPopUpAudioLuckEn);
@@ -135,7 +135,7 @@ public class LuckPlayModeActivity extends AppCompatActivity {
         collectButtonPopUpTextString = getString(R.string.collectButtonTextLuckRou);
         lostPrizeButtonPopUpTextString = getString(R.string.exitButtonTextLuckRou);
         describeAudio = getString(R.string.describeAudioLuckRou);
-        describeCommandsAudio = getString(R.string.describeCommandsAudioLuckRou);
+        describeCommandsAudio = getString(R.string.describeAudioLuckRou);
         describeCollectPopUpCommandsAudio = getString(R.string.describeCommandsCollectPopUpAudioLuckRou);
         describeWrongPopUpCommandsAudio = getString(R.string.describeCommandsWrongPopUpAudioLuckRou);
         wonFFAudio = getString(R.string.wonFFAudioPlayLuckRou);
@@ -712,10 +712,10 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     private void speechInputPopUpCollectEn(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
         switch (voiceInput) {
-            case "next":
+            case "yes":
                 collectButtonPopUp.performClick();
                 return;
-            case "exit":
+            case "no":
                 xImageViewPopUp.performClick();
                 return;
             case "described":
@@ -747,10 +747,10 @@ public class LuckPlayModeActivity extends AppCompatActivity {
     private void speechInputPopUpCollectRou(String voiceInput) {
         voiceInput = voiceInput.toLowerCase();
         switch (voiceInput) {
-            case "continuă":
+            case "yes":
                 collectButtonPopUp.performClick();
                 return;
-            case "închide":
+            case "no":
                 xImageViewPopUp.performClick();
                 return;
             case "descriere":
